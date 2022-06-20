@@ -1,7 +1,7 @@
 {
   "extends": [
-    "sukka/typescript",
     "next/core-web-vitals",
+    "sukka/typescript"
   ],
   "plugins": [
     "baseui"
@@ -10,6 +10,9 @@
     "baseui/deprecated-theme-api": "warn",
     "baseui/deprecated-component-api": "warn",
     "baseui/no-deep-imports": "warn"
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
   },
   "settings": {
     "node": {
