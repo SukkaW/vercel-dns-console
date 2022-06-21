@@ -8,7 +8,7 @@ export class HTTPError extends Error {
   }
 }
 
-export const fetcherWithAuthorization = async ([key, token]: [string, string]) => {
+export const fetcherWithAuthorization = async <T>([key, token]: [string, string]): Promise<T> => {
   const res = await fetch(
     new URL(key, 'https://api.vercel.com/').toString(),
     {

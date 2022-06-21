@@ -1,19 +1,21 @@
 {
   "extends": [
-    "next/core-web-vitals",
-    "sukka/typescript"
+    "next/core-web-vitals"
   ],
-  "plugins": [
-    "baseui"
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts",
+        "**/*.tsx"
+      ],
+      "extends": [
+        "sukka/typescript"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      }
+    }
   ],
-  "rules": {
-    "baseui/deprecated-theme-api": "warn",
-    "baseui/deprecated-component-api": "warn",
-    "baseui/no-deep-imports": "warn"
-  },
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  },
   "settings": {
     "node": {
       "resolvePaths": [

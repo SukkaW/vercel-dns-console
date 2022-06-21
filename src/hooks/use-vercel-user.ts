@@ -1,27 +1,15 @@
-import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import { fetcherWithAuthorization, HTTPError } from '@/lib/fetcher';
 import { useVercelApiToken } from './use-vercel-api-token';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 
-export interface User {
-  id: string;
-  avatar: string;
-  createdAt: number;
-  email: string;
-  username: string;
-  name?: string;
-  limited?: boolean;
-}
-
-interface UserResponse {
-  user: User;
-}
+import type { VercelUserResponse } from '@/types/user';
 
 export const useVercelUser = () => {
-  const [token, setToken] = useVercelApiToken();
+  const [token] = useVercelApiToken();
 
-  const { data, error, isLoading } = useSWR<UserResponse, HTTPError>(
+  const { data, error, isLoading, mutate } = useSWRImmutable<VercelUserResponse, HTTPError>(
     token ? ['/v2/user', token] : null,
     fetcherWithAuthorization,
     {
@@ -41,22 +29,28 @@ export const useVercelUser = () => {
 
   useEffect(() => {
     if (isNotLoggedIn) {
-      setToken(null);
       if (!router.pathname.startsWith('/login')) {
         router.push('/login');
       }
     }
   });
 
+  const newData = useMemo(() => {
+    if (data) {
+      return {
+        username: data?.user.username,
+        name: data?.user.name,
+        avatar: data?.user.avatar
+      };
+    }
+
+    return undefined;
+  }, [data]);
+
   return {
-    data: data
-      ? {
-        username: data.user.username,
-        name: data.user.name,
-        avatar: data.user.avatar
-      }
-      : undefined,
+    data: newData,
     error,
+    mutate,
     isNotLoggedIn,
     isLoading
   };

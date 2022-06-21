@@ -1,20 +1,9 @@
-import Document, { Head, Html, Main, NextScript, type DocumentProps, type DocumentContext, type DocumentInitialProps } from 'next/document';
-import { Server, Sheet } from 'styletron-engine-atomic';
-import { styletron } from '@/lib/styletron';
+import Document, { Head, Html, Main, NextScript, type DocumentContext, type DocumentInitialProps } from 'next/document';
+import { CssBaseline } from '@geist-ui/core';
 
-const MyDocument = (props: DocumentProps & { styletronSheets: Sheet[] }) => (
+const MyDocument = () => (
   <Html>
-    <Head>
-      {props.styletronSheets.map((sheet, i) => (
-        <style
-          className="_styletron_"
-          dangerouslySetInnerHTML={{ __html: sheet.css }}
-          media={sheet.attrs.media}
-          data-hydrate={sheet.attrs['data-hydrate']}
-          key={i}
-        />
-      ))}
-    </Head>
+    <Head />
     <body>
       <Main />
       <NextScript />
@@ -22,10 +11,18 @@ const MyDocument = (props: DocumentProps & { styletronSheets: Sheet[] }) => (
   </Html>
 );
 
-MyDocument.getInitialProps = async (ctx: DocumentContext): Promise<DocumentInitialProps & { styletronSheets: Sheet[] }> => {
+MyDocument.getInitialProps = async (ctx: DocumentContext): Promise<DocumentInitialProps> => {
   const initialProps = await Document.getInitialProps(ctx);
-  const styletronSheets = (styletron as Server).getStylesheets() || [];
-  return { ...initialProps, styletronSheets };
+  const styles = CssBaseline.flush();
+  return {
+    ...initialProps,
+    styles: (
+      <>
+        {initialProps.styles}
+        {styles}
+      </>
+    )
+  };
 };
 
 export default MyDocument;
