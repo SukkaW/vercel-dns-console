@@ -5,11 +5,14 @@ import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelUser } from '@/hooks/use-vercel-user';
 import { useRouter } from 'next/router';
 
-import { Button, Card, Input, Link, Spacer, Text, useToasts } from '@geist-ui/core';
-import { NextPageWithLayout } from './_app';
+import { Button, Input, Link, Note, Spacer, Text, useToasts } from '@geist-ui/core';
 import { fetcherWithAuthorization } from '../lib/fetcher';
-import { VercelUserResponse } from '../types/user';
-import { Container } from '../components/container';
+
+import { Container } from '@/components/container';
+import { Notice } from '@/components/notice';
+
+import type { VercelUserResponse } from '../types/user';
+import type { NextPageWithLayout } from './_app';
 
 const LoginForm = () => {
   const [token, setToken] = useVercelApiToken();
@@ -122,21 +125,13 @@ const LoginForm = () => {
         Continue with Your API Token
       </Button>
       <Spacer />
-      <Card>
-        This is an <strong>Unofficial</strong> control panel for
-        {' '}
-        <Link
-          href="https://vercel.com"
-          target="_blank"
-          rel="external nofollow noreferrer noopenner"
-          icon
-          color
-        >
-          Vercel
-        </Link>.
-        {' '}
-        Your API token will only be stored in your browser locally.
-      </Card>
+      <Note type="warning" w={'100%'}>
+        <Text p>
+          Your API token will only be stored in your browser locally.
+        </Text>
+      </Note>
+      <Spacer />
+      <Notice />
     </div>
   );
 };

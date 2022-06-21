@@ -1,11 +1,12 @@
 import React, { forwardRef, useEffect, useMemo } from 'react';
 
-import { Text, Link, useTheme, type TableColumnProps, useToasts } from '@geist-ui/core';
+import { Text, Link, useTheme, type TableColumnProps, useToasts, Spacer } from '@geist-ui/core';
 import NextLink from 'next/link';
 
 import { Layout } from '@/components/layout';
 import { DataTables } from '@/components/data-tables';
 import { Skeleton } from '@/components/skeleton';
+import { Notice } from '@/components/notice';
 
 import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelDomains } from '@/hooks/use-vercel-domains';
@@ -94,6 +95,8 @@ const Domains: NextPageWithLayout = () => {
           ? <DataTables<DomainItem> data={processedDomainLists} columns={domainDataTableColumns} />
           : <Skeleton.DataTable />
       }
+      <Spacer />
+      <Notice />
       <style jsx>{`
        div :global(.domain) {
          border-bottom: 1px dashed ${theme.palette.accents_3};
