@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useCallback } from 'react';
 
-import { Page, Popover, useTheme, useToasts } from '@geist-ui/core';
+import { Popover, useTheme, useToasts } from '@geist-ui/core';
 import NextLink from 'next/link';
 import Image, { type ImageLoader } from 'next/image';
 
@@ -12,6 +12,7 @@ import { useRouter } from 'next/router';
 import { useVercelUser } from '@/hooks/use-vercel-user';
 import { useVercelApiToken } from '@/hooks/use-vercel-api-token';
 import { useConstHandler } from '@/hooks/use-const-handler';
+import { Container } from '../container';
 
 const vercelAvatarLoader: ImageLoader = ({ src, width }) => {
   return `${src}?s=${width}`;
@@ -115,11 +116,9 @@ export const Layout = (props: {
           </div>
         </nav>
       </div>
-      <Page className="page">
-        <Page.Content>
-          {props.children}
-        </Page.Content>
-      </Page>
+      <Container className="page">
+        {props.children}
+      </Container>
       <style jsx>{`
     :global(section.page.page) {
       margin-top: 64px;
@@ -143,7 +142,7 @@ export const Layout = (props: {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      max-width: 1000px;
+      max-width: ${theme.layout.pageWidthWithMargin};
       height: 100%;
       margin: 0 auto;
       user-select: none;

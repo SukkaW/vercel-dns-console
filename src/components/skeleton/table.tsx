@@ -7,7 +7,7 @@ export const DataTable = memo(() => {
   // const theme = useTheme();
   return (
     <Table data={EMPTY_DATA}>
-      <Table.Column prop="" label="" />
+      <Table.Column prop="any" label="" />
     </Table>
   );
 });

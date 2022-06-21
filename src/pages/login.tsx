@@ -5,10 +5,11 @@ import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelUser } from '@/hooks/use-vercel-user';
 import { useRouter } from 'next/router';
 
-import { Button, Card, Input, Link, Page, Spacer, Text, useToasts } from '@geist-ui/core';
+import { Button, Card, Input, Link, Spacer, Text, useToasts } from '@geist-ui/core';
 import { NextPageWithLayout } from './_app';
 import { fetcherWithAuthorization } from '../lib/fetcher';
 import { VercelUserResponse } from '../types/user';
+import { Container } from '../components/container';
 
 const LoginForm = () => {
   const [token, setToken] = useVercelApiToken();
@@ -170,11 +171,9 @@ const Login: NextPageWithLayout = () => {
 };
 
 Login.getLayout = (children, props) => (
-  <Page>
-    <Page.Content>
-      {children}
-    </Page.Content>
-  </Page>
+  <Container>
+    {children}
+  </Container>
 );
 
 export default Login;

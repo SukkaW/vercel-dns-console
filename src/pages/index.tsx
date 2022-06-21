@@ -1,16 +1,17 @@
-import { useMemo } from 'react';
+import React, { forwardRef, useEffect, useMemo } from 'react';
 
-import { Text, Link, useTheme, type TableColumnProps } from '@geist-ui/core';
+import { Text, Link, useTheme, type TableColumnProps, useToasts } from '@geist-ui/core';
 import NextLink from 'next/link';
 
 import { Layout } from '@/components/layout';
 import { DataTables } from '@/components/data-tables';
+import { Skeleton } from '@/components/skeleton';
 
+import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelDomains } from '@/hooks/use-vercel-domains';
 import { formatDate } from '../lib/util';
 
 import type { NextPageWithLayout } from '@/pages/_app';
-import { Skeleton } from '../components/skeleton';
 
 interface DomainItem {
   name: string;
@@ -18,19 +19,40 @@ interface DomainItem {
   createdAt: string;
 }
 
-const DomainLink = (props: { name: string }) => {
+const DomainLink = forwardRef((props: { name: string }, ref: React.ForwardedRef<HTMLAnchorElement>) => {
   return (
     <>
       <NextLink href={'#'} prefetch={false}>
-        <Link className="domain">{props.name}</Link>
+        <Link ref={ref} className="domain">{props.name}</Link>
       </NextLink>
     </>
   );
-};
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  DomainLink.displayName = 'DomainLink';
+}
 
 const Domains: NextPageWithLayout = () => {
+  const { setToast: origSetToast, removeAll: origRemoveAllToasts } = useToasts();
   const theme = useTheme();
-  const { data } = useVercelDomains();
+  const { data, error } = useVercelDomains();
+  const setToast = useConstHandler(origSetToast);
+  const removeAllToasts = useConstHandler(origRemoveAllToasts);
+
+  useEffect(() => {
+    if (error) {
+      setToast({
+        type: 'error',
+        text: 'Failed to load domains list',
+        delay: 3000
+      });
+
+      return () => {
+        removeAllToasts();
+      };
+    }
+  }, [error, setToast, removeAllToasts]);
 
   const domainDataTableColumns: TableColumnProps<DomainItem>[] = [
     {
@@ -63,8 +85,6 @@ const Domains: NextPageWithLayout = () => {
       };
     });
   }, [data]);
-
-  console.log(data);
 
   return (
     <div>
