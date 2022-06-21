@@ -32,6 +32,7 @@ export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>
         prop="operation"
         label=""
         render={renderAction}
+        width={22}
       >
         <Checkbox
           checked={isAllChecked}

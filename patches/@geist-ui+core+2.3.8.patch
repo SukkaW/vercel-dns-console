@@ -1,0 +1,30 @@
+diff --git a/node_modules/@geist-ui/core/dist/table/index.js b/node_modules/@geist-ui/core/dist/table/index.js
+index 2330ed3..78f5abb 100644
+--- a/node_modules/@geist-ui/core/dist/table/index.js
++++ b/node_modules/@geist-ui/core/dist/table/index.js
+@@ -527,7 +527,9 @@ var makeColgroup = function makeColgroup(width, columns) {
+   return /*#__PURE__*/React__default["default"].createElement("colgroup", null, columns.map(function (column, index) {
+     return /*#__PURE__*/React__default["default"].createElement("col", {
+       key: "colgroup-".concat(index),
+-      width: column.width || averageWidth
++      style: {
++        width: column.width || averageWidth
++      }
+     });
+   }));
+ };
+diff --git a/node_modules/@geist-ui/core/esm/table/table-head.js b/node_modules/@geist-ui/core/esm/table/table-head.js
+index 268ff2b..6257d88 100644
+--- a/node_modules/@geist-ui/core/esm/table/table-head.js
++++ b/node_modules/@geist-ui/core/esm/table/table-head.js
+@@ -17,7 +17,9 @@ var makeColgroup = function makeColgroup(width, columns) {
+   return /*#__PURE__*/React.createElement("colgroup", null, columns.map(function (column, index) {
+     return /*#__PURE__*/React.createElement("col", {
+       key: "colgroup-".concat(index),
+-      width: column.width || averageWidth
++      style: {
++        width: column.width || averageWidth
++      }
+     });
+   }));
+ };

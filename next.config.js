@@ -3,7 +3,10 @@ const nextConfig = {
   reactStrictMode: true,
   experimental: {
     browsersListForSwc: true,
-    legacyBrowsers: false
+    legacyBrowsers: false,
+    images: {
+      unoptimized: true,
+    }
   }
 }
 

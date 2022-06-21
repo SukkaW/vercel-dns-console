@@ -23,7 +23,7 @@ interface DomainItem {
 const DomainLink = forwardRef((props: { name: string }, ref: React.ForwardedRef<HTMLAnchorElement>) => {
   return (
     <>
-      <NextLink href={'#'} prefetch={false}>
+      <NextLink href={`/domain/${props.name}`} prefetch={false}>
         <Link ref={ref} className="domain">{props.name}</Link>
       </NextLink>
     </>
@@ -34,7 +34,27 @@ if (process.env.NODE_ENV !== 'production') {
   DomainLink.displayName = 'DomainLink';
 }
 
-const Domains: NextPageWithLayout = () => {
+const domainDataTableColumns: TableColumnProps<DomainItem>[] = [
+  {
+    prop: 'name',
+    label: 'Domain',
+    render: (value, rowData) => (
+      <NextLink href={'#'}>
+        <DomainLink name={value} />
+      </NextLink>
+    )
+  },
+  {
+    prop: 'nameServer',
+    label: 'NameServer'
+  },
+  {
+    prop: 'createdAt',
+    label: 'Created At'
+  }
+];
+
+const DomainsPage: NextPageWithLayout = () => {
   const { setToast: origSetToast, removeAll: origRemoveAllToasts } = useToasts();
   const theme = useTheme();
   const { data, error } = useVercelDomains();
@@ -54,26 +74,6 @@ const Domains: NextPageWithLayout = () => {
       };
     }
   }, [error, setToast, removeAllToasts]);
-
-  const domainDataTableColumns: TableColumnProps<DomainItem>[] = [
-    {
-      prop: 'name',
-      label: 'Domain',
-      render: (value, rowData) => (
-        <NextLink href={'#'}>
-          <DomainLink name={value} />
-        </NextLink>
-      )
-    },
-    {
-      prop: 'nameServer',
-      label: 'NameServer'
-    },
-    {
-      prop: 'createdAt',
-      label: 'Created At'
-    }
-  ];
 
   const processedDomainLists: DomainItem[] | null = useMemo(() => {
     if (!data) return null;
@@ -95,7 +95,7 @@ const Domains: NextPageWithLayout = () => {
           ? <DataTables<DomainItem> data={processedDomainLists} columns={domainDataTableColumns} />
           : <Skeleton.DataTable />
       }
-      <Spacer />
+      <Spacer h={2} />
       <Notice />
       <style jsx>{`
        div :global(.domain) {
@@ -106,7 +106,7 @@ const Domains: NextPageWithLayout = () => {
   );
 };
 
-Domains.getLayout = (children, prop) => {
+DomainsPage.getLayout = (children, prop) => {
   return (
     <Layout>
       {children}
@@ -114,4 +114,4 @@ Domains.getLayout = (children, prop) => {
   );
 };
 
-export default Domains;
+export default DomainsPage;
