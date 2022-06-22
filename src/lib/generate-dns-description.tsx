@@ -64,13 +64,13 @@ export const generateDnsDescription = (
     case 'CNAME':
       return (
         <>
-          {nameNode} is an alias of {valueNode}
+          {nameNode} is an alias of <Code>{valueNode}</Code>
         </>
       );
     case 'ALIAS':
       return (
         <>
-          {nameNode} is an alias of {valueNode} that returns its IPv4/IPv6 address directly
+          {nameNode} is an alias of <Code>{valueNode}</Code> that returns its IPv4/IPv6 address directly
         </>
       );
     case 'MX':

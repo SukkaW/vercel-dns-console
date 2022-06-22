@@ -6,6 +6,7 @@ import { DataTables } from '../data-tables';
 import { Skeleton } from '../skeleton';
 
 import InfoFill from '@geist-ui/icons/infoFill';
+import Lock from '@geist-ui/icons/lock';
 
 import { useVercelListDNSRecords } from '@/hooks/use-vercel-dns';
 import { generateDnsDescription } from '@/lib/generate-dns-description';
@@ -173,10 +174,23 @@ export const DNSDataTables = (props: {
           Edit
         </Popover.Item>
         <Popover.Item>
-          <Text type="error" span>Delete</Text>
+          {rowData.isSystem
+            ? <Text span small>{'You can\'t delete system record'}</Text>
+            : <Text type="error" span>Delete</Text>}
         </Popover.Item>
       </>
     ),
+    []
+  );
+
+  const renderRecordDataTableAction = useCallback(
+    (value: RecordTableItem[keyof RecordTableItem], rowData: RecordTableItem, rowIndex: number) => {
+      if (rowData.isSystem) {
+        return (
+          <Lock size={16} />
+        );
+      }
+    },
     []
   );
 
@@ -185,11 +199,14 @@ export const DNSDataTables = (props: {
       {
         !props.domain
           ? <Skeleton.DataTable />
-          : <DataTables
-            data={tableData}
-            columns={recordDataTableColumns}
-            renderRowMenuItems={renderRecordDataTableMenu}
-          />
+          : (
+            <DataTables
+              data={tableData}
+              columns={recordDataTableColumns}
+              renderRowMenuItems={renderRecordDataTableMenu}
+              overwriteRowActionItems={renderRecordDataTableAction}
+            />
+          )
       }
       <style jsx>{`
         :global(div.table-cell-tooltip-portal.table-cell-tooltip-portal) {
