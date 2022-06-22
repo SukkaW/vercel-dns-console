@@ -77,6 +77,7 @@ const TableBody = <TableDataItem extends TableDataItemBase>({
           vertical-align: middle;
           color: ${theme.palette.accents_6};
           line-height: 24px;
+          min-height: 40px;
         }
       `}</style>
     </tbody>

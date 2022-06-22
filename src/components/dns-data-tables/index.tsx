@@ -91,7 +91,7 @@ export const DNSDataTables = (props: {
   domain: string | undefined
 }) => {
   const theme = useTheme();
-  const { data: rawData } = useVercelListDNSRecords(props.domain);
+  const { data: rawData, isLoading } = useVercelListDNSRecords(props.domain);
   const records: RecordItem[] = useMemo(() => {
     const result: RecordItem[] = [];
 
@@ -128,15 +128,13 @@ export const DNSDataTables = (props: {
 
   const recordDataTableColumns = useMemo(() => getRecordDataTableColumns(theme, props.domain), [theme, props.domain]);
 
-  if (!props.domain) {
-    return (
-      <Skeleton.DataTable />
-    );
-  }
-
   return (
     <div>
-      <DataTables data={tableData} columns={recordDataTableColumns} />
+      {
+        !props.domain || isLoading
+          ? <Skeleton.DataTable />
+          : <DataTables data={tableData} columns={recordDataTableColumns} />
+      }
       <style jsx>{`
         div {
           overflow: auto;
