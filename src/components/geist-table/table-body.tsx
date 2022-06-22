@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 import TableCell from './table-cell';
 import { useTableContext } from './table-context';
 import {
@@ -73,7 +73,7 @@ const TableBody = <TableDataItem extends TableDataItemBase>({
         tr :global(.cell) {
           display: flex;
           align-items: center;
-          padding: 8px 12px;
+          padding: 8px;
           vertical-align: middle;
           color: ${theme.palette.accents_6};
           line-height: 24px;
@@ -83,5 +83,9 @@ const TableBody = <TableDataItem extends TableDataItemBase>({
     </tbody>
   );
 };
+
+if (process.env.NODE_ENV !== 'production') {
+  TableBody.displayName = 'TableBody';
+}
 
 export default TableBody;

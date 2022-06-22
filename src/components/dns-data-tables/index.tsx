@@ -6,6 +6,8 @@ import { Skeleton } from '../skeleton';
 import { useVercelListDNSRecords } from '@/hooks/use-vercel-dns';
 import { type TableColumnProps } from '../geist-table';
 import InfoFill from '@geist-ui/icons/infoFill';
+import MoreVertical from '@geist-ui/icons/moreVertical';
+
 import { GeistUIThemes, Tooltip, useTheme } from '@geist-ui/core';
 import { generateDnsDescription } from '../../lib/generate-dns-description';
 import type { VercelDNSRecord } from '../../types/dns';
@@ -16,7 +18,8 @@ interface RecordTableItem {
   type: VercelDNSRecord['type'],
   value: string,
   ttl: number,
-  action: null
+  action: null,
+  menu: null
 }
 
 interface RecordItem {
@@ -29,6 +32,7 @@ interface RecordItem {
 }
 
 const getRecordDataTableColumns = (theme: GeistUIThemes, domain: string | undefined): TableColumnProps<RecordTableItem>[] => [
+  // Action width 30
   {
     prop: 'name',
     label: 'Name',
@@ -53,7 +57,7 @@ const getRecordDataTableColumns = (theme: GeistUIThemes, domain: string | undefi
   {
     prop: 'ttl',
     label: 'TTL',
-    width: 100
+    width: 80
   },
   {
     prop: 'action',
@@ -79,6 +83,14 @@ const getRecordDataTableColumns = (theme: GeistUIThemes, domain: string | undefi
         );
       }
       return <InfoFill color={theme.palette.accents_3} size={16} />;
+    }
+  },
+  {
+    prop: 'menu',
+    label: '',
+    width: 40,
+    render(value, rowData) {
+      return <MoreVertical color={theme.palette.accents_3} size={16} />;
     }
   }
   // {
@@ -113,7 +125,8 @@ export const DNSDataTables = (props: {
             value: record.value,
             priority: record.mxPriority ?? record.priority,
             ttl: record.ttl,
-            action: null
+            action: null,
+            menu: null
           }
         });
       });
@@ -136,10 +149,6 @@ export const DNSDataTables = (props: {
           : <DataTables data={tableData} columns={recordDataTableColumns} />
       }
       <style jsx>{`
-        div {
-          overflow: auto;
-        }
-
         div :global(.table-cell-ellipsis) :global(.cell) {
           overflow: hidden;
           text-overflow: ellipsis;
@@ -147,7 +156,7 @@ export const DNSDataTables = (props: {
           overflow-wrap: break-word;
           word-break: keep-all;
         }
-        div :global(.tabel-cell-tooltip) {
+        div :global(.table-cell-tooltip.table-cell-tooltip) {
           display: inline-flex
         }
 
