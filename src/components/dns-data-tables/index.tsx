@@ -4,13 +4,14 @@ import { DataTables } from '../data-tables';
 import { Skeleton } from '../skeleton';
 
 import { useVercelListDNSRecords } from '@/hooks/use-vercel-dns';
-import { type TableColumnProps } from '@geist-ui/core';
+import { type TableColumnProps } from '../geist-table';
 
 interface RecordTableItem {
   name: string;
   priority?: number,
   type: string,
   value: string,
+  ttl: number,
   action: null
 }
 
@@ -26,19 +27,29 @@ interface RecordItem {
 const recordDataTableColumns: TableColumnProps<RecordTableItem>[] = [
   {
     prop: 'name',
-    label: 'Name'
+    label: 'Name',
+    width: 300
   },
   {
     prop: 'type',
-    label: 'Type'
+    label: 'Type',
+    width: 80
   },
   {
     prop: 'priority',
-    label: 'Priority'
+    label: 'Priority',
+    width: 80
   },
   {
     prop: 'value',
-    label: 'Value'
+    label: 'Value',
+    width: 350,
+    className: 'table-cell-ellipsis'
+  },
+  {
+    prop: 'ttl',
+    label: 'TTL',
+    width: 100
   }
   // {
   //   prop: 'action',
@@ -70,6 +81,7 @@ export const DNSDataTables = (props: {
             type: record.type,
             value: record.value,
             priority: record.mxPriority ?? record.priority,
+            ttl: record.ttl,
             action: null
           }
         });
@@ -90,6 +102,17 @@ export const DNSDataTables = (props: {
   }
 
   return (
-    <DataTables data={tableData} columns={recordDataTableColumns} />
+    <div>
+      <DataTables data={tableData} columns={recordDataTableColumns} />
+      <style jsx>{`
+        div :global(.table-cell-ellipsis) :global(.cell) {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow-wrap: break-word;
+          word-break: keep-all;
+        }
+      `}</style>
+    </div>
   );
 };

@@ -15,6 +15,7 @@ export interface VercelDNSRecord {
   | 'TXT'
   | 'NS'
   value: string
+  ttl: number
   mxPriority?: number
   priority?: number
   creator: string

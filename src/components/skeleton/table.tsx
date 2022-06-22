@@ -1,4 +1,4 @@
-import { Table } from '@geist-ui/core';
+import { Table } from '@/components/geist-table';
 import { memo } from 'react';
 
 const EMPTY_DATA = new Array(5).fill({});

@@ -1,16 +1,23 @@
-import { Checkbox, Table } from '@geist-ui/core';
-import type { TableDataItemBase } from '@geist-ui/core/dist/table/table-types';
-import type { TableColumnProps } from '@geist-ui/core/dist/table/table-column';
+import { Checkbox } from '@geist-ui/core';
+import type { TableDataItemBase } from '../geist-table/table-types';
+import type { TableColumnProps } from '../geist-table/table-column';
 import { useCallback, useMemo, useState } from 'react';
+import { Table } from '../geist-table';
 
 export interface DataTablesProp<TableDataItem extends TableDataItemBase> {
   data: TableDataItemBase[];
   columns: TableColumnProps<TableDataItem>[];
+  className?: string;
 }
 
 export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>) => {
   const [checkedRows, setCheckedRows] = useState<boolean[]>(new Array(props.data.length).fill(false));
-  const isAllChecked = useMemo(() => checkedRows.every(Boolean), [checkedRows]);
+
+  if (props.data.length !== checkedRows.length) {
+    setCheckedRows(new Array(props.data.length).fill(false));
+  }
+
+  const isAllChecked = useMemo(() => checkedRows.length > 0 && checkedRows.every(Boolean), [checkedRows]);
 
   const handleCheckboxChange = useCallback(() => {
     setCheckedRows(new Array(props.data.length).fill(!isAllChecked));
@@ -27,12 +34,12 @@ export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>
   );
 
   return (
-    <Table data={props.data}>
+    <Table className={props.className} data={props.data}>
       <Table.Column
         prop="operation"
         label=""
         render={renderAction}
-        width={22}
+        width={30}
       >
         <Checkbox
           checked={isAllChecked}
