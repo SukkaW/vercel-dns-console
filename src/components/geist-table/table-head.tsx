@@ -3,7 +3,6 @@ import React, { cloneElement, useMemo } from 'react';
 import type { TableAbstractColumn, TableDataItemBase } from './table-types';
 
 interface Props<TableDataItem extends TableDataItemBase> {
-  width: number
   columns: TableAbstractColumn<TableDataItem>[]
   className?: string
 }
@@ -11,26 +10,6 @@ interface Props<TableDataItem extends TableDataItemBase> {
 type NativeAttrs = Omit<React.HTMLAttributes<any>, keyof Props<any>>;
 export type TableHeadProps<TableDataItem> = Props<TableDataItem> & NativeAttrs & {
   isSticky?: boolean
-};
-
-// eslint-disable-next-line @typescript-eslint/comma-dangle
-const makeColgroup = <TableDataItem,>(
-  width: number,
-  columns: Array<TableAbstractColumn<TableDataItem>>
-) => {
-  const unsetWidthCount = columns.filter(c => !c.width).length;
-  const customWidthTotal = columns.reduce((pre, current) => {
-    return current.width ? pre + current.width : pre;
-  }, 0);
-  const averageWidth = (width - customWidthTotal) / unsetWidthCount;
-  if (averageWidth <= 0) return <colgroup />;
-  return (
-    <colgroup>
-      {columns.map((column, index) => (
-        <col key={`colgroup-${index}`} style={{ width: column.width || averageWidth }} />
-      ))}
-    </colgroup>
-  );
 };
 
 const THead = <TableDataItem extends TableDataItemBase>(
@@ -132,13 +111,7 @@ if (process.env.NODE_ENV !== 'production') {
 const TableHead = <TableDataItem extends TableDataItemBase>(
   props: TableHeadProps<TableDataItem>
 ) => {
-  const { columns, width } = props as TableHeadProps<TableDataItem>;
-  const isScalableWidth = useMemo(() => columns.find(item => !!item.width), [columns]);
-  const colgroup = useMemo(() => {
-    if (!isScalableWidth) return <colgroup />;
-    return makeColgroup(width, columns);
-  }, [isScalableWidth, width, columns]);
-
+  const { columns } = props as TableHeadProps<TableDataItem>;
   const thead = useMemo(() => <THead columns={columns} isSticky={props.isSticky} />, [columns, props.isSticky]);
   const clonedTHead = useMemo(() => cloneElement<React.ComponentProps<typeof THead>>(thead, {
     style: {
@@ -151,7 +124,6 @@ const TableHead = <TableDataItem extends TableDataItemBase>(
 
   return (
     <>
-      {colgroup}
       {thead}
       {clonedTHead}
     </>

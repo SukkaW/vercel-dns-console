@@ -74,8 +74,7 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
             )
         }
       </Popover>
-      <style jsx>
-        {`
+      <style jsx>{`
           .menu-content {
             min-width: 100px
           }
@@ -88,8 +87,7 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
             cursor: pointer;
             background: ${theme.palette.accents_1};
           }
-        `}
-      </style>
+      `}</style>
     </>
   );
 };

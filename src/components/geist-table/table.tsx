@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import TableHead from './table-head';
 import TableBody from './table-body';
-import { useResize, useRealShape } from './util';
 import { TableContext, TableConfig } from './table-context';
 import {
   TableAbstractColumn,
@@ -51,7 +50,6 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
   /* eslint-enable @typescript-eslint/no-unused-vars */
   const { SCALES } = useScale();
   const ref = useRef<HTMLTableElement>(null);
-  const [{ width }, updateShape] = useRealShape(ref.current);
   const [columns, setColumns] = useState<TableAbstractColumn<TableDataItem>[]>([]);
   const [data, setData] = useState<Array<TableDataItem>>(initialData);
   const updateColumn = useConstHandler((column: TableAbstractColumn<TableDataItem>) => {
@@ -77,7 +75,6 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
     if (typeof customData === 'undefined') return;
     setData(customData);
   }, [customData]);
-  useResize(() => updateShape());
 
   const [isSticky, setSticky] = useState(false);
   const theadElRef = useRef<HTMLDivElement>(null);
@@ -92,7 +89,7 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
         const { top } = theadEl?.getBoundingClientRect() || { top: 0 };
         const { bottom } = tbodyEl?.getBoundingClientRect() || { bottom: 0 };
 
-        if (top < 66 && bottom > 110) {
+        if (top < 67 && bottom > 110) {
           setSticky(true);
         } else {
           setSticky(false);
@@ -115,7 +112,7 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
             <TableContext.Provider value={contextValue}>
               <div ref={theadElRef} />
               <table ref={ref} className={className} {...props}>
-                <TableHead columns={columns} width={width} isSticky={isSticky} />
+                <TableHead columns={columns} isSticky={isSticky} />
                 <TableBody<TableDataItem>
                   data={data}
                   hover={hover}

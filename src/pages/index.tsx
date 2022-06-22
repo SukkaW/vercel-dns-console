@@ -1,6 +1,6 @@
-import React, { forwardRef, useEffect, useMemo } from 'react';
+import React, { forwardRef, useCallback, useEffect, useMemo } from 'react';
 
-import { Text, Link, useTheme, type TableColumnProps, useToasts, Spacer } from '@geist-ui/core';
+import { Text, Link, useTheme, type TableColumnProps, useToasts, Spacer, Note, Popover } from '@geist-ui/core';
 import NextLink from 'next/link';
 
 import { Layout } from '@/components/layout';
@@ -46,11 +46,13 @@ const domainDataTableColumns: TableColumnProps<DomainItem>[] = [
   },
   {
     prop: 'nameServer',
-    label: 'NameServer'
+    label: 'NameServer',
+    className: 'nameserver-cell'
   },
   {
     prop: 'createdAt',
-    label: 'Created At'
+    label: 'Created At',
+    className: 'created-cell'
   }
 ];
 
@@ -87,19 +89,67 @@ const DomainsPage: NextPageWithLayout = () => {
     });
   }, [data]);
 
+  const renderDataTableMenu = useCallback((value: DomainItem[keyof DomainItem], rowData: DomainItem, rowIndex: number) => (
+    <>
+      <Popover.Item>
+        <NextLink href={`/domain/${value}`} prefetch={false}>
+          <Link>
+            Manage DNS Records
+          </Link>
+        </NextLink>
+      </Popover.Item>
+    </>
+  ), []);
+
   return (
     <div>
       <Text h1>Domains</Text>
       {
         processedDomainLists
-          ? <DataTables<DomainItem> data={processedDomainLists} columns={domainDataTableColumns} />
+          ? (
+            <DataTables<DomainItem>
+              data={processedDomainLists}
+              columns={domainDataTableColumns}
+              renderRowMenuItems={renderDataTableMenu}
+            />
+          )
           : <Skeleton.DataTable />
       }
-      <Spacer h={2} />
-      <Notice />
+      {
+        processedDomainLists && (
+          <>
+            <Spacer h={2} />
+            <Note type="warning">
+              You can only manage your DNS records here. Please go to
+              {' '}
+              <Link
+                href="https://vercel.com"
+                target="_blank"
+                rel="external nofollow noreferrer noopenner"
+                icon
+                color
+                underline
+              >
+                https://vercel.com
+              </Link>
+              {' '}
+              to buy / transfer / renew / add / remove your domains.
+            </Note>
+            <Spacer h={2} />
+            <Notice />
+          </>
+        )
+      }
       <style jsx>{`
        div :global(.domain) {
          border-bottom: 1px dashed ${theme.palette.accents_3};
+       }
+
+       @media screen and (max-width: 475px) {
+          div :global(.nameserver-cell),
+          div :global(.created-cell) {
+            display: none;
+          }
        }
       `}</style>
     </div>

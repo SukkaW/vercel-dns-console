@@ -1,16 +1,17 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+
+import { GeistUIThemes, Popover, Tooltip, Text, useTheme } from '@geist-ui/core';
 
 import { DataTables } from '../data-tables';
 import { Skeleton } from '../skeleton';
 
-import { useVercelListDNSRecords } from '@/hooks/use-vercel-dns';
-import { type TableColumnProps } from '../geist-table';
 import InfoFill from '@geist-ui/icons/infoFill';
-import MoreVertical from '@geist-ui/icons/moreVertical';
 
-import { GeistUIThemes, Tooltip, useTheme } from '@geist-ui/core';
-import { generateDnsDescription } from '../../lib/generate-dns-description';
-import type { VercelDNSRecord } from '../../types/dns';
+import { useVercelListDNSRecords } from '@/hooks/use-vercel-dns';
+import { generateDnsDescription } from '@/lib/generate-dns-description';
+
+import { type TableColumnProps } from '../geist-table';
+import type { VercelDNSRecord } from '@/types/dns';
 
 interface RecordTableItem {
   name: string;
@@ -19,7 +20,8 @@ interface RecordTableItem {
   value: string,
   ttl: number,
   action: null,
-  menu: null
+  menu: null,
+  isSystem: boolean
 }
 
 interface RecordItem {
@@ -28,7 +30,8 @@ interface RecordItem {
   name: string,
   createdAt: number | null,
   updatedAt: number | null,
-  data: RecordTableItem
+  data: RecordTableItem,
+  isSystem: boolean
 }
 
 const getRecordDataTableColumns = (theme: GeistUIThemes, domain: string | undefined): TableColumnProps<RecordTableItem>[] => [
@@ -64,38 +67,45 @@ const getRecordDataTableColumns = (theme: GeistUIThemes, domain: string | undefi
     label: '',
     width: 40,
     render(value, rowData) {
-      if (domain) {
-        return (
-          <Tooltip
-            text={generateDnsDescription(
-              domain,
-              rowData.name,
-              rowData.value,
-              rowData.type
+      return (
+        <>
+          {domain
+            ? (
+              <Tooltip
+                text={generateDnsDescription(
+                  domain,
+                  rowData.name,
+                  rowData.value,
+                  rowData.type
+                )}
+                className="table-cell-tooltip"
+                portalClassName="table-cell-tooltip-portal"
+                offset={5}
+                placement="bottomEnd"
+              >
+                <span>
+                  <InfoFill color={theme.palette.accents_3} size={16} />
+                </span>
+              </Tooltip>
+            )
+            : (
+              <span>
+                <InfoFill color={theme.palette.accents_3} size={16} />
+              </span>
             )}
-            className="table-cell-tooltip"
-            portalClassName="table-cell-tooltip-portal"
-            offset={5}
-            placement="bottomEnd"
-          >
-            <InfoFill color={theme.palette.accents_3} size={16} />
-          </Tooltip>
-        );
-      }
-      return <InfoFill color={theme.palette.accents_3} size={16} />;
-    }
-  },
-  {
-    prop: 'menu',
-    label: '',
-    width: 40,
-    render(value, rowData) {
-      return <MoreVertical color={theme.palette.accents_3} size={16} />;
+          <style jsx>{`
+            span {
+              display: inline-flex
+              }
+          `}</style>
+        </>
+      );
     }
   }
   // {
-  //   prop: 'action',
+  //   prop: 'menu',
   //   render
+  //   width: 40
   // }
 ];
 
@@ -103,7 +113,7 @@ export const DNSDataTables = (props: {
   domain: string | undefined
 }) => {
   const theme = useTheme();
-  const { data: rawData, isLoading } = useVercelListDNSRecords(props.domain);
+  const { data: rawData } = useVercelListDNSRecords(props.domain);
   const records: RecordItem[] = useMemo(() => {
     const result: RecordItem[] = [];
 
@@ -119,6 +129,7 @@ export const DNSDataTables = (props: {
           name: record.name,
           createdAt: record.createdAt,
           updatedAt: record.updatedAt,
+          isSystem: record.creator === 'system',
           data: {
             name: record.name,
             type: record.type,
@@ -126,7 +137,8 @@ export const DNSDataTables = (props: {
             priority: record.mxPriority ?? record.priority,
             ttl: record.ttl,
             action: null,
-            menu: null
+            menu: null,
+            isSystem: record.creator === 'system'
           }
         });
       });
@@ -140,13 +152,30 @@ export const DNSDataTables = (props: {
   }, [records]);
 
   const recordDataTableColumns = useMemo(() => getRecordDataTableColumns(theme, props.domain), [theme, props.domain]);
+  const renderRecordDataTableMenu = useCallback(
+    (value: RecordTableItem[keyof RecordTableItem], rowData: RecordTableItem, rowIndex: number) => (
+      <>
+        <Popover.Item>
+          Edit
+        </Popover.Item>
+        <Popover.Item>
+          <Text type="error" span>Delete</Text>
+        </Popover.Item>
+      </>
+    ),
+    []
+  );
 
   return (
     <div>
       {
-        !props.domain || isLoading
+        !props.domain
           ? <Skeleton.DataTable />
-          : <DataTables data={tableData} columns={recordDataTableColumns} />
+          : <DataTables
+            data={tableData}
+            columns={recordDataTableColumns}
+            renderRowMenuItems={renderRecordDataTableMenu}
+          />
       }
       <style jsx>{`
         div :global(.table-cell-ellipsis) :global(.cell) {
