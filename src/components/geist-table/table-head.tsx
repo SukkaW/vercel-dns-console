@@ -1,5 +1,6 @@
 import { useTheme } from '@geist-ui/core';
 import React, { cloneElement, useMemo } from 'react';
+import { typedMemo } from '@/lib/typed-react-memo';
 import type { TableAbstractColumn, TableDataItemBase } from './table-types';
 
 interface Props<TableDataItem extends TableDataItemBase> {
@@ -21,44 +22,22 @@ const THead = <TableDataItem extends TableDataItemBase>(
   const theme = useTheme();
   const { isSticky, columns, ...rest } = props;
 
-  return (
-    <thead
-      style={{
-        position: isSticky ? 'fixed' : 'static',
-        top: 64,
-        zIndex: 1,
-        clipPath: isSticky ? 'inset(0px 0px -100px)' : undefined,
-        marginTop: 0
-      }}
-      {...rest}
-    >
-      <tr
-        style={{
-          transition: 'transition: box-shadow 0.15s ease 0s',
-          boxShadow: isSticky ? '0 12px 12px -12px rgba(0,0,0,.08),38px 12px 12px -12px rgba(0,0,0,.08)' : undefined
-        }}
-      >
-        {columns.map((column, index) => (
-          <th
-            key={`table-th-${String(column.prop)}-${index}`}
-            className={column.className}
-            style={{
-              width: column.width,
-              minWidth: column.width,
-              maxWidth: column.width
-            }}
-          >
-            <div className="thead-box">{column.label}</div>
-          </th>
-        ))}
-      </tr>
+  const thElements = useMemo(() => (
+    <>
+      {columns.map((column, index) => (
+        <th
+          key={`table-th-${String(column.prop)}-${index}`}
+          className={column.className}
+          style={{
+            width: column.width,
+            minWidth: column.width,
+            maxWidth: column.width
+          }}
+        >
+          <div className="thead-box">{column.label}</div>
+        </th>
+      ))}
       <style jsx>{`
-          thead {
-            border-collapse: separate;
-            border-spacing: 0;
-            font-size: inherit;
-          }
-
           th {
             position: relative;
             padding: 0 0.5em;
@@ -99,6 +78,38 @@ const THead = <TableDataItem extends TableDataItemBase>(
             min-height: calc(2 * var(--table-font-size));
             text-transform: uppercase;
           }
+      `}</style>
+    </>
+  ), [columns, theme.layout.radius, theme.palette.accents_1, theme.palette.accents_5, theme.palette.border]);
+
+  return (
+    <thead
+      style={{
+        position: isSticky ? 'fixed' : 'static',
+        clipPath: isSticky ? 'inset(0px 0px -100px)' : undefined
+      }}
+      {...rest}
+    >
+      <tr
+        style={{
+          boxShadow: isSticky ? '0 12px 12px -12px rgba(0,0,0,.08),38px 12px 12px -12px rgba(0,0,0,.08)' : undefined
+        }}
+      >
+        {thElements}
+      </tr>
+      <style jsx>{`
+          thead {
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: inherit;
+            margin-top: 0;
+            z-index: 1;
+            top: 64px
+          }
+
+          tr {
+            transition: box-shadow 0.15s ease 0s
+          }
         `}</style>
     </thead>
   );
@@ -134,4 +145,4 @@ if (process.env.NODE_ENV !== 'production') {
   TableHead.displayName = 'TableHead';
 }
 
-export default TableHead;
+export default typedMemo(TableHead);

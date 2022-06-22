@@ -9,6 +9,9 @@ import {
 } from './table-types';
 import { useTheme } from '@geist-ui/core';
 import clsx from 'clsx';
+import { useCallback, useMemo } from 'react';
+import { useConstHandler } from '../../hooks/use-const-handler';
+import { noop } from '../../lib/util';
 
 interface Props<TableDataItem extends TableDataItemBase> {
   hover: boolean
@@ -27,18 +30,22 @@ const TableBody = <TableDataItem extends TableDataItemBase>({
   data,
   hover,
   emptyText,
-  onRow,
-  onCell,
-  rowClassName
+  onRow: origOnRow = noop,
+  onCell: origOnCell = noop,
+  rowClassName: origRowClassName
 }: TableBodyProps<TableDataItem>) => {
   const theme = useTheme();
   const { columns } = useTableContext<TableDataItem>();
-  const rowClickHandler = (row: TableDataItem, index: number) => {
-    onRow?.(row, index);
-  };
+  const onRow = useConstHandler(origOnRow);
 
-  return (
-    <tbody>
+  const rowClickHandler = useCallback((row: TableDataItem, index: number) => {
+    onRow?.(row, index);
+  }, [onRow]);
+  const rowClassName = useConstHandler(origRowClassName);
+  const onCell = useConstHandler(origOnCell);
+
+  const trElements = useMemo(() => (
+    <>
       {data.map((row, index) => {
         const className = rowClassName(row, index);
         return (
@@ -80,6 +87,12 @@ const TableBody = <TableDataItem extends TableDataItemBase>({
           min-height: 40px;
         }
       `}</style>
+    </>
+  ), [columns, data, emptyText, hover, onCell, rowClassName, rowClickHandler, theme.palette.accents_1, theme.palette.accents_6, theme.palette.border]);
+
+  return (
+    <tbody>
+      {trElements}
     </tbody>
   );
 };

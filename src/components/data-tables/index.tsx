@@ -17,6 +17,7 @@ export interface DataTablesProp<TableDataItem extends TableDataItemBase> {
 export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>) => {
   const [checkedRows, setCheckedRows] = useState<boolean[]>(new Array(props.data.length).fill(false));
   const theme = useTheme();
+  const { renderRowMenuItems } = props;
 
   if (props.data.length !== checkedRows.length) {
     setCheckedRows(new Array(props.data.length).fill(false));
@@ -28,17 +29,7 @@ export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>
     setCheckedRows(new Array(props.data.length).fill(!isAllChecked));
   }, [isAllChecked, props.data.length]);
 
-  const renderAction = (value: T[keyof T], rowData: T, rowIndex: number) => (
-    <Checkbox checked={checkedRows[rowIndex]} onClick={() => {
-      setCheckedRows(checkedRows => {
-        const newCheckedRows = [...checkedRows];
-        newCheckedRows[rowIndex] = !checkedRows[rowIndex];
-        return newCheckedRows;
-      });
-    }} />
-  );
-
-  const renderRowMenu = (value: T[keyof T], rowData: T, rowIndex: number) => (
+  const renderAction = useCallback((value: T[keyof T], rowData: T, rowIndex: number) => (
     <Popover
       style={{ display: 'flex' }}
       placement="bottomEnd"
@@ -71,7 +62,51 @@ export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>
           }
           `}</style>
     </Popover>
-  );
+  ), [props, theme.palette.accents_1, theme.palette.accents_3]);
+
+  const renderRowMenu = useCallback((value: T[keyof T], rowData: T, rowIndex: number) => (
+    <Popover
+      style={{ display: 'flex' }}
+      placement="bottomEnd"
+      content={(
+        <div className="menu-content">
+          {renderRowMenuItems?.(value, rowData, rowIndex)}
+        </div>
+      )}
+    >
+      <span>
+        <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
+      </span>
+      <style jsx>{`
+          span {
+            cursor: pointer;
+            display: inline-flex;
+          }
+
+          .menu-content {
+            min-width: 100px
+          }
+
+          .menu-content :global(.item) {
+            cursor: pointer;
+          }
+
+          .menu-content :global(.item:hover) {
+            cursor: pointer;
+            background: ${theme.palette.accents_1};
+          }
+          `}</style>
+    </Popover>
+  ), [renderRowMenuItems, theme.palette.accents_1, theme.palette.accents_3]);
+
+  const rowMenu = useMemo(() => (
+    <Table.Column
+      prop="menu"
+      label=""
+      render={renderRowMenu}
+      width={40}
+    />
+  ), [renderRowMenu]);
 
   return (
     <Table className={props.className} data={props.data} sticky={true}>
@@ -91,12 +126,7 @@ export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>
           <Table.Column key={`${column.label ?? ''}${i}`} {...column} />
         ))
       }
-      <Table.Column
-        prop="menu"
-        label=""
-        render={renderRowMenu}
-        width={40}
-      />
+      {rowMenu}
     </Table>
   );
 };

@@ -26,7 +26,6 @@ const TableCell = <TableDataItem extends TableDataItemBase>({
   emptyText,
   onCellClick
 }: TableCellProps<TableDataItem>) => {
-  /* eslint-disable react/jsx-no-useless-fragment */
   return (
     <>
       {columns.map((column, index) => {
@@ -37,17 +36,17 @@ const TableCell = <TableDataItem extends TableDataItemBase>({
         return (
           <td
             key={`row-td-${index}-${String(column.prop)}`}
-            onClick={() => onCellClick && onCellClick(currentRowValue, rowIndex, index)}
-            className={column.className}>
+            onClick={() => onCellClick?.(currentRowValue, rowIndex, index)}
+            className={column.className}
+          >
             <div className="cell">
-              {shouldBeRenderElement ? shouldBeRenderElement : cellValue}
+              {shouldBeRenderElement || cellValue}
             </div>
           </td>
         );
       })}
     </>
   );
-  /* eslint-enable */
 };
 
 export default TableCell;

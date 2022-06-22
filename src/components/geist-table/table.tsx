@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import TableHead from './table-head';
 import TableBody from './table-body';
 import { TableContext, TableConfig } from './table-context';
@@ -12,8 +12,8 @@ import {
 } from './table-types';
 import { type ScaleProps, useScale, withScale, useTheme } from '@geist-ui/core';
 import TableColumn from './table-column';
-import { useConstHandler } from '../../hooks/use-const-handler';
 import { isBrowser } from '../../lib/util';
+import { flushSync } from 'react-dom';
 
 interface Props<TableDataItem extends TableDataItemBase> {
   data?: Array<TableDataItem>
@@ -55,7 +55,7 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
   const ref = useRef<HTMLTableElement>(null);
   const [columns, setColumns] = useState<TableAbstractColumn<TableDataItem>[]>([]);
   const [data, setData] = useState<Array<TableDataItem>>(initialData);
-  const updateColumn = useConstHandler((column: TableAbstractColumn<TableDataItem>) => {
+  const updateColumn = useCallback((column: TableAbstractColumn<TableDataItem>) => {
     setColumns(last => {
       const hasColumn = last.find(item => item.prop === column.prop);
       if (!hasColumn) return [...last, column];
@@ -64,7 +64,7 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
         return column;
       });
     });
-  });
+  }, []);
 
   const contextValue = useMemo<TableConfig<TableDataItem>>(
     () => ({
@@ -83,29 +83,27 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
   const theadElRef = useRef<HTMLDivElement>(null);
   const tbodyElRef = useRef<HTMLTableSectionElement>(null);
 
+  const scrollHandler = useCallback(() => {
+    const { top } = theadElRef.current?.getBoundingClientRect() || { top: 0 };
+    const { bottom } = tbodyElRef.current?.getBoundingClientRect() || { bottom: 0 };
+
+    flushSync(() => {
+      if (top < 67 && bottom > 110) {
+        setSticky(true);
+      } else {
+        setSticky(false);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (isBrowser) {
-      const theadEl = theadElRef.current;
-      const tbodyEl = tbodyElRef.current;
-
-      const scrollHandler = () => {
-        const { top } = theadEl?.getBoundingClientRect() || { top: 0 };
-        const { bottom } = tbodyEl?.getBoundingClientRect() || { bottom: 0 };
-
-        if (top < 67 && bottom > 110) {
-          setSticky(true);
-        } else {
-          setSticky(false);
-        }
-      };
-
       window.addEventListener('scroll', scrollHandler);
-
       return () => {
         window.removeEventListener('scroll', scrollHandler);
       };
     }
-  }, []);
+  }, [scrollHandler]);
 
   return (
     <>

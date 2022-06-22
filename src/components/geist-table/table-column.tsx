@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useConstHandler } from '@/hooks/use-const-handler';
+import React, { useEffect, useMemo } from 'react';
 import { noop } from '@/lib/util';
 import { useTableContext } from './table-context';
 import { TableColumnRender, TableDataItemBase } from './table-types';
@@ -23,10 +22,8 @@ const TableColumn = <TableDataItem extends TableDataItemBase>(
     className,
     render: renderHandler
   } = columnProps as React.PropsWithChildren<TableColumnProps<TableDataItem>>;
-  const { updateColumn: origUpdateColumn } = useTableContext<TableDataItem>();
-  const safeProp = String(prop).trim();
-
-  const updateColumn = useConstHandler(origUpdateColumn);
+  const { updateColumn } = useTableContext<TableDataItem>();
+  const safeProp = useMemo(() => String(prop).trim(), [prop]);
 
   useEffect(() => {
     updateColumn({
