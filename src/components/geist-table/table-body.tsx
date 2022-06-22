@@ -71,6 +71,8 @@ const TableBody = <TableDataItem extends TableDataItemBase>({
           text-align: left;
         }
         tr :global(.cell) {
+          display: flex;
+          align-items: center;
           padding: 8px 12px;
           vertical-align: middle;
           color: ${theme.palette.accents_6};

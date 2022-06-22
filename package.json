@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
+    "@geist-ui/icons": "^1.0.2",
     "clsx": "^1.1.1",
     "jotai": "^1.7.2",
     "minireset.css": "^0.0.7",
