@@ -74,7 +74,7 @@ export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>
   );
 
   return (
-    <Table className={props.className} data={props.data}>
+    <Table className={props.className} data={props.data} sticky={true}>
       <Table.Column
         prop="operation"
         label=""

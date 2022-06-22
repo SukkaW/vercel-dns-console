@@ -10,7 +10,7 @@ import {
   TableOnRowClick,
   TableRowClassNameHandler
 } from './table-types';
-import { type ScaleProps, useScale, withScale } from '@geist-ui/core';
+import { type ScaleProps, useScale, withScale, useTheme } from '@geist-ui/core';
 import TableColumn from './table-column';
 import { useConstHandler } from '../../hooks/use-const-handler';
 import { isBrowser } from '../../lib/util';
@@ -25,6 +25,7 @@ interface Props<TableDataItem extends TableDataItemBase> {
   onChange?: TableOnChange<TableDataItem>
   className?: string
   rowClassName?: TableRowClassNameHandler<TableDataItem>
+  sticky?: boolean
 }
 
 type NativeAttrs = Omit<React.TableHTMLAttributes<any>, keyof Props<any>>;
@@ -45,10 +46,12 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
     onChange,
     className = '',
     rowClassName = () => '',
+    sticky = false,
     ...props
   } = tableProps as React.PropsWithChildren<TableProps<TableDataItem>>;
   /* eslint-enable @typescript-eslint/no-unused-vars */
   const { SCALES } = useScale();
+  const theme = useTheme();
   const ref = useRef<HTMLTableElement>(null);
   const [columns, setColumns] = useState<TableAbstractColumn<TableDataItem>[]>([]);
   const [data, setData] = useState<Array<TableDataItem>>(initialData);
@@ -156,6 +159,16 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
             height: ${SCALES.height(1, 'auto')};
             padding: ${SCALES.pt(0)} ${SCALES.pr(0)} ${SCALES.pb(0)} ${SCALES.pl(0)};
             margin: ${SCALES.mt(0)} ${SCALES.mr(0)} ${SCALES.mb(0)} ${SCALES.ml(0)};
+          }
+
+          table :global(th:last-of-type) {
+            background: ${theme.palette.accents_1};
+          }
+
+          table :global(tr td:last-of-type) {
+            position: sticky;
+            right: 0;
+            background: ${theme.palette.background}
           }
      `}</style>
     </>

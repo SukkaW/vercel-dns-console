@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { Text } from '@geist-ui/core';
+import { Code, Text } from '@geist-ui/core';
 import type React from 'react';
 
 export const generateDnsDescription = (
@@ -109,20 +109,20 @@ export const generateDnsDescription = (
 
         return (
           <>
-            {domainNode} is points to {srvTargetNode} and listens on <Text b>{srvProtocol}</Text> port {srvPortNode} for service {serviceNode}
+            {domainNode} points to {srvTargetNode} and listens on <Text b>{srvProtocol}</Text> port {srvPortNode} for service {serviceNode}
           </>
         );
       }
       return (
         <>
-          {nameNode} is points to service: {valueNode}
+          {nameNode} points to service: {valueNode}
         </>
       );
     }
     case 'TXT':
       return (
         <>
-          {nameNode} is has a record with text content {valueNode}
+          {nameNode} has a record with text content <Code>{valueNode}</Code>
         </>
       );
     default:

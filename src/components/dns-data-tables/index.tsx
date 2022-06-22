@@ -72,15 +72,22 @@ const getRecordDataTableColumns = (theme: GeistUIThemes, domain: string | undefi
           {domain
             ? (
               <Tooltip
-                text={generateDnsDescription(
-                  domain,
-                  rowData.name,
-                  rowData.value,
-                  rowData.type
-                )}
+                text={
+                  <div className="description">
+                    {
+                      generateDnsDescription(
+                        domain,
+                        rowData.name,
+                        rowData.value,
+                        rowData.type
+                      )
+                    }
+                  </div>
+                }
                 className="table-cell-tooltip"
                 portalClassName="table-cell-tooltip-portal"
                 offset={5}
+                // visible
                 placement="bottomEnd"
               >
                 <span>
@@ -95,8 +102,15 @@ const getRecordDataTableColumns = (theme: GeistUIThemes, domain: string | undefi
             )}
           <style jsx>{`
             span {
-              display: inline-flex
-              }
+              display: inline-flex;
+            }
+
+            .description {
+              // white-space: nowrap;
+              overflow-wrap: break-word;
+              word-break: break-word;
+              word-wrap: break-word;
+            }
           `}</style>
         </>
       );
@@ -178,6 +192,16 @@ export const DNSDataTables = (props: {
           />
       }
       <style jsx>{`
+        :global(div.table-cell-tooltip-portal.table-cell-tooltip-portal) {
+          width: 200px;
+        }
+
+        @media screen and (min-width: ${theme.layout.breakpointTablet}) {
+          :global(.table-cell-tooltip-portal) {
+            min-width: 500px;
+          }
+        }
+
         div :global(.table-cell-ellipsis) :global(.cell) {
           overflow: hidden;
           text-overflow: ellipsis;
@@ -189,16 +213,7 @@ export const DNSDataTables = (props: {
           display: inline-flex
         }
 
-        :global(.table-cell-tooltip-portal) {
-          min-width: 300px;
-          max-width: calc(100vw - 42px);
-        }
-
         :global(.table-cell-tooltip-portal) :global(.inner.inner) {
-          white-space: nowrap;
-          overflow-wrap: break-word;
-          word-break: keep-all;
-          overflow: auto;
           font-size: 13px;
         }
 
