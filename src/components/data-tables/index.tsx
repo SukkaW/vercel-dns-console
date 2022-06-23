@@ -8,41 +8,54 @@ import { Table } from '../geist-table';
 import MoreVertical from '@geist-ui/icons/moreVertical';
 
 export interface DataTablesProp<TableDataItem extends TableDataItemBase> {
-  data: TableDataItemBase[];
+  data: TableDataItem[];
   columns: TableColumnProps<TableDataItem>[];
   className?: string;
   renderRowMenuItems?: (value: TableDataItem[keyof TableDataItem], rowData: TableDataItem, rowIndex: number) => React.ReactNode;
-  overwriteRowActionItems?: (value: TableDataItem[keyof TableDataItem], rowData: TableDataItem, rowIndex: number) => JSX.Element | void;
+  overwriteRowActionItems?: (rowData: TableDataItem, rowIndex: number) => JSX.Element | void;
 }
 
 export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>) => {
-  const [checkedRows, setCheckedRows] = useState<boolean[]>(new Array(props.data.length).fill(false));
   const theme = useTheme();
 
   const { renderRowMenuItems, overwriteRowActionItems } = props;
 
-  /**
-   * TODO: Extract Table.Column action out to a variable, so that it can be wrapped inside useMemo
-   * And also enables calculatation of real total checkableRows (without overwritten ones)
-   */
+  const preRenderedOverWriteRowActionItems = useMemo(() => props.data.map(
+    (rowData, rowIndex) => {
+      const overwriteActionItem = overwriteRowActionItems?.(rowData, rowIndex);
+      if (overwriteActionItem) {
+        return overwriteActionItem;
+      }
+      return null;
+    }
+  ),
+  [overwriteRowActionItems, props.data]);
 
-  if (props.data.length !== checkedRows.length) {
-    setCheckedRows(new Array(props.data.length).fill(false));
+  const initialCheckedRows = useMemo(
+    () => preRenderedOverWriteRowActionItems
+      .map(value => (value === null ? false : null)),
+    [preRenderedOverWriteRowActionItems]
+  );
+
+  const [checkedRows, setCheckedRows] = useState<(null | boolean)[]>(initialCheckedRows.slice());
+
+  if (initialCheckedRows.length !== checkedRows.length) {
+    setCheckedRows(initialCheckedRows.slice());
   }
 
-  const isAllChecked = useMemo(() => checkedRows.length > 0 && checkedRows.every(Boolean), [checkedRows]);
+  const isAllChecked = useMemo(() => checkedRows.length > 0 && checkedRows.every(i => i === null || i === true), [checkedRows]);
 
   const handleCheckboxChange = useCallback(() => {
-    setCheckedRows(new Array(props.data.length).fill(!isAllChecked));
-  }, [isAllChecked, props.data.length]);
+    setCheckedRows(initialCheckedRows.map(i => (i === null ? null : !isAllChecked)));
+  }, [initialCheckedRows, isAllChecked]);
 
   const renderAction = (value: T[keyof T], rowData: T, rowIndex: number) => {
-    const overwriteActionItem = overwriteRowActionItems?.(value, rowData, rowIndex);
+    const overwriteActionItem = preRenderedOverWriteRowActionItems[rowIndex];
     if (overwriteActionItem) {
       return overwriteActionItem;
     }
     return (
-      <Checkbox checked={checkedRows[rowIndex]} onClick={() => {
+      <Checkbox checked={checkedRows[rowIndex] === true} onClick={() => {
         setCheckedRows(checkedRows => {
           const newCheckedRows = [...checkedRows];
           newCheckedRows[rowIndex] = !checkedRows[rowIndex];
@@ -88,7 +101,7 @@ export const DataTables = <T extends TableDataItemBase>(props: DataTablesProp<T>
   ), [renderRowMenuItems, theme.palette.accents_1, theme.palette.accents_3]);
 
   return (
-    <Table className={props.className} data={props.data} sticky={true}>
+    <Table className={props.className} data={props.data} stickyLastRow={true} hover={false}>
       <Table.Column
         prop="operation"
         label=""

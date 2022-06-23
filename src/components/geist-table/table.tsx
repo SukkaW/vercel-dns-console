@@ -25,7 +25,7 @@ interface Props<TableDataItem extends TableDataItemBase> {
   onChange?: TableOnChange<TableDataItem>
   className?: string
   rowClassName?: TableRowClassNameHandler<TableDataItem>
-  sticky?: boolean
+  stickyLastRow?: boolean
 }
 
 type NativeAttrs = Omit<React.TableHTMLAttributes<any>, keyof Props<any>>;
@@ -46,7 +46,7 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
     onChange,
     className = '',
     rowClassName = () => '',
-    sticky = false,
+    stickyLastRow = false,
     ...props
   } = tableProps as React.PropsWithChildren<TableProps<TableDataItem>>;
   /* eslint-enable @typescript-eslint/no-unused-vars */

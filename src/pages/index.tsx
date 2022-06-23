@@ -63,8 +63,10 @@ const DomainsPage: NextPageWithLayout = () => {
   const setToast = useConstHandler(origSetToast);
   const removeAllToasts = useConstHandler(origRemoveAllToasts);
 
+  const hasError = useMemo(() => !!error, [error]);
+
   useEffect(() => {
-    if (error) {
+    if (hasError) {
       setToast({
         type: 'error',
         text: 'Failed to load domains list',
@@ -75,7 +77,7 @@ const DomainsPage: NextPageWithLayout = () => {
         removeAllToasts();
       };
     }
-  }, [error, setToast, removeAllToasts]);
+  }, [hasError, setToast, removeAllToasts]);
 
   const processedDomainLists: DomainItem[] | null = useMemo(() => {
     if (!data) return null;

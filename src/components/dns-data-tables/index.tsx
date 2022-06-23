@@ -184,7 +184,7 @@ export const DNSDataTables = (props: {
   );
 
   const renderRecordDataTableAction = useCallback(
-    (value: RecordTableItem[keyof RecordTableItem], rowData: RecordTableItem, rowIndex: number) => {
+    (rowData: RecordTableItem, rowIndex: number) => {
       if (rowData.isSystem) {
         return (
           <Lock size={16} />
