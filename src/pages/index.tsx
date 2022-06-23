@@ -4,7 +4,7 @@ import { Text, Link, useTheme, type TableColumnProps, useToasts, Spacer, Note, P
 import NextLink from 'next/link';
 
 import { Layout } from '@/components/layout';
-import { DataTables } from '@/components/data-tables';
+import { DataTables } from '@/components/legacy/data-tables';
 import { Skeleton } from '@/components/skeleton';
 import { Notice } from '@/components/notice';
 

@@ -12,8 +12,7 @@ import {
 } from './table-types';
 import { type ScaleProps, useScale, withScale, useTheme } from '@geist-ui/core';
 import TableColumn from './table-column';
-import { isBrowser } from '../../lib/util';
-import { flushSync } from 'react-dom';
+import { isBrowser } from '@/lib/util';
 
 interface Props<TableDataItem extends TableDataItemBase> {
   data?: Array<TableDataItem>
@@ -87,13 +86,11 @@ function TableComponent<TableDataItem extends TableDataItemBase>(
     const { top } = theadElRef.current?.getBoundingClientRect() || { top: 0 };
     const { bottom } = tbodyElRef.current?.getBoundingClientRect() || { bottom: 0 };
 
-    flushSync(() => {
-      if (top < 67 && bottom > 110) {
-        setSticky(true);
-      } else {
-        setSticky(false);
-      }
-    });
+    if (top < 67 && bottom > 110) {
+      setSticky(true);
+    } else {
+      setSticky(false);
+    }
   }, []);
 
   useEffect(() => {

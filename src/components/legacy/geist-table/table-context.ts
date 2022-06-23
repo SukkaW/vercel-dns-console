@@ -1,5 +1,5 @@
 import { useContext, createContext } from 'react';
-import { noop } from '../../lib/util';
+import { noop } from '../../../lib/util';
 import { TableAbstractColumn } from './table-types';
 
 export interface TableConfig<T> {

@@ -10,8 +10,8 @@ import {
 import { useTheme } from '@geist-ui/core';
 import clsx from 'clsx';
 import { useCallback, useMemo } from 'react';
-import { useConstHandler } from '../../hooks/use-const-handler';
-import { noop } from '../../lib/util';
+import { useConstHandler } from '../../../hooks/use-const-handler';
+import { noop } from '../../../lib/util';
 
 interface Props<TableDataItem extends TableDataItemBase> {
   hover: boolean
