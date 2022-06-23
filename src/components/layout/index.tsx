@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useCallback } from 'react';
 
-import { Popover, useTheme, useToasts } from '@geist-ui/core';
+import { Link, useTheme, useToasts } from '@geist-ui/core';
 import NextLink from 'next/link';
 import Image, { type ImageLoader } from 'next/image';
 
@@ -13,14 +13,13 @@ import { useVercelUser } from '@/hooks/use-vercel-user';
 import { useVercelApiToken } from '@/hooks/use-vercel-api-token';
 import { useConstHandler } from '@/hooks/use-const-handler';
 import { Container } from '../container';
+import { Menu, MenuItem } from '../menu';
 
 const vercelAvatarLoader: ImageLoader = ({ src, width }) => {
   return `${src}?s=${width}`;
 };
 
 const AvatarMenu = (props: { avatar?: string, name?: string }) => {
-  const theme = useTheme();
-
   const [, setToken] = useVercelApiToken();
   const { setToast: origSetToast } = useToasts();
   const setToast = useConstHandler(origSetToast);
@@ -42,15 +41,20 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
 
   return (
     <>
-      <Popover
-        style={{ display: 'flex' }}
-        placement="bottomEnd"
+      <Menu
         content={(
-          <div className="menu-content">
-            <Popover.Item onClick={handleLogoutClick}>
-              <span>Log Out</span>
-            </Popover.Item>
-          </div>
+          <>
+            <MenuItem onClick={handleLogoutClick}>
+              Log Out
+            </MenuItem>
+            <MenuItem>
+              <NextLink href="/">
+                <Link>
+                  Dashboard
+                </Link>
+              </NextLink>
+            </MenuItem>
+          </>
         )}
       >
         {
@@ -73,21 +77,7 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
               <Skeleton.Avatar />
             )
         }
-      </Popover>
-      <style jsx>{`
-          .menu-content {
-            min-width: 100px
-          }
-
-          .menu-content :global(.item) {
-            cursor: pointer;
-          }
-
-          .menu-content :global(.item:hover) {
-            cursor: pointer;
-            background: ${theme.palette.accents_1};
-          }
-      `}</style>
+      </Menu>
     </>
   );
 };

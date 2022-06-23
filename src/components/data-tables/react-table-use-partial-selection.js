@@ -1,3 +1,6 @@
+// Copy patsted from https://github.com/TanStack/table/blob/46bcc7c29d5f515f05f03a88a1e059cf240b54e0/src/plugin-hooks/useRowSelect.js
+// Only added a filter for rowsById
+
 import {
   useMountedLayoutEffect,
   actions,

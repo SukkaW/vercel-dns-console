@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Tooltip, useTheme } from '@geist-ui/core';
+import { useCallback, useMemo } from 'react';
+import { Code, Text, Tooltip, useTheme } from '@geist-ui/core';
 
 import { DataTable, type DataTableColumns } from '../data-tables';
 
@@ -10,6 +10,10 @@ import type { VercelDNSRecord } from '@/types/dns';
 
 import type { CellProps } from 'react-table';
 import InfoFill from '@geist-ui/icons/infoFill';
+
+import { Menu, MenuItem } from '../menu';
+import MoreVertical from '@geist-ui/icons/moreVertical';
+import { CopyButton } from '../copy-button';
 
 interface RecordItem {
   id: string,
@@ -29,6 +33,7 @@ export const DNSDataTables = (props: {
   domain: string | undefined
 }) => {
   const theme = useTheme();
+
   const { data: rawData } = useVercelListDNSRecords(props.domain);
   const records: RecordItem[] = useMemo(() => {
     const result: RecordItem[] = [];
@@ -65,7 +70,29 @@ export const DNSDataTables = (props: {
       width: 300,
       minWidth: 300,
       maxWidth: 300,
-      ellipsis: true
+      ellipsis: true,
+      Cell({ value }) {
+        if (value.length > 10) {
+          return (
+            <Tooltip
+              text={(
+                <>
+                  <Code style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{value}</Code>
+                  <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
+                </>
+              )}
+              // visible
+              placement="bottomStart"
+              className="dns-data-tables__tooltip table-cell-ellipsis"
+              portalClassName="table-cell-tooltip-portal record"
+              offset={5}
+            >
+              {value}
+            </Tooltip>
+          );
+        }
+        return <>{value}</>;
+      }
     },
     {
       Header: 'Type',
@@ -87,7 +114,26 @@ export const DNSDataTables = (props: {
       width: 350,
       minWidth: 350,
       maxWidth: 350,
-      ellipsis: true
+      ellipsis: true,
+      Cell({ value }) {
+        return (
+          <Tooltip
+            text={(
+              <>
+                <Code style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{value}</Code>
+                <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
+              </>
+            )}
+            placement="bottomStart"
+            className="dns-data-tables__tooltip table-cell-ellipsis"
+            portalClassName="table-cell-tooltip-portal record-value"
+            // visible
+            offset={5}
+          >
+            {value}
+          </Tooltip>
+        );
+      }
     },
     {
       Header: 'TTL',
@@ -120,7 +166,7 @@ export const DNSDataTables = (props: {
                 </div>
               }
               className="table-cell-tooltip"
-              portalClassName="table-cell-tooltip-portal"
+              portalClassName="table-cell-tooltip-portal record-description"
               offset={5}
               // visible
               placement="bottomEnd"
@@ -137,6 +183,47 @@ export const DNSDataTables = (props: {
     }
   ], [props.domain, theme.palette.accents_3]);
 
+  const renderHeaderAction = useCallback((selected: RecordItem[]) => {
+    return (
+      <Menu
+        itemMinWidth={120}
+        content={(
+          <MenuItem>
+            <Text span type={selected.length ? 'error' : 'secondary'}>
+              Delete ({selected.length})
+            </Text>
+          </MenuItem>
+        )}
+      >
+        <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
+      </Menu>
+    );
+  }, [theme.palette.accents_3]);
+
+  const renderRowAction = useCallback((record: RecordItem) => {
+    return (
+      <Menu
+        itemMinWidth={100}
+        content={(
+          <>
+            <MenuItem>
+              <Text span>
+                Edit
+              </Text>
+            </MenuItem>
+            <MenuItem>
+              <Text span type="error">
+                Delete
+              </Text>
+            </MenuItem>
+          </>
+        )}
+      >
+        <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
+      </Menu>
+    );
+  }, [theme.palette.accents_3]);
+
   return (
     <div>
       {
@@ -146,17 +233,27 @@ export const DNSDataTables = (props: {
             <DataTable
               data={records}
               columns={columns}
+              renderHeaderAction={renderHeaderAction}
+              renderRowAction={renderRowAction}
             />
           )
       }
       <style jsx>{`
-        :global(div.table-cell-tooltip-portal.table-cell-tooltip-portal) {
-          width: 200px;
+        @media screen and (max-width: ${theme.breakpoints.sm.max}) {
+          :global(div.table-cell-tooltip-portal.table-cell-tooltip-portal) {
+            width: 200px;
+          }
         }
 
-        @media screen and (min-width: ${theme.layout.breakpointTablet}) {
-          :global(.table-cell-tooltip-portal) {
-            min-width: 500px;
+        @media screen and (min-width: ${theme.breakpoints.sm.min}) {
+          :global(.table-cell-tooltip-portal.record) {
+            max-width: 400px;
+          }
+          :global(.table-cell-tooltip-portal.record-value) {
+            max-width: 400px;
+          }
+          :global(.table-cell-tooltip-portal.record-description) {
+            min-width: 400px;
           }
         }
 
@@ -171,8 +268,18 @@ export const DNSDataTables = (props: {
           display: inline-flex
         }
 
+        :global(.dns-data-tables__tooltip) {
+          width: 100%;
+        }
+
+        div :global(td .tooltip) {
+          width: 100%;
+        }
+
         :global(.table-cell-tooltip-portal) :global(.inner.inner) {
           font-size: 13px;
+          display: flex;
+          align-items: center;
         }
 
         @media (max-width: 1050px) {

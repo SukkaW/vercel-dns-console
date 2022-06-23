@@ -14,6 +14,8 @@ export type DataTableColumns<T extends TableDataItemBase> = Column<T>;
 export interface DataTableProps<T extends TableDataItemBase> {
   data: T[]
   columns: DataTableColumns<T>[]
+  renderRowAction?: (row: T) => JSX.Element,
+  renderHeaderAction?: (selected: T[]) => JSX.Element
 }
 
 declare module 'react-table' {
@@ -27,10 +29,9 @@ declare module 'react-table' {
 const DataTable = <T extends TableDataItemBase>(props: DataTableProps<T>) => {
   const theme = useTheme();
   const { SCALES } = useScale();
-  const { data, columns } = props;
+  const { data, columns, renderRowAction, renderHeaderAction } = props;
 
   const {
-    rowsById,
     getTableProps,
     getTableBodyProps,
     headerGroups,
@@ -62,10 +63,30 @@ const DataTable = <T extends TableDataItemBase>(props: DataTableProps<T>) => {
         },
         ...columns
       ]);
+
+      if (renderRowAction) {
+        hooks.visibleColumns.push(columns => [
+          ...columns,
+          {
+            id: 'action',
+            Header({ selectedFlatRows }) {
+              if (renderHeaderAction) {
+                return renderHeaderAction(selectedFlatRows.map(row => row.original));
+              }
+              return null;
+            },
+            Cell({ row }: CellProps<T, any>) {
+              return renderRowAction(row.original);
+            },
+            width: 40,
+            maxWidth: 40,
+            minWidth: 40
+          }
+        ]);
+      }
+
     }, [])
   );
-
-  console.log(rowsById);
 
   return (
     <div className="table-wrapper">

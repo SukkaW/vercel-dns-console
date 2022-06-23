@@ -3,6 +3,9 @@ import { cloneElement } from 'react';
 import { type HeaderGroup } from 'react-table';
 import { TableDataItemBase } from './types';
 
+import ArrowUp from '@geist-ui/icons/arrowUp';
+import ArrowDown from '@geist-ui/icons/arrowDown';
+
 export const THead = <T extends TableDataItemBase>(
   props: {
     isSticky?: boolean,
@@ -29,13 +32,13 @@ export const THead = <T extends TableDataItemBase>(
           >
             <div className="thead-box">
               {header.render('Header')}
-              {/* Add a sort direction indicator */}
               <span>
+                {/* Add a sort direction indicator */}
                 {/* eslint-disable-next-line no-nested-ternary */}
                 {header.isSorted
                   ? header.isSortedDesc
-                    ? ' 🔽'
-                    : ' 🔼'
+                    ? <ArrowDown size={12} />
+                    : <ArrowUp size={12} />
                   : ''}
               </span>
             </div>
@@ -82,6 +85,11 @@ export const THead = <T extends TableDataItemBase>(
             align-items: center;
             min-height: calc(2 * var(--table-font-size));
             text-transform: uppercase;
+          }
+
+          span {
+            display: inline-flex;
+            margin-left: 0.1em;
           }
       `}</style>
     </>
