@@ -10,7 +10,7 @@ import {
 } from 'react-table';
 import { TableHead } from './table-head';
 import { TableRow } from './table-row';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import clsx from 'clsx';
 import { useRowSelect } from './react-table-use-partial-selection';
 
@@ -144,70 +144,78 @@ const DataTable = <T extends TableDataItemBase>({
     }
   }, [setPageSize]);
 
-  const filterUI = renderFilter?.(setFilter, setGlobalFilter);
+  const filterUIElements = renderFilter?.(setFilter, setGlobalFilter);
 
   return (
     <>
-      {filterUI}
-      {filterUI && <Spacer />}
+      {filterUIElements}
+      {filterUIElements && <Spacer />}
       <div className="table-wrapper">
         <table {...getTableProps()}>
           <TableHead headerGroup={headerGroups[0]} />
           <tbody {...getTableBodyProps()}>
-            {page.map((row, i) => {
-              prepareRow(row);
-              const rowProp = row.getRowProps();
-              return (
-                <TableRow key={rowProp.key} rowProp={rowProp}>
-                  {row.cells.map((cell) => {
-                    const { key, ...restCellProp } = cell.getCellProps();
-                    return (
-                      <td key={key} {...restCellProp}>
-                        <div
-                          className={clsx(
-                            'cell',
-                            cell.column.ellipsis && 'table-cell-ellipsis',
-                            cell.column.cellClassName
-                          )}
-                        >
-                          {cell.render('Cell')}
-                        </div>
-                      </td>
-                    );
-                  })}
-                </TableRow>
-              );
-            })}
+            {
+              page.map((row) => {
+                prepareRow(row);
+                const rowProp = row.getRowProps();
+                return (
+                  <TableRow key={rowProp.key} rowProp={rowProp}>
+                    {row.cells.map((cell) => {
+                      const { key, ...restCellProp } = cell.getCellProps();
+                      return (
+                        <td key={key} {...restCellProp}>
+                          <div
+                            className={clsx(
+                              'cell',
+                              cell.column.ellipsis && 'table-cell-ellipsis',
+                              cell.column.cellClassName
+                            )}
+                          >
+                            {cell.render('Cell')}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })
+            }
           </tbody>
         </table>
       </div>
       <div className="pagination-wrapper">
         {
-          pageCount > 1
-            ? (
-              <Pagination
-                count={pageCount}
-                page={pageIndex + 1}
-                initialPage={pageIndex}
-                onChange={handlePaginationChange}
-              >
-                <Pagination.Next><ChevronRight /></Pagination.Next>
-                <Pagination.Previous><ChevronLeft /></Pagination.Previous>
-              </Pagination>
-            )
-            : <div />
+          useMemo(() => (
+            pageCount > 1
+              ? (
+                <Pagination
+                  count={pageCount}
+                  page={pageIndex + 1}
+                  initialPage={pageIndex}
+                  onChange={handlePaginationChange}
+                >
+                  <Pagination.Next><ChevronRight /></Pagination.Next>
+                  <Pagination.Previous><ChevronLeft /></Pagination.Previous>
+                </Pagination>
+              )
+              : <div />
+          ), [handlePaginationChange, pageCount, pageIndex])
         }
-        <div className="select-wrapper">
-          Show
-          <Select value={String(pageSize)} mx={1 / 2} scale={2 / 3} w="55px" onChange={handleSelectPageSizeChange}>
-            <Select.Option value="10">10</Select.Option>
-            <Select.Option value="15">15</Select.Option>
-            <Select.Option value="20">20</Select.Option>
-            <Select.Option value="50">50</Select.Option>
-            <Select.Option value="100">100</Select.Option>
-          </Select>
-          per page
-        </div>
+        {
+          useMemo(() => (
+            <div className="select-wrapper">
+              Show
+              <Select value={String(pageSize)} mx={1 / 2} scale={2 / 3} w="55px" onChange={handleSelectPageSizeChange}>
+                <Select.Option value="10">10</Select.Option>
+                <Select.Option value="15">15</Select.Option>
+                <Select.Option value="20">20</Select.Option>
+                <Select.Option value="50">50</Select.Option>
+                <Select.Option value="100">100</Select.Option>
+              </Select>
+              per page
+            </div>
+          ), [handleSelectPageSizeChange, pageSize])
+        }
       </div>
 
       <style jsx>{`

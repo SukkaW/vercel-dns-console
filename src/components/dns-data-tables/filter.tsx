@@ -1,4 +1,4 @@
-import { useCallback, useState, useTransition } from 'react';
+import { useCallback, useMemo, useState, useTransition } from 'react';
 
 import { Input, Select, Spacer, Spinner, useTheme } from '@geist-ui/core';
 import { VERCEL_SUPPORTED_DNS_RECORDS_TYPE } from '@/lib/constant';
@@ -15,15 +15,15 @@ export interface DNSDataTableFilterProps<T extends TableDataItemBase> {
 
 export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataTableFilterProps<T>) => {
   const theme = useTheme();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [input, setInput] = useState('');
   const [recordType, setRecordType] = useState<VercelDNSRecord['type'] | null>(null);
 
   const [isSearchQueryPending, startSearchQueryTransition] = useTransition();
   const [, startRecordTypeTransition] = useTransition();
 
-  const handleSearchQueryChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setSearchQuery(value);
+    setInput(value);
     startSearchQueryTransition(() => setFilter('name', value));
   }, [setFilter]);
 
@@ -34,28 +34,36 @@ export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataT
     }
   }, [setFilter]);
 
+  const seatchQueryInputElement = useMemo(() => (
+    <Input
+      value={input}
+      onChange={handleInput}
+      icon={isSearchQueryPending ? <Spinner scale={1 / 2} /> : <Search />}
+      className="search-input"
+      placeholder="Filter records by names and values"
+      h={1}
+    />
+  ), [handleInput, isSearchQueryPending, input]);
+
+  const selectRecordTypeElement = useMemo(() => (
+    <Select
+      value={recordType ?? undefined}
+      onChange={handleRecordTypeChange}
+      placeholder="Record Type"
+      className="select-record-type"
+    >
+      <Select.Option key={recordType} value="">All Record Type</Select.Option>
+      {VERCEL_SUPPORTED_DNS_RECORDS_TYPE.map((recordType) => (
+        <Select.Option key={recordType} value={recordType}>{recordType}</Select.Option>
+      ))}
+    </Select>
+  ), [handleRecordTypeChange, recordType]);
+
   return (
     <div>
-      <Input
-        value={searchQuery}
-        onChange={handleSearchQueryChange}
-        icon={isSearchQueryPending ? <Spinner scale={1 / 2} /> : <Search />}
-        className="search-input"
-        placeholder="Filter records by names and values"
-        h={1}
-      />
+      {seatchQueryInputElement}
       <Spacer inline />
-      <Select
-        value={recordType ?? undefined}
-        onChange={handleRecordTypeChange}
-        placeholder="Record Type"
-        className="select-record-type"
-      >
-        <Select.Option key={recordType} value="">All Record Type</Select.Option>
-        {VERCEL_SUPPORTED_DNS_RECORDS_TYPE.map((recordType) => (
-          <Select.Option key={recordType} value={recordType}>{recordType}</Select.Option>
-        ))}
-      </Select>
+      {selectRecordTypeElement}
       <style jsx>{`
         div {
           display: flex;
