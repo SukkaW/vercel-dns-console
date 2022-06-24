@@ -1,6 +1,6 @@
-import { Checkbox, useScale, useTheme, withScale, type ScaleProps } from '@geist-ui/core';
+import { Checkbox, Pagination, Select, useScale, useTheme, withScale, type ScaleProps } from '@geist-ui/core';
 import type { TableDataItemBase } from './types';
-import { useTable, useSortBy, type Column, type CellProps } from 'react-table';
+import { useTable, useSortBy, usePagination, type Column, type CellProps, TableOptions } from 'react-table';
 import { TableHead } from './table-head';
 import { TableRow } from './table-row';
 import { useCallback } from 'react';
@@ -8,14 +8,18 @@ import clsx from 'clsx';
 import { useRowSelect } from './react-table-use-partial-selection';
 
 import Lock from '@geist-ui/icons/lock';
+import ChevronRight from '@geist-ui/icons/chevronRight';
+import ChevronLeft from '@geist-ui/icons/chevronLeft';
 
 export type DataTableColumns<T extends TableDataItemBase> = Column<T>;
 
 export interface DataTableProps<T extends TableDataItemBase> {
   data: T[]
-  columns: DataTableColumns<T>[]
+  columns: DataTableColumns<T>[],
+  tableOptions?: Omit<TableOptions<T>, 'data' | 'columns'>,
   renderRowAction?: (row: T) => JSX.Element,
-  renderHeaderAction?: (selected: T[]) => JSX.Element
+  renderHeaderAction?: (selected: T[]) => JSX.Element,
+  children?: React.ReactNode
 }
 
 declare module 'react-table' {
@@ -26,20 +30,41 @@ declare module 'react-table' {
   }
 }
 
-const DataTable = <T extends TableDataItemBase>(props: DataTableProps<T>) => {
+const DataTable = <T extends TableDataItemBase>({
+  data,
+  columns,
+  tableOptions,
+  renderRowAction,
+  renderHeaderAction,
+  children
+}: DataTableProps<T>) => {
   const theme = useTheme();
   const { SCALES } = useScale();
-  const { data, columns, renderRowAction, renderHeaderAction } = props;
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    rows,
-    prepareRow
+    prepareRow,
+    // Provided by usePagination hook
+    page, // only contains rows from the current page
+    // pageOptions,
+    pageCount,
+    gotoPage,
+    setPageSize,
+    state: { pageIndex, pageSize }
   } = useTable(
-    { columns, data },
+    {
+      columns,
+      data,
+      ...tableOptions,
+      initialState: {
+        pageSize: 20,
+        ...tableOptions?.initialState
+      }
+    },
     useSortBy,
+    usePagination,
     useRowSelect,
     useCallback((hooks) => {
       hooks.visibleColumns.push(columns => [
@@ -85,17 +110,32 @@ const DataTable = <T extends TableDataItemBase>(props: DataTableProps<T>) => {
         ]);
       }
 
-    }, [])
+    }, [renderHeaderAction, renderRowAction])
   );
+
+  const handlePaginationChange = useCallback((page: number) => {
+    gotoPage(page - 1);
+  }, [gotoPage]);
+
+  const handleSelectPageSizeChange = useCallback((pageSize: string | string[]) => {
+    if (typeof pageSize === 'string') {
+      const number = Number.parseInt(pageSize, 10);
+      if (Number.isNaN(number)) {
+        return;
+      }
+      setPageSize(number);
+    }
+  }, [setPageSize]);
 
   return (
     <div className="table-wrapper">
       <div className="scroll-overlay-container">
+        {children}
         <div className="scroller">
           <table {...getTableProps()}>
             <TableHead headerGroup={headerGroups[0]} />
             <tbody {...getTableBodyProps()}>
-              {rows.map((row, i) => {
+              {page.map((row, i) => {
                 prepareRow(row);
                 const rowProp = row.getRowProps();
                 return (
@@ -105,13 +145,11 @@ const DataTable = <T extends TableDataItemBase>(props: DataTableProps<T>) => {
                       return (
                         <td key={key} {...restCellProp}>
                           <div
-                            className={
-                              clsx(
-                                'cell',
-                                cell.column.ellipsis && 'table-cell-ellipsis',
-                                cell.column.cellClassName
-                              )
-                            }
+                            className={clsx(
+                              'cell',
+                              cell.column.ellipsis && 'table-cell-ellipsis',
+                              cell.column.cellClassName
+                            )}
                           >
                             {cell.render('Cell')}
                           </div>
@@ -124,6 +162,35 @@ const DataTable = <T extends TableDataItemBase>(props: DataTableProps<T>) => {
             </tbody>
           </table>
         </div>
+        {
+          <div className="pagination-wrapper">
+            {
+              pageCount > 1
+                ? (
+                  <Pagination
+                    count={pageCount}
+                    page={pageIndex + 1}
+                    initialPage={pageIndex}
+                    onChange={handlePaginationChange}
+                  >
+                    <Pagination.Next><ChevronRight /></Pagination.Next>
+                    <Pagination.Previous><ChevronLeft /></Pagination.Previous>
+                  </Pagination>
+                )
+                : <div />
+            }
+            <div className="select-wrapper">
+              Show
+              <Select value={String(pageSize)} mx={1 / 2} scale={2 / 3} w="20px" onChange={handleSelectPageSizeChange}>
+                <Select.Option value="10">10</Select.Option>
+                <Select.Option value="20">20</Select.Option>
+                <Select.Option value="50">50</Select.Option>
+                <Select.Option value="100">100</Select.Option>
+              </Select>
+              per page
+            </div>
+          </div>
+        }
       </div>
       <style jsx>{`
         .table-wrapper {
@@ -156,6 +223,8 @@ const DataTable = <T extends TableDataItemBase>(props: DataTableProps<T>) => {
         }
 
         table :global(th:last-of-type) {
+          position: sticky;
+          right: 0;
           background: ${theme.palette.accents_1};
         }
 
@@ -163,6 +232,32 @@ const DataTable = <T extends TableDataItemBase>(props: DataTableProps<T>) => {
           position: sticky;
           right: 0;
           background: ${theme.palette.background}
+        }
+
+        .pagination-wrapper {
+          display: block;
+          margin: ${SCALES.mt(1)} ${SCALES.mr(1, 'auto')} ${SCALES.mb(1)} ${SCALES.ml(1, 'auto')};
+          text-align: center;
+        }
+
+        @media (min-width: ${theme.breakpoints.sm.min}) {
+          .pagination-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+          }
+        }
+
+        .select-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: ${SCALES.font(4 / 5)};
+          padding: ${SCALES.pt(0)} ${SCALES.pr(1)} ${SCALES.pb(0)} ${SCALES.pl(1)};
+        }
+
+        .select-wrapper :global(.select) {
+          min-width: ${SCALES.width(1, '50px')};
         }
      `}</style>
     </div>

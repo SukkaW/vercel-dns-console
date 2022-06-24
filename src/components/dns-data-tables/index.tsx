@@ -6,14 +6,15 @@ import { DataTable, type DataTableColumns } from '../data-tables';
 import { generateDnsDescription } from '@/lib/generate-dns-description';
 
 import { useVercelListDNSRecords } from '@/hooks/use-vercel-dns';
-import type { VercelDNSRecord } from '@/types/dns';
 
-import type { CellProps } from 'react-table';
+import MoreVertical from '@geist-ui/icons/moreVertical';
 import InfoFill from '@geist-ui/icons/infoFill';
 
 import { Menu, MenuItem } from '../menu';
-import MoreVertical from '@geist-ui/icons/moreVertical';
 import { CopyButton } from '../copy-button';
+
+import type { VercelDNSRecord } from '@/types/dns';
+import type { CellProps } from 'react-table';
 
 interface RecordItem {
   id: string,
@@ -60,7 +61,8 @@ export const DNSDataTables = (props: {
       });
     });
 
-    return result;
+    // sort by updatedAt
+    return result.sort((a, b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0));
   }, [rawData]);
 
   const columns: DataTableColumns<RecordItem>[] = useMemo(() => [
