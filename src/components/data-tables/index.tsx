@@ -1,6 +1,13 @@
-import { Checkbox, Pagination, Select, useScale, useTheme, withScale, type ScaleProps } from '@geist-ui/core';
+import { Checkbox, Pagination, Select, Spacer, useScale, useTheme, withScale, type ScaleProps } from '@geist-ui/core';
 import type { TableDataItemBase } from './types';
-import { useTable, useSortBy, usePagination, type Column, type CellProps, TableOptions } from 'react-table';
+import {
+  useTable,
+  useSortBy,
+  usePagination,
+  useFilters,
+  useGlobalFilter,
+  type Column, type CellProps, type TableOptions, type IdType
+} from 'react-table';
 import { TableHead } from './table-head';
 import { TableRow } from './table-row';
 import { useCallback } from 'react';
@@ -13,13 +20,18 @@ import ChevronLeft from '@geist-ui/icons/chevronLeft';
 
 export type DataTableColumns<T extends TableDataItemBase> = Column<T>;
 
+export type DataTableFilterRenderer<T extends TableDataItemBase> = (
+  setFilter: (columnId: IdType<T>, updater: any) => void,
+  setGlobalFilter: (updater: string) => void,
+) => JSX.Element;
+
 export interface DataTableProps<T extends TableDataItemBase> {
   data: T[]
   columns: DataTableColumns<T>[],
   tableOptions?: Omit<TableOptions<T>, 'data' | 'columns'>,
   renderRowAction?: (row: T) => JSX.Element,
   renderHeaderAction?: (selected: T[]) => JSX.Element,
-  children?: React.ReactNode
+  renderFilter?: DataTableFilterRenderer<T>,
 }
 
 declare module 'react-table' {
@@ -36,7 +48,7 @@ const DataTable = <T extends TableDataItemBase>({
   tableOptions,
   renderRowAction,
   renderHeaderAction,
-  children
+  renderFilter
 }: DataTableProps<T>) => {
   const theme = useTheme();
   const { SCALES } = useScale();
@@ -52,7 +64,10 @@ const DataTable = <T extends TableDataItemBase>({
     pageCount,
     gotoPage,
     setPageSize,
-    state: { pageIndex, pageSize }
+    state: { pageIndex, pageSize },
+    // filter
+    setFilter,
+    setGlobalFilter
   } = useTable(
     {
       columns,
@@ -63,6 +78,8 @@ const DataTable = <T extends TableDataItemBase>({
         ...tableOptions?.initialState
       }
     },
+    useFilters,
+    useGlobalFilter,
     useSortBy,
     usePagination,
     useRowSelect,
@@ -127,8 +144,12 @@ const DataTable = <T extends TableDataItemBase>({
     }
   }, [setPageSize]);
 
+  const filterUI = renderFilter?.(setFilter, setGlobalFilter);
+
   return (
     <>
+      {filterUI}
+      {filterUI && <Spacer />}
       <div className="table-wrapper">
         <table {...getTableProps()}>
           <TableHead headerGroup={headerGroups[0]} />

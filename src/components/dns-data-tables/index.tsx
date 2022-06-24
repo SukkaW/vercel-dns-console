@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { Code, Text, Tooltip, useTheme } from '@geist-ui/core';
 
-import { DataTable, type DataTableColumns } from '../data-tables';
+import { DataTable, type DataTableFilterRenderer, type DataTableColumns } from '../data-tables';
 
 import { generateDnsDescription } from '@/lib/generate-dns-description';
 
@@ -14,9 +14,10 @@ import { Menu, MenuItem } from '../menu';
 import { CopyButton } from '../copy-button';
 
 import type { VercelDNSRecord } from '@/types/dns';
-import type { CellProps } from 'react-table';
+import type { CellProps, FilterType, FilterTypes } from 'react-table';
+import { DNSDataTableFilter } from './filter';
 
-interface RecordItem {
+export interface RecordItem {
   id: string,
   slug: string,
   name: string,
@@ -73,6 +74,7 @@ export const DNSDataTables = (props: {
       minWidth: 300,
       maxWidth: 300,
       ellipsis: true,
+      filter: 'searchInRecordNameAndValue',
       Cell({ value }) {
         if (value.length > 10) {
           return (
@@ -101,7 +103,8 @@ export const DNSDataTables = (props: {
       accessor: 'type',
       width: 80,
       minWidth: 80,
-      maxWidth: 80
+      maxWidth: 80,
+      filter: 'searchInRecordType'
     },
     {
       Header: 'Priority',
@@ -117,6 +120,7 @@ export const DNSDataTables = (props: {
       minWidth: 350,
       maxWidth: 350,
       ellipsis: true,
+      filter: 'searchInRecordNameAndValue',
       Cell({ value }) {
         return (
           <Tooltip
@@ -226,6 +230,28 @@ export const DNSDataTables = (props: {
     );
   }, [theme.palette.accents_3]);
 
+  const renderFilter: DataTableFilterRenderer<RecordItem> = useCallback((setFilter, setGlobalFilter) => (
+    <DNSDataTableFilter setFilter={setFilter} setGlobalFilter={setGlobalFilter} />
+  ), []);
+
+  const searchInRecordTypeFilterFn: FilterType<RecordItem> = useCallback((rows, columnIds, filterValue) => {
+    if (!filterValue) return rows;
+    return rows.filter(row => row.original.type === filterValue);
+  }, []);
+
+  const searchInRecordNameAndValueFilterFn: FilterType<RecordItem> = useCallback((rows, columnIds, filterValue) => {
+    if (typeof filterValue === 'string') {
+      const query = filterValue.toLowerCase();
+      return rows.filter(row => row.original.value.toLowerCase().includes(query) || row.original.name.toLowerCase().includes(query));
+    }
+    return rows;
+  }, []);
+
+  const filterTypes: FilterTypes<RecordItem> = useMemo(() => ({
+    searchInRecordType: searchInRecordTypeFilterFn,
+    searchInRecordNameAndValue: searchInRecordNameAndValueFilterFn
+  }), [searchInRecordTypeFilterFn, searchInRecordNameAndValueFilterFn]);
+
   return (
     <div>
       {
@@ -237,6 +263,8 @@ export const DNSDataTables = (props: {
               columns={columns}
               renderHeaderAction={renderHeaderAction}
               renderRowAction={renderRowAction}
+              renderFilter={renderFilter}
+              tableOptions={{ filterTypes }}
             />
           )
       }
