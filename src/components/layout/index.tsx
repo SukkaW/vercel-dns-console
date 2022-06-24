@@ -90,8 +90,8 @@ export const Layout = (props: {
 
   return (
     <>
-      <div className="menu-wrapper">
-        <nav className="menu">
+      <div className="navbar-wrapper">
+        <nav className="navbar">
           <div className="content">
             <div className="logo">
               <NextLink href="/">
@@ -113,7 +113,7 @@ export const Layout = (props: {
       min-height: calc(100vh - 64px);
     }
 
-    .menu-wrapper {
+    .navbar-wrapper {
       height: 64px;
       background-color: ${theme.palette.background};
       box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1);
@@ -123,7 +123,7 @@ export const Layout = (props: {
       left: 0;
       right: 0;
     }
-    .menu {
+    .navbar {
       height: 64px;
     }
     nav .content {

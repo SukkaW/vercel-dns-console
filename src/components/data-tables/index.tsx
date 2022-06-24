@@ -59,7 +59,7 @@ const DataTable = <T extends TableDataItemBase>({
       data,
       ...tableOptions,
       initialState: {
-        pageSize: 20,
+        pageSize: 15,
         ...tableOptions?.initialState
       }
     },
@@ -128,87 +128,71 @@ const DataTable = <T extends TableDataItemBase>({
   }, [setPageSize]);
 
   return (
-    <div className="table-wrapper">
-      <div className="scroll-overlay-container">
-        {children}
-        <div className="scroller">
-          <table {...getTableProps()}>
-            <TableHead headerGroup={headerGroups[0]} />
-            <tbody {...getTableBodyProps()}>
-              {page.map((row, i) => {
-                prepareRow(row);
-                const rowProp = row.getRowProps();
-                return (
-                  <TableRow key={rowProp.key} rowProp={rowProp}>
-                    {row.cells.map((cell) => {
-                      const { key, ...restCellProp } = cell.getCellProps();
-                      return (
-                        <td key={key} {...restCellProp}>
-                          <div
-                            className={clsx(
-                              'cell',
-                              cell.column.ellipsis && 'table-cell-ellipsis',
-                              cell.column.cellClassName
-                            )}
-                          >
-                            {cell.render('Cell')}
-                          </div>
-                        </td>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        {
-          <div className="pagination-wrapper">
-            {
-              pageCount > 1
-                ? (
-                  <Pagination
-                    count={pageCount}
-                    page={pageIndex + 1}
-                    initialPage={pageIndex}
-                    onChange={handlePaginationChange}
-                  >
-                    <Pagination.Next><ChevronRight /></Pagination.Next>
-                    <Pagination.Previous><ChevronLeft /></Pagination.Previous>
-                  </Pagination>
-                )
-                : <div />
-            }
-            <div className="select-wrapper">
-              Show
-              <Select value={String(pageSize)} mx={1 / 2} scale={2 / 3} w="20px" onChange={handleSelectPageSizeChange}>
-                <Select.Option value="10">10</Select.Option>
-                <Select.Option value="20">20</Select.Option>
-                <Select.Option value="50">50</Select.Option>
-                <Select.Option value="100">100</Select.Option>
-              </Select>
-              per page
-            </div>
-          </div>
-        }
+    <>
+      <div className="table-wrapper">
+        <table {...getTableProps()}>
+          <TableHead headerGroup={headerGroups[0]} />
+          <tbody {...getTableBodyProps()}>
+            {page.map((row, i) => {
+              prepareRow(row);
+              const rowProp = row.getRowProps();
+              return (
+                <TableRow key={rowProp.key} rowProp={rowProp}>
+                  {row.cells.map((cell) => {
+                    const { key, ...restCellProp } = cell.getCellProps();
+                    return (
+                      <td key={key} {...restCellProp}>
+                        <div
+                          className={clsx(
+                            'cell',
+                            cell.column.ellipsis && 'table-cell-ellipsis',
+                            cell.column.cellClassName
+                          )}
+                        >
+                          {cell.render('Cell')}
+                        </div>
+                      </td>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
+      <div className="pagination-wrapper">
+        {
+          pageCount > 1
+            ? (
+              <Pagination
+                count={pageCount}
+                page={pageIndex + 1}
+                initialPage={pageIndex}
+                onChange={handlePaginationChange}
+              >
+                <Pagination.Next><ChevronRight /></Pagination.Next>
+                <Pagination.Previous><ChevronLeft /></Pagination.Previous>
+              </Pagination>
+            )
+            : <div />
+        }
+        <div className="select-wrapper">
+          Show
+          <Select value={String(pageSize)} mx={1 / 2} scale={2 / 3} w="55px" onChange={handleSelectPageSizeChange}>
+            <Select.Option value="10">10</Select.Option>
+            <Select.Option value="15">15</Select.Option>
+            <Select.Option value="20">20</Select.Option>
+            <Select.Option value="50">50</Select.Option>
+            <Select.Option value="100">100</Select.Option>
+          </Select>
+          per page
+        </div>
+      </div>
+
       <style jsx>{`
         .table-wrapper {
-           overflow-x: auto
-        }
-        .scroll-overlay-container: {
-          overflow: hidden;
-          position: relative;
-          width: 100%;
-          height: 100%;
-        }
-        .scroller {
-          position: relative;
-          overflow: auto;
-          -webkit-overflow-scrolling: touch;
-          scrollbar-width: none;
-          width: 100%;
-          height: 100%;
+           overflow-x: auto;
+           max-height: calc(100vh - 250px);
         }
         table {
           border-collapse: separate;
@@ -226,12 +210,17 @@ const DataTable = <T extends TableDataItemBase>({
           position: sticky;
           right: 0;
           background: ${theme.palette.accents_1};
+          z-index: 2;
         }
 
         table :global(tr td:last-of-type) {
           position: sticky;
           right: 0;
           background: ${theme.palette.background}
+        }
+
+        tbody {
+          z-index: 1;
         }
 
         .pagination-wrapper {
@@ -260,7 +249,7 @@ const DataTable = <T extends TableDataItemBase>({
           min-width: ${SCALES.width(1, '50px')};
         }
      `}</style>
-    </div>
+    </>
   );
 };
 

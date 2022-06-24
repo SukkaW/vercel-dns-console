@@ -241,6 +241,10 @@ export const DNSDataTables = (props: {
           )
       }
       <style jsx>{`
+        div {
+          width: 100%;
+        }
+
         @media screen and (max-width: ${theme.breakpoints.sm.max}) {
           :global(div.table-cell-tooltip-portal.table-cell-tooltip-portal) {
             width: 200px;

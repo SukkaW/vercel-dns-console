@@ -1,19 +1,25 @@
 import { useTheme } from '@geist-ui/core';
-import { cloneElement } from 'react';
+import { forwardRef } from 'react';
 import { type HeaderGroup } from 'react-table';
 import { TableDataItemBase } from './types';
 
 import ArrowUp from '@geist-ui/icons/arrowUp';
 import ArrowDown from '@geist-ui/icons/arrowDown';
 
-export const THead = <T extends TableDataItemBase>(
+declare module 'react' {
+  function forwardRef<T, P = object>(
+    render: (props: P, ref: React.Ref<T>) => React.ReactElement | null
+  ): (props: P & React.RefAttributes<T>) => React.ReactElement | null;
+}
+
+const OrigTHead = <T extends TableDataItemBase>(
   props: {
-    isSticky?: boolean,
-    headerGroup: HeaderGroup<T>
-  } & JSX.IntrinsicElements['thead']
+    headerGroup: HeaderGroup<T>,
+  } & JSX.IntrinsicElements['thead'],
+  ref: React.ForwardedRef<HTMLTableSectionElement>
 ) => {
   const theme = useTheme();
-  const { isSticky, headerGroup, ...rest } = props;
+  const { headerGroup, ...rest } = props;
   const { headers } = headerGroup;
   const thElements = (
     <>
@@ -98,16 +104,14 @@ export const THead = <T extends TableDataItemBase>(
   return (
     <thead
       style={{
-        position: isSticky ? 'fixed' : 'static',
-        clipPath: isSticky ? 'inset(0px 0px -100px)' : undefined
+        // position: isSticky ? 'fixed' : 'static',
+        // clipPath: isSticky ? 'inset(0px 0px -100px)' : undefined
       }}
+      ref={ref}
       {...rest}
     >
       <tr
         {...headerGroup.getHeaderGroupProps()}
-        style={{
-          boxShadow: isSticky ? '0 12px 12px -12px rgba(0,0,0,.08),38px 12px 12px -12px rgba(0,0,0,.08)' : undefined
-        }}
       >
         {thElements}
       </tr>
@@ -117,8 +121,13 @@ export const THead = <T extends TableDataItemBase>(
             border-spacing: 0;
             font-size: inherit;
             margin-top: 0;
-            z-index: 1;
-            top: 64px
+            z-index: 2;
+            top: 64px;
+          }
+
+          tr :global(th) {
+            position: sticky;
+            top: 0;
           }
 
           tr {
@@ -129,31 +138,23 @@ export const THead = <T extends TableDataItemBase>(
   );
 };
 
+export const THead = forwardRef(OrigTHead);
+
 export type TableHeadProps<T extends TableDataItemBase> = {
   headerGroup: HeaderGroup<T>
   isSticky?: boolean
+  theadRef?: React.RefObject<HTMLTableSectionElement>
+  clonedTheadRef?: React.RefObject<HTMLTableSectionElement>
 };
 
 export const TableHead = <T extends TableDataItemBase>(
   {
-    headerGroup,
-    isSticky
+    headerGroup
   }: TableHeadProps<T>
 ) => {
-  const thead = <THead headerGroup={headerGroup} isSticky={isSticky} />;
-  const clonedTHead = cloneElement<React.ComponentProps<typeof THead>>(thead, {
-    style: {
-      display: isSticky ? undefined : 'none',
-      opacity: 0,
-      pointerEvents: 'none'
-    },
-    isSticky: false
-  });
-
   return (
-    <>
-      {thead}
-      {clonedTHead}
-    </>
+    <THead
+      headerGroup={headerGroup}
+    />
   );
 };
