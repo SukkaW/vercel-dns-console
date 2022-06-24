@@ -1,29 +1,28 @@
 import { useTheme } from '@geist-ui/core';
-import { forwardRef } from 'react';
 import { type HeaderGroup } from 'react-table';
 import { TableDataItemBase } from './types';
 
 import ArrowUp from '@geist-ui/icons/arrowUp';
 import ArrowDown from '@geist-ui/icons/arrowDown';
 
-declare module 'react' {
-  function forwardRef<T, P = object>(
-    render: (props: P, ref: React.Ref<T>) => React.ReactElement | null
-  ): (props: P & React.RefAttributes<T>) => React.ReactElement | null;
-}
+export type TableHeadProps<T extends TableDataItemBase> = {
+  headerGroup: HeaderGroup<T>
+  isSticky?: boolean
+  theadRef?: React.RefObject<HTMLTableSectionElement>
+  clonedTheadRef?: React.RefObject<HTMLTableSectionElement>
+};
 
-const OrigTHead = <T extends TableDataItemBase>(
+export const TableHead = <T extends TableDataItemBase>(
   props: {
     headerGroup: HeaderGroup<T>,
-  } & JSX.IntrinsicElements['thead'],
-  ref: React.ForwardedRef<HTMLTableSectionElement>
+  } & JSX.IntrinsicElements['thead']
 ) => {
   const theme = useTheme();
   const { headerGroup, ...rest } = props;
   const { headers } = headerGroup;
   const thElements = (
     <>
-      {headers.map((header, index) => {
+      {headers.map((header) => {
         const { key, style, ...rest } = header.getHeaderProps(header.getSortByToggleProps());
         return (
           <th
@@ -103,11 +102,6 @@ const OrigTHead = <T extends TableDataItemBase>(
 
   return (
     <thead
-      style={{
-        // position: isSticky ? 'fixed' : 'static',
-        // clipPath: isSticky ? 'inset(0px 0px -100px)' : undefined
-      }}
-      ref={ref}
       {...rest}
     >
       <tr
@@ -135,26 +129,5 @@ const OrigTHead = <T extends TableDataItemBase>(
           }
         `}</style>
     </thead>
-  );
-};
-
-export const THead = forwardRef(OrigTHead);
-
-export type TableHeadProps<T extends TableDataItemBase> = {
-  headerGroup: HeaderGroup<T>
-  isSticky?: boolean
-  theadRef?: React.RefObject<HTMLTableSectionElement>
-  clonedTheadRef?: React.RefObject<HTMLTableSectionElement>
-};
-
-export const TableHead = <T extends TableDataItemBase>(
-  {
-    headerGroup
-  }: TableHeadProps<T>
-) => {
-  return (
-    <THead
-      headerGroup={headerGroup}
-    />
   );
 };

@@ -1,6 +1,7 @@
 import { Text } from '@geist-ui/core';
 import { Layout } from '@/components/layout';
 import { DNSDataTables } from '@/components/dns-data-tables';
+import { BreadCrumb } from '@/components/bread-crumb';
 
 import { useRouter } from 'next/router';
 
@@ -12,6 +13,10 @@ const DNSPage: NextPageWithLayout = (props) => {
 
   return (
     <div className="dns-page">
+      <BreadCrumb items={[
+        { label: 'Domains', href: '/' },
+        { id: 'dnspage', label: domain ?? '. . .' }
+      ]} />
       <Text h1>DNS</Text>
       <DNSDataTables domain={domain} />
       <style jsx>{`
