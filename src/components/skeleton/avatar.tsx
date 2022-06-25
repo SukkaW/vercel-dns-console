@@ -7,7 +7,7 @@ export const Avatar = memo((props: JSX.IntrinsicElements['div']) => {
   return (
     <div className="skeleton skeleton.avatar" {...props} >
       <style jsx>{`
-      .skeleton {
+      div {
         width: 36px;
         height: 36px;
         border-radius: 50%;

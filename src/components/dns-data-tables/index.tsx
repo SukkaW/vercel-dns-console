@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react';
-import { Code, Text, Tooltip, useTheme } from '@geist-ui/core';
+import { Badge, Code, Text, Tooltip, useTheme } from '@geist-ui/core';
 
-import { DataTable, type DataTableFilterRenderer, type DataTableColumns } from '../data-tables';
+import { DataTable, type DataTableFilterRenderer, type DataTableColumns, DataTableProps } from '../data-tables';
 
 import { generateDnsDescription } from '@/lib/generate-dns-description';
+import { EMPTY_ARRAY } from '@/lib/constant';
 
 import { useVercelListDNSRecords } from '@/hooks/use-vercel-dns';
 
@@ -36,7 +37,7 @@ export const DNSDataTables = (props: {
 }) => {
   const theme = useTheme();
 
-  const { data: rawData } = useVercelListDNSRecords(props.domain);
+  const { data: rawData, isLoading } = useVercelListDNSRecords(props.domain);
   const records: RecordItem[] = useMemo(() => {
     const result: RecordItem[] = [];
 
@@ -191,6 +192,7 @@ export const DNSDataTables = (props: {
 
   const renderHeaderAction = useCallback((selected: RecordItem[]) => {
     return (
+
       <Menu
         itemMinWidth={120}
         content={(
@@ -201,7 +203,10 @@ export const DNSDataTables = (props: {
           </MenuItem>
         )}
       >
-        <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
+        <Badge.Anchor>
+          {selected.length > 0 && <Badge style={{ userSelect: 'none' }} scale={1 / 3}>{selected.length}</Badge>}
+          <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
+        </Badge.Anchor>
       </Menu>
     );
   }, [theme.palette.accents_3]);
@@ -252,22 +257,38 @@ export const DNSDataTables = (props: {
     searchInRecordNameAndValue: searchInRecordNameAndValueFilterFn
   }), [searchInRecordTypeFilterFn, searchInRecordNameAndValueFilterFn]);
 
+  const isDataTablePlaceHolder = useMemo(() => {
+    if (props.domain) {
+      if (!isLoading) {
+        return false;
+      }
+    }
+
+    return true;
+  }, [isLoading, props.domain]);
+
+  const dataTableProps: DataTableProps<RecordItem> = isDataTablePlaceHolder
+    ? {
+      placeHolder: 4,
+      data: EMPTY_ARRAY,
+      columns,
+      renderHeaderAction,
+      renderFilter
+    }
+    : {
+      data: records,
+      columns,
+      renderHeaderAction,
+      renderRowAction,
+      renderFilter,
+      tableOptions: {
+        filterTypes
+      }
+    };
+
   return (
     <div>
-      {
-        !props.domain
-          ? null
-          : (
-            <DataTable
-              data={records}
-              columns={columns}
-              renderHeaderAction={renderHeaderAction}
-              renderRowAction={renderRowAction}
-              renderFilter={renderFilter}
-              tableOptions={{ filterTypes }}
-            />
-          )
-      }
+      <DataTable {...dataTableProps} />
       <style jsx>{`
         div {
           width: 100%;

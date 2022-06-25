@@ -11,3 +11,5 @@ export const VERCEL_SUPPORTED_DNS_RECORDS_TYPE = [
   'TXT',
   'NS'
 ] as const;
+
+export const EMPTY_ARRAY = [];

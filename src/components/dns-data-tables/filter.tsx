@@ -95,6 +95,7 @@ export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataT
         }
 
         div :global(.with-label) {
+          display: flex;
           flex-grow: 1;
         }
       `}</style>

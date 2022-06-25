@@ -17,6 +17,7 @@ import { useRowSelect } from './react-table-use-partial-selection';
 import Lock from '@geist-ui/icons/lock';
 import ChevronRight from '@geist-ui/icons/chevronRight';
 import ChevronLeft from '@geist-ui/icons/chevronLeft';
+import { TablePlaceHolder } from './placeholder';
 
 export type DataTableColumns<T extends TableDataItemBase> = Column<T>;
 
@@ -32,6 +33,7 @@ export interface DataTableProps<T extends TableDataItemBase> {
   renderRowAction?: (row: T) => JSX.Element,
   renderHeaderAction?: (selected: T[]) => JSX.Element,
   renderFilter?: DataTableFilterRenderer<T>,
+  placeHolder?: boolean | number,
 }
 
 declare module 'react-table' {
@@ -48,7 +50,8 @@ const DataTable = <T extends TableDataItemBase>({
   tableOptions,
   renderRowAction,
   renderHeaderAction,
-  renderFilter
+  renderFilter,
+  placeHolder
 }: DataTableProps<T>) => {
   const theme = useTheme();
   const { SCALES } = useScale();
@@ -182,6 +185,11 @@ const DataTable = <T extends TableDataItemBase>({
             }
           </tbody>
         </table>
+        {
+          placeHolder && (
+            <TablePlaceHolder rowCount={typeof placeHolder === 'number' ? placeHolder : 3} />
+          )
+        }
       </div>
       <div className="pagination-wrapper">
         {

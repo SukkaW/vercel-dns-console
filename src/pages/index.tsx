@@ -1,18 +1,21 @@
 import React, { forwardRef, useCallback, useEffect, useMemo } from 'react';
 
-import { Text, Link, useTheme, type TableColumnProps, useToasts, Spacer, Note, Popover } from '@geist-ui/core';
+import { Text, Link, useTheme, useToasts, Spacer, Note } from '@geist-ui/core';
 import NextLink from 'next/link';
 
 import { Layout } from '@/components/layout';
-import { DataTables } from '@/components/legacy/data-tables';
-import { Skeleton } from '@/components/skeleton';
+import { DataTable, type DataTableProps, type DataTableColumns } from '../components/data-tables';
 import { Notice } from '@/components/notice';
 
 import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelDomains } from '@/hooks/use-vercel-domains';
 import { formatDate } from '../lib/util';
 
+import MoreVertical from '@geist-ui/icons/moreVertical';
+
 import type { NextPageWithLayout } from '@/pages/_app';
+import { Menu, MenuItem } from '../components/menu';
+import { EMPTY_ARRAY } from '../lib/constant';
 
 interface DomainItem {
   name: string;
@@ -34,32 +37,32 @@ if (process.env.NODE_ENV !== 'production') {
   DomainLink.displayName = 'DomainLink';
 }
 
-const domainDataTableColumns: TableColumnProps<DomainItem>[] = [
+const domainDataTableColumns: DataTableColumns<DomainItem>[] = [
   {
-    prop: 'name',
-    label: 'Domain',
-    render: (value, rowData) => (
+    accessor: 'name',
+    Header: 'Domain',
+    Cell: ({ value }) => (
       <NextLink href={'#'}>
         <DomainLink name={value} />
       </NextLink>
     )
   },
   {
-    prop: 'nameServer',
-    label: 'NameServer',
-    className: 'nameserver-cell'
+    accessor: 'nameServer',
+    Header: 'NameServer',
+    cellClassName: 'nameserver-cell'
   },
   {
-    prop: 'createdAt',
-    label: 'Created At',
-    className: 'created-cell'
+    accessor: 'createdAt',
+    Header: 'Created At',
+    cellClassName: 'created-cell'
   }
 ];
 
 const DomainsPage: NextPageWithLayout = () => {
   const { setToast: origSetToast, removeAll: origRemoveAllToasts } = useToasts();
   const theme = useTheme();
-  const { data, error } = useVercelDomains();
+  const { data, error, isLoading } = useVercelDomains();
   const setToast = useConstHandler(origSetToast);
   const removeAllToasts = useConstHandler(origRemoveAllToasts);
 
@@ -91,53 +94,58 @@ const DomainsPage: NextPageWithLayout = () => {
     });
   }, [data]);
 
-  const renderDataTableMenu = useCallback((value: DomainItem[keyof DomainItem], rowData: DomainItem, rowIndex: number) => (
-    <>
-      <Popover.Item>
-        <NextLink href={`/domain/${value}`} prefetch={false}>
-          <Link>
-            Manage DNS Records
-          </Link>
-        </NextLink>
-      </Popover.Item>
-    </>
-  ), []);
+  const renderDataTableMenu = useCallback((value: DomainItem) => (
+    <Menu
+      content={(
+        <MenuItem>
+          <NextLink href={`/domain/${value.name}`} prefetch={false}>
+            <Link>
+              Manage DNS Records
+            </Link>
+          </NextLink>
+        </MenuItem>
+      )}
+    >
+      <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
+    </Menu>
+  ), [theme.palette.accents_3]);
+
+  const dataTableProps: DataTableProps<DomainItem> = isLoading || !processedDomainLists
+    ? {
+      placeHolder: 4,
+      data: EMPTY_ARRAY,
+      columns: domainDataTableColumns
+    }
+    : {
+      data: processedDomainLists,
+      columns: domainDataTableColumns,
+      renderRowAction: renderDataTableMenu
+    };
 
   return (
     <div>
       <Text h1>Domains</Text>
+      <Note type="warning">
+        You can only manage your DNS records here. Please go to
+        {' '}
+        <Link
+          href="https://vercel.com"
+          target="_blank"
+          rel="external nofollow noreferrer noopenner"
+          icon
+          color
+          underline
+        >
+          https://vercel.com
+        </Link>
+        {' '}
+        to buy / transfer / renew / add / remove your domains.
+      </Note>
+      <Spacer h={2} />
+      <DataTable {...dataTableProps} />
       {
-        processedDomainLists
-          ? (
-            <DataTables<DomainItem>
-              data={processedDomainLists}
-              columns={domainDataTableColumns}
-              renderRowMenuItems={renderDataTableMenu}
-            />
-          )
-          : <Skeleton.DataTable />
-      }
-      {
-        processedDomainLists && (
+        !isLoading && data && (
           <>
-            <Spacer h={2} />
-            <Note type="warning">
-              You can only manage your DNS records here. Please go to
-              {' '}
-              <Link
-                href="https://vercel.com"
-                target="_blank"
-                rel="external nofollow noreferrer noopenner"
-                icon
-                color
-                underline
-              >
-                https://vercel.com
-              </Link>
-              {' '}
-              to buy / transfer / renew / add / remove your domains.
-            </Note>
-            <Spacer h={2} />
             <Notice />
           </>
         )
