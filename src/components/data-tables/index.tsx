@@ -107,26 +107,27 @@ const DataTable = <T extends TableDataItemBase>({
       ]);
 
       if (renderRowAction) {
-        hooks.visibleColumns.push(columns => [
-          ...columns,
-          {
-            id: 'action',
-            Header({ selectedFlatRows }) {
-              if (renderHeaderAction) {
-                return renderHeaderAction(selectedFlatRows.map(row => row.original));
-              }
-              return null;
-            },
-            Cell({ row }: CellProps<T, any>) {
-              return renderRowAction(row.original);
-            },
-            width: 40,
-            maxWidth: 40,
-            minWidth: 40
-          }
-        ]);
+        hooks.visibleColumns.push(columns => {
+          return [
+            ...columns,
+            {
+              id: 'action',
+              Header({ selectedFlatRows }) {
+                if (renderHeaderAction) {
+                  return renderHeaderAction(selectedFlatRows.map(row => row.original));
+                }
+                return null;
+              },
+              Cell({ row }: CellProps<T, any>) {
+                return renderRowAction(row.original);
+              },
+              width: 40,
+              maxWidth: 40,
+              minWidth: 40
+            }
+          ];
+        });
       }
-
     }, [renderHeaderAction, renderRowAction])
   );
 
@@ -160,7 +161,7 @@ const DataTable = <T extends TableDataItemBase>({
                 const rowProp = row.getRowProps();
                 return (
                   <TableRow key={rowProp.key} rowProp={rowProp}>
-                    {row.cells.map((cell) => {
+                    {row.cells.map((cell, index) => {
                       const { key, ...restCellProp } = cell.getCellProps();
                       return (
                         <td key={key} {...restCellProp}>
@@ -168,7 +169,8 @@ const DataTable = <T extends TableDataItemBase>({
                             className={clsx(
                               'cell',
                               cell.column.ellipsis && 'table-cell-ellipsis',
-                              cell.column.cellClassName
+                              cell.column.cellClassName,
+                              row.cells.length === index + 1 && 'last-cell'
                             )}
                           >
                             {cell.render('Cell')}
@@ -238,6 +240,10 @@ const DataTable = <T extends TableDataItemBase>({
           height: ${SCALES.height(1, 'auto')};
           padding: ${SCALES.pt(0)} ${SCALES.pr(0)} ${SCALES.pb(0)} ${SCALES.pl(0)};
           margin: ${SCALES.mt(0)} ${SCALES.mr(0)} ${SCALES.mb(0)} ${SCALES.ml(0)};
+        }
+
+        table :global(.last-cell) {
+          justify-content: flex-end;
         }
 
         table :global(th:last-of-type) {

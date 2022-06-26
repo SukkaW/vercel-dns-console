@@ -4,12 +4,13 @@ export const Menu = (props: {
   children?: React.ReactNode;
   content?: React.ReactNode;
   itemMinWidth?: number;
+  style?: React.CSSProperties;
 }) => {
   const theme = useTheme();
 
   return (
     <Popover
-      style={{ display: 'flex' }}
+      style={{ display: 'flex', ...props.style }}
       placement="bottomEnd"
       content={(
         <div className="menu-content">

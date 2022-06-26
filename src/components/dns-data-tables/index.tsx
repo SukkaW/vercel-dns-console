@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useMemo } from 'react';
-import { Badge, Code, Text, Tooltip, useModal, useTheme } from '@geist-ui/core';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Badge, Code, Text, Tooltip, useTheme } from '@geist-ui/core';
 
 import { DataTable, type DataTableFilterRenderer, type DataTableColumns } from '../data-tables';
 
 import { generateDnsDescription } from '@/lib/generate-dns-description';
-import { EMPTY_ARRAY } from '@/lib/constant';
 
 import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
 import { useToasts } from '@/hooks/use-toasts';
+import { useModal } from '@/hooks/use-modal';
 
 import MoreVertical from '@geist-ui/icons/moreVertical';
 import InfoFill from '@geist-ui/icons/infoFill';
@@ -18,6 +18,7 @@ import { CopyButton } from '../copy-button';
 import type { VercelDNSRecord } from '@/types/dns';
 import type { CellProps, FilterType, FilterTypes } from 'react-table';
 import { DNSDataTableFilter } from './filter';
+import { DeleteRecordModal } from './delete';
 
 export interface RecordItem {
   id: string,
@@ -61,10 +62,15 @@ export const DNSDataTables = (props: {
   const theme = useTheme();
   const { setToast, clearToasts } = useToasts();
 
-  const { visible, setVisible, bindings } = useModal();
-
-  const { data: rawData, error, mutate } = useVercelDNSRecords(props.domain);
+  const { data: rawData, error } = useVercelDNSRecords(props.domain);
   const hasError = !!error;
+
+  const {
+    visible: deleteRecordModalVisible,
+    open: openDeleteRecordModal,
+    close: closeDeleteRecordModal
+  } = useModal();
+  const [recordsToBeDeleted, setRecordsToBeDeleted] = useState<RecordItem[]>([]);
 
   useEffect(() => {
     if (hasError) {
@@ -90,7 +96,7 @@ export const DNSDataTables = (props: {
         result.push({
           id: record.id,
           slug: record.slug,
-          name: record.name,
+          name: record.name === '' ? '@' : record.name,
           type: record.type,
           value: record.value,
           priority: record.mxPriority ?? record.priority,
@@ -230,25 +236,26 @@ export const DNSDataTables = (props: {
     }
   ], [props.domain, theme.palette.accents_3]);
 
-  const renderHeaderAction = useCallback((selected: RecordItem[]) => {
-    return (
-      <Menu
-        itemMinWidth={120}
-        content={(
-          <MenuItem>
-            <Text span type={selected.length ? 'error' : 'secondary'}>
-              Delete ({selected.length})
-            </Text>
-          </MenuItem>
-        )}
-      >
-        <Badge.Anchor>
-          {selected.length > 0 && <Badge style={{ userSelect: 'none' }} scale={1 / 3}>{selected.length}</Badge>}
-          <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
-        </Badge.Anchor>
-      </Menu>
-    );
-  }, [theme.palette.accents_3]);
+  const renderHeaderAction = useCallback((selected: RecordItem[]) => (
+    <Menu
+      itemMinWidth={120}
+      content={(
+        <MenuItem onClick={() => {
+          setRecordsToBeDeleted(selected);
+          openDeleteRecordModal();
+        }}>
+          <Text span type={selected.length ? 'error' : 'secondary'}>
+            Delete ({selected.length})
+          </Text>
+        </MenuItem>
+      )}
+    >
+      <Badge.Anchor>
+        {selected.length > 0 && <Badge style={{ userSelect: 'none' }} scale={1 / 3}>{selected.length}</Badge>}
+        <MoreVertical color={theme.palette.accents_3} size={16} />
+      </Badge.Anchor>
+    </Menu>
+  ), [openDeleteRecordModal, theme.palette.accents_3]);
 
   const renderRowAction = useCallback((record: RecordItem) => {
     return (
@@ -261,7 +268,10 @@ export const DNSDataTables = (props: {
                 Edit
               </Text>
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={() => {
+              setRecordsToBeDeleted([record]);
+              openDeleteRecordModal();
+            }}>
               <Text span type="error">
                 Delete
               </Text>
@@ -269,44 +279,39 @@ export const DNSDataTables = (props: {
           </>
         )}
       >
-        <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
+        <MoreVertical color={theme.palette.accents_3} size={16} />
       </Menu>
     );
   }, [theme.palette.accents_3]);
 
-  const deleteRecord = useCallback(async (record: RecordItem) => {
-
-  }, [mutate]);
-
   const isDataTablePlaceHolder = (!props.domain)
-    // Change to isLoading once https://github.com/vercel/swr/commit/5b3af2bcd4a4680263db19b4f0f625874ac9186f is released
+    // TODO: Change to isLoading once https://github.com/vercel/swr/commit/5b3af2bcd4a4680263db19b4f0f625874ac9186f is released
     || (!rawData && typeof error === 'undefined');
+
+  const dataTable = useMemo(() => (
+    <DataTable
+      placeHolder={isDataTablePlaceHolder ? 5 : false}
+      data={records}
+      columns={columns}
+      renderHeaderAction={renderHeaderAction}
+      renderRowAction={renderRowAction}
+      renderFilter={renderFilter}
+      tableOptions={{
+        filterTypes
+      }}
+    />
+  ), [columns, isDataTablePlaceHolder, records, renderHeaderAction, renderRowAction]);
 
   return (
     <div>
+      {dataTable}
       {
-        isDataTablePlaceHolder
-          ? (
-            <DataTable
-              placeHolder={5}
-              data={EMPTY_ARRAY}
-              columns={columns}
-              renderHeaderAction={renderHeaderAction}
-              renderFilter={renderFilter}
-            />
-          )
-          : (
-            <DataTable
-              data={records}
-              columns={columns}
-              renderHeaderAction={renderHeaderAction}
-              renderRowAction={renderRowAction}
-              renderFilter={renderFilter}
-              tableOptions={{
-                filterTypes
-              }}
-            />
-          )
+        props.domain && <DeleteRecordModal
+          visible={deleteRecordModalVisible}
+          close={closeDeleteRecordModal}
+          domain={props.domain}
+          records={recordsToBeDeleted}
+        />
       }
       <style jsx>{`
         div {

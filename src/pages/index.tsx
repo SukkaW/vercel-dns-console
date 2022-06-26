@@ -4,10 +4,9 @@ import { Text, Link, useTheme, Spacer, Note } from '@geist-ui/core';
 import NextLink from 'next/link';
 
 import { Layout } from '@/components/layout';
-import { DataTable, type DataTableProps, type DataTableColumns } from '../components/data-tables';
+import { DataTable, type DataTableColumns } from '../components/data-tables';
 import { Notice } from '@/components/notice';
 
-import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelDomains } from '@/hooks/use-vercel-domains';
 import { useToasts } from '@/hooks/use-toasts';
 import { formatDate } from '../lib/util';
@@ -16,7 +15,6 @@ import MoreVertical from '@geist-ui/icons/moreVertical';
 
 import type { NextPageWithLayout } from '@/pages/_app';
 import { Menu, MenuItem } from '../components/menu';
-import { EMPTY_ARRAY } from '../lib/constant';
 
 interface DomainItem {
   name: string;
@@ -63,9 +61,10 @@ const domainDataTableColumns: DataTableColumns<DomainItem>[] = [
 const DomainsPage: NextPageWithLayout = () => {
   const { setToast, clearToasts } = useToasts();
   const theme = useTheme();
-  const { data, error, isLoading } = useVercelDomains();
-
+  const { data, error } = useVercelDomains();
   const hasError = useMemo(() => !!error, [error]);
+  // TODO: Change to isLoading once https://github.com/vercel/swr/commit/5b3af2bcd4a4680263db19b4f0f625874ac9186f is released
+  const isLoading = typeof data === 'undefined' && typeof error === 'undefined';
 
   useEffect(() => {
     if (hasError) {
@@ -81,8 +80,8 @@ const DomainsPage: NextPageWithLayout = () => {
     }
   }, [hasError, setToast, clearToasts]);
 
-  const processedDomainLists: DomainItem[] | null = useMemo(() => {
-    if (!data) return null;
+  const processedDomainLists: DomainItem[] = useMemo(() => {
+    if (!data) return [];
 
     return data.domains.map(domain => {
       return {
@@ -95,6 +94,8 @@ const DomainsPage: NextPageWithLayout = () => {
 
   const renderDataTableMenu = useCallback((value: DomainItem) => (
     <Menu
+      itemMinWidth={180}
+      style={{ justifyContent: 'flex-end' }}
       content={(
         <MenuItem>
           <NextLink href={`/domain/${value.name}`} prefetch={false}>
@@ -105,21 +106,9 @@ const DomainsPage: NextPageWithLayout = () => {
         </MenuItem>
       )}
     >
-      <MoreVertical className="record-menu-trigger" color={theme.palette.accents_3} size={16} />
+      <MoreVertical color={theme.palette.accents_3} size={16} />
     </Menu>
   ), [theme.palette.accents_3]);
-
-  const dataTableProps: DataTableProps<DomainItem> = isLoading || !processedDomainLists
-    ? {
-      placeHolder: 4,
-      data: EMPTY_ARRAY,
-      columns: domainDataTableColumns
-    }
-    : {
-      data: processedDomainLists,
-      columns: domainDataTableColumns,
-      renderRowAction: renderDataTableMenu
-    };
 
   return (
     <div>
@@ -141,13 +130,14 @@ const DomainsPage: NextPageWithLayout = () => {
         to buy / transfer / renew / add / remove your domains.
       </Note>
       <Spacer h={2} />
-      <DataTable {...dataTableProps} />
+      <DataTable
+        placeHolder={isLoading ? 4 : false}
+        data={processedDomainLists}
+        columns={domainDataTableColumns}
+        renderRowAction={renderDataTableMenu}
+      />
       {
-        !isLoading && data && (
-          <>
-            <Notice />
-          </>
-        )
+        data && <Notice />
       }
       <style jsx>{`
        div :global(.domain) {
