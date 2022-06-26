@@ -1,16 +1,15 @@
 import { useClipboard } from '@/hooks/use-clipboard';
-import { Button, useToasts, type ScaleProps, type ButtonProps } from '@geist-ui/core';
+import { Button, type ScaleProps, type ButtonProps } from '@geist-ui/core';
 import { useCallback, useEffect } from 'react';
 import Copy from '@geist-ui/icons/copy';
 import Check from '@geist-ui/icons/check';
-import { useConstHandler } from '@/hooks/use-const-handler';
+import { useToasts } from '@/hooks/use-toasts';
 
 export const CopyButton = (props: ButtonProps & ScaleProps & { copyValue?: string }) => {
   const { copyValue, ...rest } = props;
 
   const { copy, copied, error } = useClipboard();
-  const { setToast: origSetToast } = useToasts();
-  const setToast = useConstHandler(origSetToast);
+  const { setToast, clearToasts } = useToasts();
 
   const handleClick = useCallback(() => copy(copyValue ?? ''), [copy, copyValue]);
   const icon = copied ? <Check /> : <Copy />;

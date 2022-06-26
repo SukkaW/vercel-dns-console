@@ -1,6 +1,6 @@
 import React, { forwardRef, useCallback, useEffect, useMemo } from 'react';
 
-import { Text, Link, useTheme, useToasts, Spacer, Note } from '@geist-ui/core';
+import { Text, Link, useTheme, Spacer, Note } from '@geist-ui/core';
 import NextLink from 'next/link';
 
 import { Layout } from '@/components/layout';
@@ -9,6 +9,7 @@ import { Notice } from '@/components/notice';
 
 import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelDomains } from '@/hooks/use-vercel-domains';
+import { useToasts } from '@/hooks/use-toasts';
 import { formatDate } from '../lib/util';
 
 import MoreVertical from '@geist-ui/icons/moreVertical';
@@ -60,11 +61,9 @@ const domainDataTableColumns: DataTableColumns<DomainItem>[] = [
 ];
 
 const DomainsPage: NextPageWithLayout = () => {
-  const { setToast: origSetToast, removeAll: origRemoveAllToasts } = useToasts();
+  const { setToast, clearToasts } = useToasts();
   const theme = useTheme();
   const { data, error, isLoading } = useVercelDomains();
-  const setToast = useConstHandler(origSetToast);
-  const removeAllToasts = useConstHandler(origRemoveAllToasts);
 
   const hasError = useMemo(() => !!error, [error]);
 
@@ -77,10 +76,10 @@ const DomainsPage: NextPageWithLayout = () => {
       });
 
       return () => {
-        removeAllToasts();
+        clearToasts();
       };
     }
-  }, [hasError, setToast, removeAllToasts]);
+  }, [hasError, setToast, clearToasts]);
 
   const processedDomainLists: DomainItem[] | null = useMemo(() => {
     if (!data) return null;

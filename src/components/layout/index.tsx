@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import { Link, useTheme, useToasts } from '@geist-ui/core';
+import { Link, useTheme } from '@geist-ui/core';
 import NextLink from 'next/link';
 import Image, { type ImageLoader } from 'next/image';
 
@@ -11,7 +11,8 @@ import { VercelLogo } from '../vercel-brand/logo';
 import { useRouter } from 'next/router';
 import { useVercelUser } from '@/hooks/use-vercel-user';
 import { useVercelApiToken } from '@/hooks/use-vercel-api-token';
-import { useConstHandler } from '@/hooks/use-const-handler';
+import { useToasts } from '@/hooks/use-toasts';
+
 import { Container } from '../container';
 import { Menu, MenuItem } from '../menu';
 
@@ -21,8 +22,7 @@ const vercelAvatarLoader: ImageLoader = ({ src, width }) => {
 
 const AvatarMenu = (props: { avatar?: string, name?: string }) => {
   const [, setToken] = useVercelApiToken();
-  const { setToast: origSetToast } = useToasts();
-  const setToast = useConstHandler(origSetToast);
+  const { setToast } = useToasts();
   const router = useRouter();
 
   const logout = useCallback(() => {

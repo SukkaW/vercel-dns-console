@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { Badge, Code, Text, Tooltip, useTheme, useToasts } from '@geist-ui/core';
+import { Badge, Code, Text, Tooltip, useModal, useTheme } from '@geist-ui/core';
 
 import { DataTable, type DataTableFilterRenderer, type DataTableColumns } from '../data-tables';
 
@@ -7,6 +7,7 @@ import { generateDnsDescription } from '@/lib/generate-dns-description';
 import { EMPTY_ARRAY } from '@/lib/constant';
 
 import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
+import { useToasts } from '@/hooks/use-toasts';
 
 import MoreVertical from '@geist-ui/icons/moreVertical';
 import InfoFill from '@geist-ui/icons/infoFill';
@@ -17,7 +18,6 @@ import { CopyButton } from '../copy-button';
 import type { VercelDNSRecord } from '@/types/dns';
 import type { CellProps, FilterType, FilterTypes } from 'react-table';
 import { DNSDataTableFilter } from './filter';
-import { useConstHandler } from '../../hooks/use-const-handler';
 
 export interface RecordItem {
   id: string,
@@ -33,15 +33,37 @@ export interface RecordItem {
   disableSelection?: boolean;
 }
 
+const searchInRecordTypeFilterFn: FilterType<RecordItem> = (rows, columnIds, filterValue) => {
+  if (!filterValue) return rows;
+  return rows.filter(row => row.original.type === filterValue);
+};
+
+const searchInRecordNameAndValueFilterFn: FilterType<RecordItem> = (rows, columnIds, filterValue) => {
+  if (typeof filterValue === 'string') {
+    const query = filterValue.toLowerCase();
+    return rows.filter(row => row.original.value.toLowerCase().includes(query) || row.original.name.toLowerCase().includes(query));
+  }
+  return rows;
+};
+
+const filterTypes: FilterTypes<RecordItem> = {
+  searchInRecordType: searchInRecordTypeFilterFn,
+  searchInRecordNameAndValue: searchInRecordNameAndValueFilterFn
+};
+
+const renderFilter: DataTableFilterRenderer<RecordItem> = (setFilter, setGlobalFilter) => (
+  <DNSDataTableFilter setFilter={setFilter} setGlobalFilter={setGlobalFilter} />
+);
+
 export const DNSDataTables = (props: {
   domain: string | undefined
 }) => {
   const theme = useTheme();
-  const { setToast: origSetToast, removeAll: origClearToasts } = useToasts();
-  const setToast = useConstHandler(origSetToast);
-  const clearToasts = useConstHandler(origClearToasts);
+  const { setToast, clearToasts } = useToasts();
 
-  const { data: rawData, error } = useVercelDNSRecords(props.domain);
+  const { visible, setVisible, bindings } = useModal();
+
+  const { data: rawData, error, mutate } = useVercelDNSRecords(props.domain);
   const hasError = !!error;
 
   useEffect(() => {
@@ -252,31 +274,9 @@ export const DNSDataTables = (props: {
     );
   }, [theme.palette.accents_3]);
 
-  const renderFilter: DataTableFilterRenderer<RecordItem> = useCallback((setFilter, setGlobalFilter) => (
-    <DNSDataTableFilter setFilter={setFilter} setGlobalFilter={setGlobalFilter} />
-  ), []);
+  const deleteRecord = useCallback(async (record: RecordItem) => {
 
-  // const deleteRecord = useCallback((record: RecordItem) => {
-  //   mutate();
-  // }, [mutate]);
-
-  const searchInRecordTypeFilterFn: FilterType<RecordItem> = useCallback((rows, columnIds, filterValue) => {
-    if (!filterValue) return rows;
-    return rows.filter(row => row.original.type === filterValue);
-  }, []);
-
-  const searchInRecordNameAndValueFilterFn: FilterType<RecordItem> = useCallback((rows, columnIds, filterValue) => {
-    if (typeof filterValue === 'string') {
-      const query = filterValue.toLowerCase();
-      return rows.filter(row => row.original.value.toLowerCase().includes(query) || row.original.name.toLowerCase().includes(query));
-    }
-    return rows;
-  }, []);
-
-  const filterTypes: FilterTypes<RecordItem> = useMemo(() => ({
-    searchInRecordType: searchInRecordTypeFilterFn,
-    searchInRecordNameAndValue: searchInRecordNameAndValueFilterFn
-  }), [searchInRecordTypeFilterFn, searchInRecordNameAndValueFilterFn]);
+  }, [mutate]);
 
   const isDataTablePlaceHolder = (!props.domain)
     // Change to isLoading once https://github.com/vercel/swr/commit/5b3af2bcd4a4680263db19b4f0f625874ac9186f is released

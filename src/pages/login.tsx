@@ -3,9 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useVercelApiToken } from '@/hooks/use-vercel-api-token';
 import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelUser } from '@/hooks/use-vercel-user';
+import { useToasts } from '@/hooks/use-toasts';
 import { useRouter } from 'next/router';
 
-import { Button, Input, Link, Note, Spacer, Text, useToasts } from '@geist-ui/core';
+import { Button, Input, Link, Note, Spacer, Text } from '@geist-ui/core';
 import { fetcherWithAuthorization } from '../lib/fetcher';
 
 import { Container } from '@/components/container';
@@ -24,9 +25,7 @@ const LoginForm = () => {
   const router = useRouter();
   const { mutate } = useVercelUser();
 
-  const { setToast: origSetToast, removeAll: origRemoveAllToasts } = useToasts();
-  const setToast = useConstHandler(origSetToast);
-  const removeAllToasts = useConstHandler(origRemoveAllToasts);
+  const { setToast, clearToasts } = useToasts();
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs(e.target.value);
@@ -73,10 +72,10 @@ const LoginForm = () => {
       login(tokenRef.current);
 
       return () => {
-        removeAllToasts();
+        clearToasts();
       };
     }
-  }, [login, removeAllToasts]);
+  }, [login, clearToasts]);
 
   const handleClick = useCallback(() => {
     login(trimmed);
