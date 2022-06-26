@@ -4,6 +4,7 @@ import { TableDataItemBase } from './types';
 
 import ArrowUp from '@geist-ui/icons/arrowUp';
 import ArrowDown from '@geist-ui/icons/arrowDown';
+import clsx from 'clsx';
 
 export type TableHeadProps<T extends TableDataItemBase> = {
   headerGroup: HeaderGroup<T>
@@ -35,7 +36,7 @@ export const TableHead = <T extends TableDataItemBase>(
             }}
             {...rest}
           >
-            <div className="thead-box">
+            <div className={clsx('thead-box', header.headerClassName)}>
               {header.render('Header')}
               <span>
                 {/* Add a sort direction indicator */}

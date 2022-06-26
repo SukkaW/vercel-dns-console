@@ -39,6 +39,7 @@ export interface DataTableProps<T extends TableDataItemBase> {
 declare module 'react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export interface UseTableColumnOptions<D extends object> {
+    headerClassName?: string;
     cellClassName?: string;
     ellipsis?: boolean;
   }
@@ -123,7 +124,9 @@ const DataTable = <T extends TableDataItemBase>({
               },
               width: 40,
               maxWidth: 40,
-              minWidth: 40
+              minWidth: 40,
+              headerClassName: 'action-header',
+              cellClassName: 'action-cell'
             }
           ];
         });
@@ -169,8 +172,7 @@ const DataTable = <T extends TableDataItemBase>({
                             className={clsx(
                               'cell',
                               cell.column.ellipsis && 'table-cell-ellipsis',
-                              cell.column.cellClassName,
-                              row.cells.length === index + 1 && 'last-cell'
+                              cell.column.cellClassName
                             )}
                           >
                             {cell.render('Cell')}
@@ -242,7 +244,7 @@ const DataTable = <T extends TableDataItemBase>({
           margin: ${SCALES.mt(0)} ${SCALES.mr(0)} ${SCALES.mb(0)} ${SCALES.ml(0)};
         }
 
-        table :global(.last-cell) {
+        table :global(.action-cell) {
           justify-content: flex-end;
         }
 

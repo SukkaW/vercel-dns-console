@@ -282,7 +282,7 @@ export const DNSDataTables = (props: {
         <MoreVertical color={theme.palette.accents_3} size={16} />
       </Menu>
     );
-  }, [theme.palette.accents_3]);
+  }, [openDeleteRecordModal, theme.palette.accents_3]);
 
   const isDataTablePlaceHolder = (!props.domain)
     // TODO: Change to isLoading once https://github.com/vercel/swr/commit/5b3af2bcd4a4680263db19b4f0f625874ac9186f is released
