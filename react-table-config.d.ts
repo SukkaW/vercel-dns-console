@@ -84,7 +84,9 @@ declare module 'react-table' {
     UsePaginationInstanceProps<D>,
     UseRowSelectInstanceProps<D>,
     //   UseRowStateInstanceProps<D>,
-    UseSortByInstanceProps<D> { }
+    UseSortByInstanceProps<D> {
+    toggleAllPageRowsSelected: (isSelected: boolean) => void
+  }
 
   export interface TableState<D extends Record<string, unknown> = Record<string, unknown>> extends
     //    UseColumnOrderState<D>,

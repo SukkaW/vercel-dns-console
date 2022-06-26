@@ -3,7 +3,7 @@ import { fetcherWithAuthorization } from '../lib/fetcher';
 import type { VercelDNSResponse } from '../types/dns';
 import { useVercelApiToken } from './use-vercel-api-token';
 
-export const useVercelListDNSRecords = (domain: string | undefined) => {
+export const useVercelDNSRecords = (domain: string | undefined) => {
   const [token] = useVercelApiToken();
   return useSWRInfinite<VercelDNSResponse>(
     (pageIndex, previousData) => {

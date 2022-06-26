@@ -1,12 +1,12 @@
-import { useCallback, useMemo } from 'react';
-import { Badge, Code, Text, Tooltip, useTheme } from '@geist-ui/core';
+import { useCallback, useEffect, useMemo } from 'react';
+import { Badge, Code, Text, Tooltip, useTheme, useToasts } from '@geist-ui/core';
 
-import { DataTable, type DataTableFilterRenderer, type DataTableColumns, DataTableProps } from '../data-tables';
+import { DataTable, type DataTableFilterRenderer, type DataTableColumns } from '../data-tables';
 
 import { generateDnsDescription } from '@/lib/generate-dns-description';
 import { EMPTY_ARRAY } from '@/lib/constant';
 
-import { useVercelListDNSRecords } from '@/hooks/use-vercel-dns';
+import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
 
 import MoreVertical from '@geist-ui/icons/moreVertical';
 import InfoFill from '@geist-ui/icons/infoFill';
@@ -17,6 +17,7 @@ import { CopyButton } from '../copy-button';
 import type { VercelDNSRecord } from '@/types/dns';
 import type { CellProps, FilterType, FilterTypes } from 'react-table';
 import { DNSDataTableFilter } from './filter';
+import { useConstHandler } from '../../hooks/use-const-handler';
 
 export interface RecordItem {
   id: string,
@@ -36,15 +37,32 @@ export const DNSDataTables = (props: {
   domain: string | undefined
 }) => {
   const theme = useTheme();
+  const { setToast: origSetToast, removeAll: origClearToasts } = useToasts();
+  const setToast = useConstHandler(origSetToast);
+  const clearToasts = useConstHandler(origClearToasts);
 
-  const { data: rawData, isLoading } = useVercelListDNSRecords(props.domain);
+  const { data: rawData, error } = useVercelDNSRecords(props.domain);
+  const hasError = !!error;
+
+  useEffect(() => {
+    if (hasError) {
+      setToast({
+        type: 'error',
+        text: 'Failed to load DNS records',
+        delay: 3000
+      });
+
+      return () => clearToasts();
+    }
+  }, [hasError, setToast, clearToasts]);
+
   const records: RecordItem[] = useMemo(() => {
     const result: RecordItem[] = [];
-
+    // Array.prototype.flat() is way too new and its polyfill is not included in Next.js
     if (!rawData) {
       return result;
     }
-    // Array.prototype.flat() is way too new and its polyfill is not included in Next.js
+
     rawData.forEach(page => {
       page.records.forEach(record => {
         result.push({
@@ -192,7 +210,6 @@ export const DNSDataTables = (props: {
 
   const renderHeaderAction = useCallback((selected: RecordItem[]) => {
     return (
-
       <Menu
         itemMinWidth={120}
         content={(
@@ -239,6 +256,10 @@ export const DNSDataTables = (props: {
     <DNSDataTableFilter setFilter={setFilter} setGlobalFilter={setGlobalFilter} />
   ), []);
 
+  // const deleteRecord = useCallback((record: RecordItem) => {
+  //   mutate();
+  // }, [mutate]);
+
   const searchInRecordTypeFilterFn: FilterType<RecordItem> = useCallback((rows, columnIds, filterValue) => {
     if (!filterValue) return rows;
     return rows.filter(row => row.original.type === filterValue);
@@ -257,38 +278,36 @@ export const DNSDataTables = (props: {
     searchInRecordNameAndValue: searchInRecordNameAndValueFilterFn
   }), [searchInRecordTypeFilterFn, searchInRecordNameAndValueFilterFn]);
 
-  const isDataTablePlaceHolder = useMemo(() => {
-    if (props.domain) {
-      if (!isLoading) {
-        return false;
-      }
-    }
-
-    return true;
-  }, [isLoading, props.domain]);
-
-  const dataTableProps: DataTableProps<RecordItem> = isDataTablePlaceHolder
-    ? {
-      placeHolder: 4,
-      data: EMPTY_ARRAY,
-      columns,
-      renderHeaderAction,
-      renderFilter
-    }
-    : {
-      data: records,
-      columns,
-      renderHeaderAction,
-      renderRowAction,
-      renderFilter,
-      tableOptions: {
-        filterTypes
-      }
-    };
+  const isDataTablePlaceHolder = (!props.domain)
+    // Change to isLoading once https://github.com/vercel/swr/commit/5b3af2bcd4a4680263db19b4f0f625874ac9186f is released
+    || (!rawData && typeof error === 'undefined');
 
   return (
     <div>
-      <DataTable {...dataTableProps} />
+      {
+        isDataTablePlaceHolder
+          ? (
+            <DataTable
+              placeHolder={5}
+              data={EMPTY_ARRAY}
+              columns={columns}
+              renderHeaderAction={renderHeaderAction}
+              renderFilter={renderFilter}
+            />
+          )
+          : (
+            <DataTable
+              data={records}
+              columns={columns}
+              renderHeaderAction={renderHeaderAction}
+              renderRowAction={renderRowAction}
+              renderFilter={renderFilter}
+              tableOptions={{
+                filterTypes
+              }}
+            />
+          )
+      }
       <style jsx>{`
         div {
           width: 100%;

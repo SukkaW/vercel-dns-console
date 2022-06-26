@@ -63,7 +63,6 @@ const DataTable = <T extends TableDataItemBase>({
     prepareRow,
     // Provided by usePagination hook
     page, // only contains rows from the current page
-    // pageOptions,
     pageCount,
     gotoPage,
     setPageSize,
@@ -90,12 +89,10 @@ const DataTable = <T extends TableDataItemBase>({
       hooks.visibleColumns.push(columns => [
         {
           id: 'selection',
-          // TODO: When use Pagination, change to toggleAllPageRowsSelected
-          Header({ toggleAllRowsSelected, getToggleAllRowsSelectedProps }) {
+          Header({ toggleAllPageRowsSelected, getToggleAllRowsSelectedProps }) {
             const props = getToggleAllRowsSelectedProps();
-            return <Checkbox checked={props.checked} onChange={(e) => toggleAllRowsSelected(e.target.checked)} />;
+            return <Checkbox checked={props.checked} onChange={(e) => toggleAllPageRowsSelected(e.target.checked)} />;
           },
-          // TODO: When use Pagination, change to toggleAllPageRowSelected
           Cell({ row }: CellProps<T, any>) {
             if (row.original.disableSelection) {
               return <Lock size={12} className="icon" />;
@@ -291,4 +288,5 @@ const DataTable = <T extends TableDataItemBase>({
 };
 
 const withScaledDataTable = withScale(DataTable) as typeof DataTable & ScaleProps;
+
 export { withScaledDataTable as DataTable };

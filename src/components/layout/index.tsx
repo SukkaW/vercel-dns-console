@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { Link, useTheme, useToasts } from '@geist-ui/core';
 import NextLink from 'next/link';
@@ -90,20 +90,24 @@ export const Layout = (props: {
 
   return (
     <>
-      <div className="navbar-wrapper">
-        <nav className="navbar">
-          <div className="content">
-            <div className="logo">
-              <NextLink href="/">
-                <a aria-label="Go Home">
-                  <VercelLogo />
-                </a>
-              </NextLink>
-            </div>
-            <AvatarMenu name={data?.name} avatar={data?.avatar} />
+      {
+        useMemo(() => (
+          <div className="navbar-wrapper">
+            <nav className="navbar">
+              <div className="content">
+                <div className="logo">
+                  <NextLink href="/">
+                    <a aria-label="Go Home">
+                      <VercelLogo />
+                    </a>
+                  </NextLink>
+                </div>
+                <AvatarMenu name={data?.name} avatar={data?.avatar} />
+              </div>
+            </nav>
           </div>
-        </nav>
-      </div>
+        ), [data?.avatar, data?.name])
+      }
       <Container className="page">
         {props.children}
       </Container>
