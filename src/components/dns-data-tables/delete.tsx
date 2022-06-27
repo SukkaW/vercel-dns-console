@@ -71,15 +71,16 @@ export const DeleteRecordModal = (props: {
         ))
       );
       await mutate();
+      close();
+      setIsLoading(false);
     } catch {
       setToast({
         text: `Fail to delete DNS record${records.length > 1 ? 's' : ''}`,
         type: 'error',
         delay: 3000
       });
+      setIsLoading(false);
     }
-    close();
-    setIsLoading(false);
   }, [close, domain, mutate, records, setToast, token]);
 
   return (

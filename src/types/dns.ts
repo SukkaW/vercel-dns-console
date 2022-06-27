@@ -1,5 +1,7 @@
 import { VercelPagination } from './pagination';
 
+export type VercelSupportedDNSType = 'A' | 'AAAA' | 'ALIAS' | 'CAA' | 'CNAME' | 'MX' | 'SRV' | 'TXT' | 'NS';
+
 export interface VercelDNSRecord {
   id: string
   slug: string

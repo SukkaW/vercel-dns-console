@@ -21,6 +21,6 @@
       ]
     }
   },
-  "include": ["next-env.d.ts", "react-table-config.d.ts", "**/*.ts", "**/*.tsx", "src/components/data-tables/react-table-use-partial-selection.js"],
+  "include": ["next-env.d.ts", "react-table-config.d.ts", "styled-jsx.d.ts", "**/*.ts", "**/*.tsx", "src/components/data-tables/react-table-use-partial-selection.js"],
   "exclude": ["node_modules"]
 }

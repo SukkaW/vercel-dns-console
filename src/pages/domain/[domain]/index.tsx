@@ -2,6 +2,7 @@ import { Button, Spacer, Text } from '@geist-ui/core';
 import { Layout } from '@/components/layout';
 import { DNSDataTables } from '@/components/dns-data-tables';
 import { BreadCrumb } from '@/components/bread-crumb';
+import NextLink from 'next/link';
 
 import { useRouter } from 'next/router';
 
@@ -21,9 +22,11 @@ const DNSPage: NextPageWithLayout = (props) => {
       <div
         className="dns-page__header"
       >
-        <Button type="success">
-          Create record
-        </Button>
+        <NextLink href={`/domain/${domain}/create`}>
+          <Button type="success">
+            Create record
+          </Button>
+        </NextLink>
       </div>
       <Spacer />
       <DNSDataTables domain={domain} />

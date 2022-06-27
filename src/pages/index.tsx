@@ -63,8 +63,6 @@ const DomainsPage: NextPageWithLayout = () => {
   const theme = useTheme();
   const { data, error } = useVercelDomains();
   const hasError = useMemo(() => !!error, [error]);
-  // TODO: Change to isLoading once https://github.com/vercel/swr/commit/5b3af2bcd4a4680263db19b4f0f625874ac9186f is released
-  const isLoading = typeof data === 'undefined' && typeof error === 'undefined';
 
   useEffect(() => {
     if (hasError) {
@@ -131,7 +129,7 @@ const DomainsPage: NextPageWithLayout = () => {
       </Note>
       <Spacer h={2} />
       <DataTable
-        placeHolder={isLoading ? 4 : false}
+        placeHolder={!error && !data ? 4 : false}
         data={processedDomainLists}
         columns={domainDataTableColumns}
         renderRowAction={renderDataTableMenu}

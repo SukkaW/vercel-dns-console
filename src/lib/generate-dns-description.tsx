@@ -16,15 +16,16 @@ export const generateDnsDescription = (
   | 'SRV'
   | 'TXT'
   | 'NS',
-  srvService?: string | null | undefined,
-  srvProtocol?: '_tcp' | '_udp' | '_tls' | null | undefined,
-  srvPort?: number | null | undefined,
-  srvTarget?: string | null | undefined
+  srvService?: string | null | undefined | false,
+  srvProtocol?: '_tcp' | '_udp' | '_tls' | null | undefined | false,
+  srvPort?: number | null | undefined | false,
+  srvTarget?: string | null | undefined | false
 ): React.ReactNode => {
   const nameNode = typeof name === 'string' ? <Text b>{name === '@' || name === '' ? '' : `${name}.`}{domain}</Text> : <Text type="secondary" span>[name]</Text>;
   const valueNode = value
     ? <Text b>{value}</Text>
     : <Text type="secondary" span>[value]</Text>;
+  const valueWithDefault = value || '[value]';
 
   switch (type) {
     case 'A':
@@ -43,34 +44,55 @@ export const generateDnsDescription = (
       const caaValue = value ? value.split(' ') : [];
       const caTag = caaValue[1];
       const caValue = caaValue[2];
+
+      if (caTag === 'issue' || caTag === 'issuewild') {
+        return (
+          <>
+            CA {
+              caValue
+                ? <Text b>{caValue}</Text>
+                : <Text type="secondary" span>[value]</Text>
+            } can issue certificates for {nameNode} and {
+              caTag === 'issue'
+                ? <Text b>only allows specific hostnames</Text>
+                : caTag === 'issuewild'
+                  ? <Text b>only allows wildcards</Text>
+                  : caTag === 'iodef'
+                    ? <Text b>sends violation reports to URL (http:, https:, or mailto:)</Text>
+                    : <Text type="secondary" span>[tag]</Text>
+            }
+          </>
+        );
+      }
+
+      if (caTag === 'iodef') {
+        return (
+          <>
+            CA should send reports to URL {
+              caValue
+                ? <Text b>{caValue}</Text>
+                : <Text type="secondary" span>[value]</Text>
+            } when there is an issue request that violates {nameNode}{'\''}s certificate policy.
+          </>
+        );
+      }
+
       return (
         <>
-          CA {
-            caValue
-              ? <Text b>{caValue}</Text>
-              : <Text type="secondary" span>[value]</Text>
-          } can issue certificates for {nameNode} and {
-            caTag === 'issue'
-              ? <Text b>only allows specific hostnames</Text>
-              : caTag === 'issuewild'
-                ? <Text b>only allows wildcards</Text>
-                : caTag === 'iodef'
-                  ? <Text b>sends violation reports to URL (http:, https:, or mailto:)</Text>
-                  : <Text type="secondary" span>[tag]</Text>
-          }
+          {nameNode} has a CAA value of <Code>{valueWithDefault}</Code>
         </>
       );
     }
     case 'CNAME':
       return (
         <>
-          {nameNode} is an alias of <Code>{valueNode}</Code>
+          {nameNode} is an alias of <Code>{valueWithDefault}</Code>
         </>
       );
     case 'ALIAS':
       return (
         <>
-          {nameNode} is an alias of <Code>{valueNode}</Code> that returns its IPv4/IPv6 address directly
+          {nameNode} is an alias of <Code>{valueWithDefault}</Code> that returns its IPv4/IPv6 address directly
         </>
       );
     case 'MX':
@@ -93,10 +115,12 @@ export const generateDnsDescription = (
 
         const domainNode = srvProtocol && name && srvService
           ? <Text b>
-            {`${srvService}.${srvProtocol}.${srvService}.${name === '@' || name === '' ? '' : `${name}.`}`}{domain}
+            {serviceNode}
+            {`.${srvProtocol}.${name === '@' || name === '' ? '' : `${name}.`}`}{domain}
           </Text>
           : <Text type="secondary" span>
-            {`${srvService}.${srvProtocol}.${srvService}.${name === '@' || name === '' ? '' : `${name}.`}`}{domain}
+            {serviceNode}
+            {`.${srvProtocol}.${name === '@' || name === '' ? '' : `${name}.`}`}{domain}
           </Text>;
 
         const srvTargetNode = srvTarget
@@ -107,9 +131,11 @@ export const generateDnsDescription = (
           ? <Text b>{srvPort}</Text>
           : <Text type="secondary" span>[port]</Text>;
 
+        const formatSrvProtocol = srvProtocol === '_tcp' ? 'TCP' : srvProtocol === '_udp' ? 'UDP' : srvProtocol === '_tls' ? 'TLS' : srvProtocol;
+
         return (
           <>
-            {domainNode} points to {srvTargetNode} and listens on <Text b>{srvProtocol}</Text> port {srvPortNode} for service {serviceNode}
+            {domainNode} points to {srvTargetNode} and listens on <Text b>{formatSrvProtocol}</Text> port {srvPortNode} for service {serviceNode}
           </>
         );
       }
@@ -122,7 +148,7 @@ export const generateDnsDescription = (
     case 'TXT':
       return (
         <>
-          {nameNode} has a record with text content <Code>{valueNode}</Code>
+          {nameNode} has a record with text content <Code>{valueWithDefault}</Code>
         </>
       );
     default:

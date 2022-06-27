@@ -62,7 +62,7 @@ export const DNSDataTables = (props: {
   const theme = useTheme();
   const { setToast, clearToasts } = useToasts();
 
-  const { data: rawData, error } = useVercelDNSRecords(props.domain);
+  const { data: rawData, error, isLoading } = useVercelDNSRecords(props.domain);
   const hasError = !!error;
 
   const {
@@ -284,9 +284,7 @@ export const DNSDataTables = (props: {
     );
   }, [openDeleteRecordModal, theme.palette.accents_3]);
 
-  const isDataTablePlaceHolder = (!props.domain)
-    // TODO: Change to isLoading once https://github.com/vercel/swr/commit/5b3af2bcd4a4680263db19b4f0f625874ac9186f is released
-    || (!rawData && typeof error === 'undefined');
+  const isDataTablePlaceHolder = (!props.domain) || isLoading;
 
   const dataTable = useMemo(() => (
     <DataTable
