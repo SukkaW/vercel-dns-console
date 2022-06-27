@@ -1,6 +1,7 @@
 import type { VercelPagination } from './pagination';
 
 export interface VercelDomain {
+  cdnEnabled: boolean;
   /** If the domain has the ownership verified. */
   verified: boolean
   /** A list of the current nameservers of the domain. */

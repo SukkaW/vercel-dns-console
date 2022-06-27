@@ -1,0 +1,30 @@
+import { Table } from '@geist-ui/core';
+import { useMemo } from 'react';
+
+export const NameServerListTable = (props: {
+  intended: string[] | undefined,
+  actual: string[] | undefined
+}) => {
+  const { intended, actual } = props;
+  const data = useMemo(() => {
+    if (intended && actual) {
+      const result = new Array(Math.max(intended.length, actual.length));
+
+      for (let i = 0; i < result.length; i++) {
+        result[i] ??= {};
+        result[i].intended = intended[i] ?? '';
+        result[i].actual = actual[i] ?? '';
+      }
+
+      return result;
+    }
+    return [];
+  }, [intended, actual]);
+
+  return (
+    <Table data={data} emptyText="Unknown">
+      <Table.Column prop="intended" label="Intended Nameservers" />
+      <Table.Column prop="actual" label="Actual Nameservers" />
+    </Table>
+  );
+};
