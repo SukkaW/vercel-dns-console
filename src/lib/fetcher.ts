@@ -8,12 +8,14 @@ export class HTTPError extends Error {
   }
 }
 
-export const fetcherWithAuthorization = async <T>([key, token]: [string, string]): Promise<T> => {
+export const fetcherWithAuthorization = async <T>([key, token]: [string, string], options?: RequestInit): Promise<T> => {
   const res = await fetch(
     new URL(key, 'https://api.vercel.com/').toString(),
     {
+      ...options,
       headers: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        ...(options?.headers || {})
       }
     }
   );

@@ -1,6 +1,10 @@
 import { Modal, Text, Table } from '@geist-ui/core';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { RecordItem } from '.';
+import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
+import { useVercelApiToken } from '@/hooks/use-vercel-api-token';
+import { fetcherWithAuthorization } from '@/lib/fetcher';
+import { useToasts } from '@/hooks/use-toasts';
 
 const RecordsListTable = (props: { records: RecordItem[] }) => {
   const data = props.records.map(record => ({
@@ -47,9 +51,39 @@ export const DeleteRecordModal = (props: {
   visible: boolean,
   close: () => void
 }) => {
+  const { domain, records, visible, close } = props;
+  const [token] = useVercelApiToken();
+  const { mutate } = useVercelDNSRecords(props.domain);
+  const { setToast } = useToasts();
+
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleDelete = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      await Promise.all(
+        records.map(record => fetcherWithAuthorization(
+          [`/v2/domains/${domain}/records/${record.id}`, token!],
+          {
+            method: 'DELETE'
+          }
+        ))
+      );
+      await mutate();
+    } catch {
+      setToast({
+        text: `Fail to delete DNS record${records.length > 1 ? 's' : ''}`,
+        type: 'error',
+        delay: 3000
+      });
+    }
+    close();
+    setIsLoading(false);
+  }, [close, domain, mutate, records, setToast, token]);
+
   return (
-    <Modal visible={props.visible} onClose={props.close}>
+    <Modal visible={visible} onClose={close}>
       <Modal.Title>Delete Record</Modal.Title>
       <Modal.Content>
         <Text p>
@@ -62,7 +96,7 @@ export const DeleteRecordModal = (props: {
           Cancel
         </Text>
       </Modal.Action>
-      <Modal.Action loading={isLoading}>
+      <Modal.Action loading={isLoading} onClick={handleDelete}>
         <Text span type="error">
           Delete
         </Text>
