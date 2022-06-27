@@ -22,8 +22,10 @@ export const CopyButton = (props: ButtonProps & ScaleProps & { copyValue?: strin
         type: 'error',
         delay: 3000
       });
+
+      return () => clearToasts();
     }
-  }, [hasError, setToast]);
+  }, [hasError, setToast, clearToasts]);
 
   return (
     <Button {...rest} onClick={handleClick} icon={icon} type={copied ? 'success' : 'default'} />

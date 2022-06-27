@@ -1,7 +1,7 @@
 import type React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import { Link, useTheme } from '@geist-ui/core';
+import { Link, Popover, Spacer, Text, useTheme } from '@geist-ui/core';
 import NextLink from 'next/link';
 import Image, { type ImageLoader } from 'next/image';
 
@@ -15,6 +15,8 @@ import { useToasts } from '@/hooks/use-toasts';
 
 import { Container } from '../container';
 import { Menu, MenuItem } from '../menu';
+
+import GitHub from '@geist-ui/icons/github';
 
 const vercelAvatarLoader: ImageLoader = ({ src, width }) => {
   return `${src}?s=${width}`;
@@ -42,17 +44,26 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
   return (
     <>
       <Menu
+        itemMinWidth={150}
         content={(
           <>
-            <MenuItem onClick={handleLogoutClick}>
-              Log Out
-            </MenuItem>
             <MenuItem>
               <NextLink href="/">
                 <Link>
                   Dashboard
                 </Link>
               </NextLink>
+            </MenuItem>
+            <MenuItem>
+              <GitHub size={16} />
+              <Spacer inline w={1 / 3} />
+              <Link href="https://github.com/sukkaw/vercel-dns-console">
+                Source Code
+              </Link>
+            </MenuItem>
+            <Popover.Item line />
+            <MenuItem onClick={handleLogoutClick}>
+              <Text span type="error">Log Out</Text>
             </MenuItem>
           </>
         )}

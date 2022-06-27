@@ -17,7 +17,18 @@ export const Notice = memo(() => (
         Vercel
       </Link>.
       {' '}
-      The website is not affiliated or associated with Vercel, Inc.
+      The source code of the website can be found on the
+      {' '}
+      <Link
+        href="https://github.com/sukkaw/vercel-dns-console"
+        target="_blank"
+        rel="external nofollow noreferrer noopenner"
+        icon
+        color
+        underline
+      >
+        GitHub
+      </Link>.
     </Text>
     <Spacer h={0.5} />
     <Text p>

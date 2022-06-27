@@ -2,6 +2,7 @@ import React, { forwardRef, useCallback, useEffect, useMemo } from 'react';
 
 import { Text, Link, useTheme, Spacer, Note } from '@geist-ui/core';
 import NextLink from 'next/link';
+import NextHead from 'next/head';
 
 import { Layout } from '@/components/layout';
 import { DataTable, type DataTableColumns } from '../components/data-tables';
@@ -110,6 +111,9 @@ const DomainsPage: NextPageWithLayout = () => {
 
   return (
     <div>
+      <NextHead>
+        <title>Domains</title>
+      </NextHead>
       <Text h1>Domains</Text>
       <Note type="warning">
         You can only manage your DNS records here. Please go to

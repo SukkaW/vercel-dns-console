@@ -7,6 +7,7 @@ import { useToasts } from '@/hooks/use-toasts';
 import { useRouter } from 'next/router';
 
 import { Button, Input, Link, Note, Spacer, Text } from '@geist-ui/core';
+import NextHead from 'next/head';
 import { fetcherWithAuthorization } from '../lib/fetcher';
 
 import { Container } from '@/components/container';
@@ -83,16 +84,6 @@ const LoginForm = () => {
 
   return (
     <div className="login-form">
-      <style jsx>
-        {`
-          .login-form {
-            display: flex;
-            flex-direction: column;
-            align-items: baseline;
-            flex-wrap: wrap;
-          }
-        `}
-      </style>
       <Input
         value={inputs}
         width="100%"
@@ -131,43 +122,52 @@ const LoginForm = () => {
       </Note>
       <Spacer />
       <Notice />
+      <style jsx>{`
+        .login-form {
+          display: flex;
+          flex-direction: column;
+          align-items: baseline;
+          flex-wrap: wrap;
+        }
+      `}</style>
     </div>
   );
 };
 
-const Login: NextPageWithLayout = () => {
+const LoginPage: NextPageWithLayout = () => {
   return (
     <div className="root">
-      <style jsx>
-        {`
-          .root {
-            display: flex;
-            justify-content: center;
-            height: calc(100vh - 100px);
-          }
-
-          .login {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-          }
-        `}
-      </style>
+      <NextHead>
+        <title>Log In</title>
+      </NextHead>
       <div className="login">
         <Text h3>
           Log in to Vercel DNS
         </Text>
         <LoginForm />
       </div>
+      <style jsx>{`
+        .root {
+          display: flex;
+          justify-content: center;
+          height: calc(100vh - 100px);
+        }
+
+        .login {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+      `}</style>
     </div>
   );
 };
 
-Login.getLayout = (children, props) => (
+LoginPage.getLayout = (children, props) => (
   <Container>
     {children}
   </Container>
 );
 
-export default Login;
+export default LoginPage;

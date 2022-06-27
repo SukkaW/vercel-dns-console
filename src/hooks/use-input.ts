@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
 
-export type BindingsChangeTarget<T extends string | number> =
+export type BindingsChangeTarget =
   | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  | T;
+  | string;
 
-export const useInput = <T extends string | number>(
-  initialValue: T
+export const useInput = (
+  initialValue: string
 ) => {
-  const [state, setState] = useState<T>(initialValue);
+  const [state, setState] = useState(initialValue);
 
   return {
     state,
@@ -15,11 +15,11 @@ export const useInput = <T extends string | number>(
     reset: useCallback(() => setState(initialValue), [initialValue]),
     bindings: {
       value: state,
-      onChange: (event: BindingsChangeTarget<T>) => {
-        if (typeof event === 'object' && event.target) {
-          setState(event.target.value);
+      onChange: (event: BindingsChangeTarget) => {
+        if (typeof event === 'string') {
+          setState(event);
         } else {
-          setState(event as T);
+          setState(event.target.value);
         }
       }
     }

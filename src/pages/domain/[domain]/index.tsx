@@ -6,6 +6,7 @@ import { DNSDataTables } from '@/components/dns-data-tables';
 import { BreadCrumb } from '@/components/bread-crumb';
 import { NameServerListTable } from '@/components/nameserver-table';
 import NextLink from 'next/link';
+import NextHead from 'next/head';
 
 import { useRouter } from 'next/router';
 import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
@@ -30,8 +31,13 @@ const DNSPage: NextPageWithLayout = () => {
     setIsRefreshing(false);
   }, [mutate]);
 
+  const title = `DNS${domain ? `: ${domain}` : ''}`;
+
   return (
     <div className="dns-page">
+      <NextHead>
+        <title>{title}</title>
+      </NextHead>
       <BreadCrumb items={[
         { label: 'Domains', href: '/' },
         { id: 'dnspage', label: domain ?? '. . .' }
