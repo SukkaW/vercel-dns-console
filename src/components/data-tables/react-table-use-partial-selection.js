@@ -71,7 +71,7 @@ const defaultGetToggleAllRowsSelectedProps = (props, { instance }) => [
     title: 'Toggle All Rows Selected',
     indeterminate: Boolean(
       !instance.isAllRowsSelected
-        && Object.keys(instance.state.selectedRowIds).length
+      && Object.keys(instance.state.selectedRowIds).length
     )
   }
 ];
@@ -89,7 +89,7 @@ const defaultGetToggleAllPageRowsSelectedProps = (props, { instance }) => [
     title: 'Toggle All Current Page Rows Selected',
     indeterminate: Boolean(
       !instance.isAllPageRowsSelected
-        && instance.page.some(({ id }) => instance.state.selectedRowIds[id])
+      && instance.page.some(({ id }) => instance.state.selectedRowIds[id])
     )
   }
 ];
@@ -214,16 +214,18 @@ function reducer(state, action, previousState, instance) {
     const handleRowById = id => {
       const row = rowsById[id];
 
-      if (!row.isGrouped) {
-        if (selectAll) {
-          newSelectedRowIds[id] = true;
-        } else {
-          delete newSelectedRowIds[id];
+      if (row) {
+        if (!row.isGrouped) {
+          if (selectAll) {
+            newSelectedRowIds[id] = true;
+          } else {
+            delete newSelectedRowIds[id];
+          }
         }
-      }
 
-      if (selectSubRows && getSubRows(row)) {
-        return getSubRows(row).forEach(row => handleRowById(row.id));
+        if (selectSubRows && getSubRows(row)) {
+          return getSubRows(row).forEach(row => handleRowById(row.id));
+        }
       }
     };
 
