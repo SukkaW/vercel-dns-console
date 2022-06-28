@@ -8,6 +8,7 @@
     "start": "next start",
     "export": "next export",
     "lint": "next lint",
+    "analyze": "ANALYZE=true next build",
     "postinstall": "patch-package"
   },
   "dependencies": {
@@ -26,6 +27,7 @@
     "swr": "^2.0.0-beta.5"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^12.1.6",
     "@types/node": "18.0.0",
     "@types/react": "18.0.14",
     "@types/react-dom": "18.0.5",
