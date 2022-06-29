@@ -1,4 +1,4 @@
-import { Table } from '@geist-ui/core';
+import { Table, Text } from '@geist-ui/core';
 import { useMemo } from 'react';
 
 export const NameServerListTable = (props: {
@@ -13,7 +13,20 @@ export const NameServerListTable = (props: {
       for (let i = 0; i < result.length; i++) {
         result[i] ??= {};
         result[i].intended = intended[i] ?? '';
-        result[i].actual = actual[i] ?? '';
+
+        if (actual[i]) {
+          if (intended.includes(actual[i])) {
+            result[i].actual = actual[i];
+          } else {
+            result[i].actual = (
+              <Text type="error">
+                {actual[i]}
+              </Text>
+            );
+          }
+        } else {
+          result[i].actual = '';
+        }
       }
 
       return result;
