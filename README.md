@@ -14,16 +14,31 @@ https://vercel-dns.skk.moe
 - [SWR](https://swr.vercel.app) - React Hooks for Data Fetching
 - [React Table V7](https://react-table-v7.tanstack.com/) - Lightweight and Extensible Data Tables for React
 
-## TODO
+## Features
 
+- [x] List existing domains
+- [x] Create a new DNS record
+- [x] Delete an existing DNS record
+- [x] Delete multiple DNS records
+- [x] Search and filter DNS records
 - [ ] Edit an existing record
+
+## Build
+
+```bash
+git clone https://github.com/sukkaw/vercel-dns-console.git
+cd vercel-dns-console
+npm i
+npm run dev # npm run build / npm run start / npm run analyze
+```
 
 ## License
 
-MIT
+[MIT](./LICENSE)
 
 ----
 
-**Vercel DNS Console (Unofficial)** © [Sukka](https://github.com/SukkaW), Authored and maintained by Sukka with help from contributors ([list](https://github.com/SukkaW/vercel-dns-console/graphs/contributors)).
+**Vercel DNS Console (Unofficial)** © [Sukka](https://github.com/SukkaW), Released under the [MIT](./LICENSE) License.
+Authored and maintained by Sukka with help from contributors ([list](https://github.com/SukkaW/vercel-dns-console/graphs/contributors)).
 
 > [Personal Website](https://skk.moe) · [Blog](https://blog.skk.moe) · GitHub [@SukkaW](https://github.com/SukkaW) · Telegram Channel [@SukkaChannel](https://t.me/SukkaChannel) · Twitter [@isukkaw](https://twitter.com/isukkaw) · Keybase [@sukka](https://keybase.io/sukka)
