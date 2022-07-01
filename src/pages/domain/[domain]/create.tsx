@@ -311,7 +311,9 @@ const CreateRecprdPage: NextPageWithLayout = () => {
         await fetcherWithAuthorization(
           [`/v2/domains/${domain}/records`, token],
           {
-            method: 'POST',
+            method: 'post',
+            mode: 'cors',
+            credentials: 'include',
             body: JSON.stringify(recordData),
             headers: {
               'Content-Type': 'application/json'
