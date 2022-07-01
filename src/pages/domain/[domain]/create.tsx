@@ -323,7 +323,7 @@ const CreateRecprdPage: NextPageWithLayout = () => {
         setIsSubmitting(false);
       } catch (e) {
         setIsSubmitting(false);
-
+        console.info(e);
         let errorMsg = '';
         if (e instanceof HTTPError) {
           console.log(e.info);

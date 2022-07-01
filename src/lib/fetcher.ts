@@ -15,14 +15,14 @@ export const fetcherWithAuthorization = async <T>([key, token]: [string, string]
       ...options,
       headers: {
         Authorization: `Bearer ${token}`,
-        ...(options?.headers || {})
+        ...options?.headers
       }
     }
   );
+  const json = await res.json();
   if (!res.ok) {
     // Attach extra info to the error object.
-    const error = new HTTPError('An error occurred while fetching the data.', await res.json(), res.status);
-    throw error;
+    throw new HTTPError('An error occurred while fetching the data.', json, res.status);
   }
-  return res.json();
+  return json;
 };

@@ -7,6 +7,7 @@ const withBundleAnalyzer = process.env.ANALYZE === 'true'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: true,
   experimental: {
     browsersListForSwc: true,
     legacyBrowsers: false,
