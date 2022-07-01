@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 
-import { Button, Card, Spacer, Text } from '@geist-ui/core';
+import { Button, Card, Note, Spacer, Text } from '@geist-ui/core';
 import { Layout } from '@/components/layout';
 import { DNSDataTables } from '@/components/dns-data-tables';
 import { BreadCrumb } from '@/components/bread-crumb';
@@ -11,6 +11,7 @@ import NextHead from 'next/head';
 import { useRouter } from 'next/router';
 import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
 import { useVercelDomainInfo } from '@/hooks/use-vercel-domains';
+import { useReadonlyMode } from '@/hooks/use-readonly-mode';
 
 import Refresh from '@geist-ui/icons/refreshCcw';
 
@@ -22,6 +23,7 @@ const DNSPage: NextPageWithLayout = () => {
 
   const { mutate } = useVercelDNSRecords(domain);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [readOnlyMode] = useReadonlyMode();
 
   const domainInfo = useVercelDomainInfo(domain);
 
@@ -45,16 +47,36 @@ const DNSPage: NextPageWithLayout = () => {
       <Text h1 font={2}>{domain ?? '. . .'}</Text>
       <Spacer />
       <Text h2 font={1.5}>DNS</Text>
+      {
+        readOnlyMode && (
+          <>
+            <Note type="warning">
+              You have entered read-only mode, you can not create, edit, or delete any DNS records.
+            </Note>
+            <Spacer />
+          </>
+        )
+      }
       <div
         className="dns-page__header"
       >
         <Button auto onClick={handleRefreshButtonClick} loading={isRefreshing} icon={<Refresh />} />
         <Spacer inline />
-        <NextLink href={`/domain/${domain}/create`}>
-          <Button type="success">
-            Create record
-          </Button>
-        </NextLink>
+        {
+          readOnlyMode
+            ? (
+              <Button disabled>
+                Create record
+              </Button>
+            )
+            : (
+              <NextLink href={`/domain/${domain}/create`}>
+                <Button type="success">
+                  Create record
+                </Button>
+              </NextLink>
+            )
+        }
       </div>
       <Spacer />
       {
@@ -78,7 +100,7 @@ const DNSPage: NextPageWithLayout = () => {
           justify-content: flex-end;
         }
       `}</style>
-    </div>
+    </div >
   );
 };
 

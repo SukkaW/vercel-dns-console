@@ -17,6 +17,7 @@ import { Container } from '../container';
 import { Menu, MenuItem } from '../menu';
 
 import GitHub from '@geist-ui/icons/github';
+import { AntiAdBlockModal } from '../anti-adblock';
 
 const vercelAvatarLoader: ImageLoader = ({ src, width }) => {
   return `${src}?s=${width}`;
@@ -122,6 +123,7 @@ export const Layout = (props: {
       <Container className="page">
         {props.children}
       </Container>
+      <AntiAdBlockModal />
       <style jsx>{`
     :global(section.page.page) {
       margin-top: 64px;

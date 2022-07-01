@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { useVercelApiToken } from '@/hooks/use-vercel-api-token';
 import { useToasts } from '@/hooks/use-toasts';
 import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
+import { useReadonlyMode } from '@/hooks/use-readonly-mode';
 
 import { generateDnsDescription } from '@/lib/generate-dns-description';
 import { VERCEL_SUPPORTED_DNS_RECORDS_TYPE } from '@/lib/constant';
@@ -18,6 +19,7 @@ import { fetcherWithAuthorization, HTTPError } from '@/lib/fetcher';
 import type { NextPageWithLayout } from '@/pages/_app';
 import type { VercelSupportedDNSType } from '@/types/dns';
 import { validateDnsRecord } from '@/lib/validate-record';
+import { noop } from '@/lib/util';
 
 type CAATag = 'issue' | 'issuewild' | 'iodef';
 type SrvProtocol = '_tcp' | '_udp' | '_tls';
@@ -62,6 +64,7 @@ const CreateRecprdPage: NextPageWithLayout = () => {
   const [token] = useVercelApiToken();
   const { mutate } = useVercelDNSRecords(domain);
   const { setToast } = useToasts();
+  const [readOnlyMode] = useReadonlyMode();
 
   const { state: recordName, bindings: recordNameBindings } = useInput('');
   const [recordType, setRecordType] = useState<VercelSupportedDNSType>('A');
@@ -425,7 +428,18 @@ const CreateRecprdPage: NextPageWithLayout = () => {
       </Grid.Container>
       <Spacer h={2} />
       <div className="create-record-action">
-        <Button type="success" loading={isSubmitting} onClick={handleSubmit}>Create Record</Button>
+        <Button
+          disabled={readOnlyMode}
+          type="success"
+          loading={isSubmitting}
+          onClick={readOnlyMode ? noop : handleSubmit}
+        >
+          {
+            readOnlyMode
+              ? 'You can\'t create record in read-only mode'
+              : 'Create Record'
+          }
+        </Button>
       </div>
       <style jsx>{`
         .form-item {

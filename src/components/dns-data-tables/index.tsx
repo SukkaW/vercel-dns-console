@@ -8,6 +8,7 @@ import { generateDnsDescription } from '@/lib/generate-dns-description';
 import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
 import { useToasts } from '@/hooks/use-toasts';
 import { useModal } from '@/hooks/use-modal';
+import { useReadonlyMode } from '@/hooks/use-readonly-mode';
 
 import MoreVertical from '@geist-ui/icons/moreVertical';
 import InfoFill from '@geist-ui/icons/infoFill';
@@ -61,6 +62,7 @@ export const DNSDataTables = (props: {
 }) => {
   const theme = useTheme();
   const { setToast, clearToasts } = useToasts();
+  const [readOnlyMode] = useReadonlyMode();
 
   const { data: rawData, error, isLoading } = useVercelDNSRecords(props.domain);
   const hasError = !!error;
@@ -240,14 +242,24 @@ export const DNSDataTables = (props: {
     <Menu
       itemMinWidth={120}
       content={(
-        <MenuItem onClick={() => {
-          setRecordsToBeDeleted(selected);
-          openDeleteRecordModal();
-        }}>
-          <Text span type={selected.length ? 'error' : 'secondary'}>
-            Delete ({selected.length})
-          </Text>
-        </MenuItem>
+        readOnlyMode
+          ? (
+            <MenuItem disableAutoClose>
+              <Text span type="secondary" w={8}>
+                Delete is disabled
+              </Text>
+            </MenuItem>
+          )
+          : (
+            <MenuItem onClick={() => {
+              setRecordsToBeDeleted(selected);
+              openDeleteRecordModal();
+            }}>
+              <Text span type={selected.length ? 'error' : 'secondary'}>
+                Delete ({selected.length})
+              </Text>
+            </MenuItem>
+          )
       )}
     >
       <Badge.Anchor>
@@ -255,34 +267,44 @@ export const DNSDataTables = (props: {
         <MoreVertical color={theme.palette.accents_3} size={16} />
       </Badge.Anchor>
     </Menu>
-  ), [openDeleteRecordModal, theme.palette.accents_3]);
+  ), [openDeleteRecordModal, readOnlyMode, theme.palette.accents_3]);
 
   const renderRowAction = useCallback((record: RecordItem) => {
     return (
       <Menu
         itemMinWidth={100}
         content={(
-          <>
-            <MenuItem>
-              <Text span>
-                Edit
-              </Text>
-            </MenuItem>
-            <MenuItem onClick={() => {
-              setRecordsToBeDeleted([record]);
-              openDeleteRecordModal();
-            }}>
-              <Text span type="error">
-                Delete
-              </Text>
-            </MenuItem>
-          </>
+          readOnlyMode
+            ? (
+              <MenuItem disableAutoClose>
+                <Text span type="secondary" w={12}>
+                  Edit and Delete are disabled
+                </Text>
+              </MenuItem>
+            )
+            : (
+              <>
+                <MenuItem>
+                  <Text span>
+                    Edit
+                  </Text>
+                </MenuItem>
+                <MenuItem onClick={() => {
+                  setRecordsToBeDeleted([record]);
+                  openDeleteRecordModal();
+                }}>
+                  <Text span type="error">
+                    Delete
+                  </Text>
+                </MenuItem>
+              </>
+            )
         )}
       >
         <MoreVertical color={theme.palette.accents_3} size={16} />
       </Menu>
     );
-  }, [openDeleteRecordModal, theme.palette.accents_3]);
+  }, [openDeleteRecordModal, readOnlyMode, theme.palette.accents_3]);
 
   const isDataTablePlaceHolder = (!props.domain) || isLoading;
 
