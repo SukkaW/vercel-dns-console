@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState, useTransition } from 'react';
 
-import { Input, Select, Spacer, Spinner, useTheme } from '@geist-ui/core';
+import { Input, Select, Spacer, Spinner, useScale, useTheme, withScale } from '@geist-ui/core';
 import { VERCEL_SUPPORTED_DNS_RECORDS_TYPE } from '@/lib/constant';
 import Search from '@geist-ui/icons/search';
 
@@ -13,10 +13,11 @@ export interface DNSDataTableFilterProps<T extends TableDataItemBase> {
   setGlobalFilter: (updater: string) => void,
 }
 
-export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataTableFilterProps<T>) => {
+const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataTableFilterProps<T>) => {
   const theme = useTheme();
   const [input, setInput] = useState('');
-  const [recordType, setRecordType] = useState<VercelDNSRecord['type'] | null>(null);
+  const [recordType, setRecordType] = useState<VercelDNSRecord['type'][]>([]);
+  const { SCALES } = useScale();
 
   const [isSearchQueryPending, startSearchQueryTransition] = useTransition();
   const [, startRecordTypeTransition] = useTransition();
@@ -28,10 +29,9 @@ export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataT
   }, [setFilter]);
 
   const handleRecordTypeChange = useCallback((value: string | string[]) => {
-    if (typeof value === 'string') {
-      setRecordType(value as VercelDNSRecord['type']);
-      startRecordTypeTransition(() => setFilter('type', value));
-    }
+    const arr = (typeof value === 'string' ? [value] : value) as Array<VercelDNSRecord['type']>;
+    setRecordType(arr);
+    startRecordTypeTransition(() => setFilter('type', arr.length === 0 ? null : arr));
   }, [setFilter]);
 
   const seatchQueryInputElement = useMemo(() => (
@@ -41,6 +41,7 @@ export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataT
       icon={isSearchQueryPending ? <Spinner scale={1 / 2} /> : <Search />}
       className="search-input"
       placeholder="Filter records by names and values"
+      clearable
       h={1}
     />
   ), [handleInput, isSearchQueryPending, input]);
@@ -50,9 +51,11 @@ export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataT
       value={recordType ?? undefined}
       onChange={handleRecordTypeChange}
       placeholder="Record Type"
+      multiple
+      clearable
       className="select-record-type"
+      h={1}
     >
-      <Select.Option key={recordType} value="">All Record Type</Select.Option>
       {VERCEL_SUPPORTED_DNS_RECORDS_TYPE.map((recordType) => (
         <Select.Option key={recordType} value={recordType}>{recordType}</Select.Option>
       ))}
@@ -76,8 +79,13 @@ export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataT
           flex-direction: column;
         }
 
+        div :global(.multiple.select-record-type) {
+          min-width: ${SCALES.font(15)};
+          padding: ${SCALES.pt(1 / 3)} ${SCALES.pr(1.5)} ${SCALES.pb(1 / 3)} ${SCALES.pl(1 / 2)};
+        }
+
         @media screen and (max-width: ${theme.breakpoints.sm.min}) {
-          div :global(.select-record-type) {
+          div :global(.multiple.select-record-type) {
             flex-grow: 1;
             max-width: 100%;
           }
@@ -98,7 +106,26 @@ export const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataT
           display: flex;
           flex-grow: 1;
         }
+
+        div :global(.multiple) {
+          height: var(--select-height);
+          max-height: var(--select-height);
+        }
+
+        div :global(.item .option) {
+          height: ${SCALES.height(1)};
+        }
+
+        div :global(.item .option span) {
+          line-height: ${SCALES.font(1)};
+        }
       `}</style>
     </div>
   );
+};
+
+const ScaledDNSDataTableFilter = withScale(DNSDataTableFilter) as typeof DNSDataTableFilter;
+
+export {
+  ScaledDNSDataTableFilter as DNSDataTableFilter
 };

@@ -37,7 +37,7 @@ export interface RecordItem {
 
 const searchInRecordTypeFilterFn: FilterType<RecordItem> = (rows, columnIds, filterValue) => {
   if (!filterValue) return rows;
-  return rows.filter(row => row.original.type === filterValue);
+  return rows.filter(row => filterValue.includes(row.original.type));
 };
 
 const searchInRecordNameAndValueFilterFn: FilterType<RecordItem> = (rows, columnIds, filterValue) => {
