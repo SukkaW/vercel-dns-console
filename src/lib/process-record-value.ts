@@ -1,6 +1,6 @@
 import type { DNSFormState } from '../components/edit-dns-record';
 
-export const processRecordValue = (
+const processRecordValue = (
   {
     caaTag,
     caaValue,
@@ -31,7 +31,9 @@ type RecordData = {
 };
 
 export const getRecordData = (
-  {
+  recordInfo: DNSFormState
+): RecordData => {
+  const {
     recordName,
     ttl,
     recordType,
@@ -42,9 +44,8 @@ export const getRecordData = (
     srvPriority,
     srvTarget,
     mxPriority
-  }: DNSFormState,
-  processedRecordValue: string
-): RecordData => {
+  } = recordInfo;
+  const processedRecordValue = processRecordValue(recordInfo);
   const recordData: RecordData = {
     name: recordType === 'SRV'
       ? `${srvService ? `${srvService}.` : ''}${srvProtocol}.${recordName === '@' ? '' : recordName}`

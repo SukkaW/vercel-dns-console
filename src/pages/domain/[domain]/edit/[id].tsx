@@ -15,7 +15,7 @@ import { useToasts } from '@/hooks/use-toasts';
 import type { NextPageWithLayout } from '@/pages/_app';
 import { validateDnsRecord } from '@/lib/validate-record';
 import { fetcherWithAuthorization, HTTPError } from '@/lib/fetcher';
-import { getRecordData, processRecordValue } from '@/lib/process-record-value';
+import { getRecordData } from '@/lib/process-record-value';
 
 const EditRecordPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -115,8 +115,7 @@ const EditRecordPage: NextPageWithLayout = () => {
 
       setIsSubmitting(true);
 
-      const processedRecordValue = processRecordValue(recordInfo);
-      const recordData = getRecordData(recordInfo, processedRecordValue);
+      const recordData = getRecordData(recordInfo);
 
       try {
         await fetcherWithAuthorization(

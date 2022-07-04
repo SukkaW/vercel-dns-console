@@ -14,7 +14,7 @@ import { fetcherWithAuthorization, HTTPError } from '@/lib/fetcher';
 import { validateDnsRecord } from '@/lib/validate-record';
 
 import type { NextPageWithLayout } from '@/pages/_app';
-import { getRecordData, processRecordValue } from '@/lib/process-record-value';
+import { getRecordData } from '@/lib/process-record-value';
 
 const CreateRecordPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -48,8 +48,7 @@ const CreateRecordPage: NextPageWithLayout = () => {
 
       setIsSubmitting(true);
 
-      const processedRecordValue = processRecordValue(recordInfo);
-      const recordData = getRecordData(recordInfo, processedRecordValue);
+      const recordData = getRecordData(recordInfo);
 
       try {
         await fetcherWithAuthorization(
