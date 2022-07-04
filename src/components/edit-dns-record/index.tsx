@@ -327,7 +327,7 @@ export const EditDNSRecord = ({
             isSrv && srvPort,
             isSrv && srvTarget
           )
-          : <Loading>Loading</Loading>
+          : <Loading className="dns-descr-loading">Loading</Loading>
         }
       </div>
       <Spacer />
@@ -434,6 +434,9 @@ export const EditDNSRecord = ({
         }
         div.edit-record :global(.select-type) {
           width: 100%;
+        }
+        div.edit-record :global(.dns-descr-loading .loading) {
+          justify-content: flex-start;
         }
         .create-record-action {
           display: flex;
