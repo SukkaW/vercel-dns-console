@@ -21,7 +21,7 @@ https://vercel-dns.skk.moe
 - [x] Delete an existing DNS record
 - [x] Delete multiple DNS records
 - [x] Search and filter DNS records
-- [ ] Edit an existing record
+- [x] Edit an existing record
 
 ## Build
 

@@ -26,7 +26,7 @@ interface DomainItem {
 const DomainLink = forwardRef((props: { name: string }, ref: React.ForwardedRef<HTMLAnchorElement>) => {
   return (
     <>
-      <NextLink href={`/domain/${props.name}`} prefetch={false}>
+      <NextLink href={`/domain/${props.name}`} prefetch={false} passHref>
         <Link ref={ref} className="domain">{props.name}</Link>
       </NextLink>
     </>
@@ -42,9 +42,7 @@ const domainDataTableColumns: DataTableColumns<DomainItem>[] = [
     accessor: 'name',
     Header: 'Domain',
     Cell: ({ value }) => (
-      <NextLink href={'#'}>
-        <DomainLink name={value} />
-      </NextLink>
+      <DomainLink name={value} />
     )
   },
   {

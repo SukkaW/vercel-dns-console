@@ -15,6 +15,7 @@ import InfoFill from '@geist-ui/icons/infoFill';
 
 import { Menu, MenuItem } from '../menu';
 import { CopyButton } from '../copy-button';
+import NextLink from 'next/link';
 
 import type { VercelDNSRecord } from '@/types/dns';
 import type { CellProps, FilterType, FilterTypes } from 'react-table';
@@ -284,11 +285,13 @@ export const DNSDataTables = (props: {
             )
             : (
               <>
-                <MenuItem>
-                  <Text span>
-                    Edit
-                  </Text>
-                </MenuItem>
+                <NextLink href={`/domain/${props.domain}/edit/${record.id}`} passHref>
+                  <a>
+                    <MenuItem>
+                      Edit
+                    </MenuItem>
+                  </a>
+                </NextLink>
                 <MenuItem onClick={() => {
                   setRecordsToBeDeleted([record]);
                   openDeleteRecordModal();
@@ -304,7 +307,7 @@ export const DNSDataTables = (props: {
         <MoreVertical color={theme.palette.accents_3} size={16} />
       </Menu>
     );
-  }, [openDeleteRecordModal, readOnlyMode, theme.palette.accents_3]);
+  }, [openDeleteRecordModal, props.domain, readOnlyMode, theme.palette.accents_3]);
 
   const isDataTablePlaceHolder = (!props.domain) || isLoading;
 

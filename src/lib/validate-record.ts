@@ -1,18 +1,6 @@
-import { VercelSupportedDNSType } from '../types/dns';
 import { VERCEL_SUPPORTED_DNS_RECORDS_TYPE } from './constant';
 import { isIPv4, isIPv6 } from 'is-ip';
-
-interface DNSRecordInput {
-  ttl: number | null,
-  recordType: VercelSupportedDNSType,
-  recordValue: string,
-  caaTag: string,
-  caaValue: string,
-  mxPriority?: number | null,
-  srvPort?: number | null,
-  srvWeight?: number | null,
-  srvPriority?: number | null
-}
+import type { DNSFormState } from '../components/edit-dns-record';
 
 const validCaaTag = new Set(['issue', 'issuewild', 'iodef']);
 
@@ -32,7 +20,7 @@ export const validateDnsRecord = ({
   srvPort,
   srvWeight,
   srvPriority
-}: DNSRecordInput): boolean => {
+}: DNSFormState): boolean => {
   if (!VERCEL_SUPPORTED_DNS_RECORDS_TYPE.includes(recordType)) throw `"${recordType}" is not a supported DNS type`;
 
   if (recordType === 'SRV') {
@@ -42,13 +30,13 @@ export const validateDnsRecord = ({
     if (!isInteger(srvWeight)) throw 'Invalid SRV weight';
     if (!srvPriority) throw 'Missing SRV priority';
     if (!isInteger(srvPriority)) throw 'Invalid SRV priority';
+  } else if (recordType === 'CAA') {
+    if (!validCaaTag.has(caaTag)) throw `Invalid CAA tag "${caaTag}"`;
+    if (!caaValue) throw 'Missing CAA value';
   } else {
     if (!recordValue) throw 'Missing record value';
 
-    if (recordType === 'CAA') {
-      if (!validCaaTag.has(caaTag)) throw `Invalid CAA tag "${caaTag}"`;
-      if (!caaValue) throw 'Missing CAA value';
-    } else if (recordType === 'MX') {
+    if (recordType === 'MX') {
       if (!mxPriority) throw 'Missing MX priority';
       if (!isInteger(mxPriority)) throw 'Invalid MX priority';
     } else if (recordType === 'A') {
