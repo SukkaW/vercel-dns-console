@@ -16,6 +16,7 @@ import type { NextPageWithLayout } from '@/pages/_app';
 import { validateDnsRecord } from '@/lib/validate-record';
 import { fetcherWithAuthorization, HTTPError } from '@/lib/fetcher';
 import { getRecordData } from '@/lib/process-record-value';
+import { NotFoundError } from '../../../../components/not-found/404';
 
 const EditRecordPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -41,6 +42,8 @@ const EditRecordPage: NextPageWithLayout = () => {
     }
     return null;
   }, [data, recordId]);
+
+  const isNotFound = typeof data !== 'undefined' && record === null;
 
   const initialState = useMemo(() => {
     if (record) {
@@ -155,17 +158,27 @@ const EditRecordPage: NextPageWithLayout = () => {
       <BreadCrumb items={[
         { label: 'Domains', href: '/' },
         { id: 'dnspage', href: `/domain/${domain}`, label: domain ?? '. . .' },
-        { id: 'edit', label: 'Edit Record' }
+        { id: 'edit', label: `Edit ${record?.type || ''} Record` }
       ]} />
-      <Text h1>Edit Record</Text>
-      <EditDNSRecord
-        key={record?.id ?? 'loading'}
-        domain={domain}
-        isSubmitting={isSubmitting}
-        initialState={initialState}
-        onSubmit={handleSubmit}
-        isEdit={true}
-      />
+      {
+        isNotFound
+          ? (
+            <NotFoundError title="The record can not be found" />
+          )
+          : (
+            <>
+              <Text h1>Edit {record?.type || ''} Record</Text>
+              <EditDNSRecord
+                key={record?.id ?? 'loading'}
+                domain={domain}
+                isSubmitting={isSubmitting}
+                initialState={initialState}
+                onSubmit={handleSubmit}
+                isEdit={true}
+              />
+            </>
+          )
+      }
     </div>
   );
 };

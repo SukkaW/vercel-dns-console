@@ -410,7 +410,7 @@ export const EditDNSRecord = ({
       <Spacer h={2} />
       <div className="create-record-action">
         <Button
-          disabled={readOnlyMode}
+          disabled={readOnlyMode || isInitialStateLoading}
           type="success"
           loading={isSubmitting}
           onClick={readOnlyMode ? noop : handleSubmit}

@@ -16,12 +16,14 @@ import { useReadonlyMode } from '@/hooks/use-readonly-mode';
 import Refresh from '@geist-ui/icons/refreshCcw';
 
 import type { NextPageWithLayout } from '@/pages/_app';
+import { HTTPError } from '@/lib/fetcher';
+import { NotFoundError } from '@/components/not-found/404';
 
 const DNSPage: NextPageWithLayout = () => {
   const router = useRouter();
   const domain = router.query.domain as string | undefined;
 
-  const { mutate } = useVercelDNSRecords(domain);
+  const { error, mutate } = useVercelDNSRecords(domain);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [readOnlyMode] = useReadonlyMode();
 
@@ -35,6 +37,10 @@ const DNSPage: NextPageWithLayout = () => {
 
   const title = `DNS${domain ? `: ${domain}` : ''}`;
 
+  const isNotFound = useMemo(() => {
+    return error && error instanceof HTTPError && error.status === 404;
+  }, [error]);
+
   return (
     <div className="dns-page">
       <NextHead>
@@ -44,62 +50,69 @@ const DNSPage: NextPageWithLayout = () => {
         { label: 'Domains', href: '/' },
         { id: 'dnspage', label: domain ?? '. . .' }
       ]} />
-      <Text h1 font={2}>{domain ?? '. . .'}</Text>
-      <Spacer />
-      <Text h2 font={1.5}>DNS</Text>
       {
-        readOnlyMode && (
-          <>
-            <Note type="warning">
-              You have entered read-only mode, you can not create, edit, or delete any DNS records.
-            </Note>
-            <Spacer />
-          </>
-        )
+        isNotFound
+          ? (
+            <NotFoundError
+              title={`The domain ${domain} can not be found`}
+            />
+          )
+          : (
+            <>
+              <Text h1 font={2}>{domain ?? '. . .'}</Text>
+              <Spacer />
+              <Text h2 font={1.5}>DNS</Text>
+              {
+                readOnlyMode && (
+                  <>
+                    <Note type="warning">
+                      You have entered read-only mode, you can not create, edit, or delete any DNS records.
+                    </Note>
+                    <Spacer />
+                  </>
+                )
+              }
+              <div
+                className="dns-page__header"
+              >
+                <Button auto onClick={handleRefreshButtonClick} loading={isRefreshing} icon={<Refresh />} />
+                <Spacer inline />
+                {
+                  readOnlyMode
+                    ? (
+                      <Button disabled>
+                        Create record
+                      </Button>
+                    )
+                    : (
+                      <NextLink href={`/domain/${domain}/create`}>
+                        <Button type="success">
+                          Create record
+                        </Button>
+                      </NextLink>
+                    )
+                }
+              </div>
+              <Spacer />
+              <DNSDataTables domain={domain} />
+              <Spacer />
+              <Text h2 font={1.5}>Nameservers</Text>
+              <Card shadow>
+                <NameServerListTable intended={domainInfo?.intendedNameservers} actual={domainInfo?.nameservers} />
+              </Card>
+              <style jsx>{`
+                .dns-page {
+                  width: 100%;
+                }
+                .dns-page__header {
+                  width: 100%;
+                  display: flex;
+                  justify-content: flex-end;
+                }
+              `}</style>
+            </>
+          )
       }
-      <div
-        className="dns-page__header"
-      >
-        <Button auto onClick={handleRefreshButtonClick} loading={isRefreshing} icon={<Refresh />} />
-        <Spacer inline />
-        {
-          readOnlyMode
-            ? (
-              <Button disabled>
-                Create record
-              </Button>
-            )
-            : (
-              <NextLink href={`/domain/${domain}/create`}>
-                <Button type="success">
-                  Create record
-                </Button>
-              </NextLink>
-            )
-        }
-      </div>
-      <Spacer />
-      {
-        useMemo(() => (
-          <DNSDataTables domain={domain} />
-        ), [domain])
-      }
-      <Spacer />
-      <Text h2 font={1.5}>Nameservers</Text>
-      <Card shadow>
-        <NameServerListTable intended={domainInfo?.intendedNameservers} actual={domainInfo?.nameservers} />
-      </Card>
-      <style jsx>{`
-        .dns-page {
-          width: 100%;
-        }
-
-        .dns-page__header {
-          width: 100%;
-          display: flex;
-          justify-content: flex-end;
-        }
-      `}</style>
     </div >
   );
 };

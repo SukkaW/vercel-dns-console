@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
-import { fetcherWithAuthorization, type HTTPError } from '../lib/fetcher';
+import { fetcherWithAuthorization, HTTPError } from '../lib/fetcher';
 import { VercelDomainResponse } from '../types/domains';
 import { useVercelApiToken } from './use-vercel-api-token';
 
