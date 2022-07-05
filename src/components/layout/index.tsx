@@ -58,7 +58,11 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
             <MenuItem>
               <GitHub size={16} />
               <Spacer inline w={1 / 3} />
-              <Link href="https://github.com/sukkaw/vercel-dns-console">
+              <Link
+                href="https://github.com/sukkaw/vercel-dns-console"
+                target="_blank"
+                rel="noopener noreferrer nofollow external"
+              >
                 Source Code
               </Link>
             </MenuItem>
