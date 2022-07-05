@@ -1,7 +1,7 @@
 import type React from 'react';
-import { useCallback, useMemo } from 'react';
+import { startTransition, useCallback, useMemo } from 'react';
 
-import { Link, Popover, Spacer, Text, useTheme } from '@geist-ui/core';
+import { Link, Modal, Note, Popover, Snippet, Spacer, Text, useModal, useTheme } from '@geist-ui/core';
 import NextLink from 'next/link';
 import Image, { type ImageLoader } from 'next/image';
 
@@ -24,19 +24,26 @@ const vercelAvatarLoader: ImageLoader = ({ src, width }) => {
 };
 
 const AvatarMenu = (props: { avatar?: string, name?: string }) => {
-  const [, setToken] = useVercelApiToken();
+  const [token, setToken] = useVercelApiToken();
   const { setToast } = useToasts();
   const router = useRouter();
+  const { setVisible: setTokenModalVisible, bindings } = useModal();
 
   const logout = useCallback(() => {
-    setToken(null);
+    startTransition(() => {
+      setToken(null);
+      router.push('/login');
+    });
     setToast({
       text: 'You have been logged out',
       type: 'success',
       delay: 3000
     });
-    router.push('/login');
   }, [setToken, setToast, router]);
+
+  const handleToggleModalVisiblity = useCallback(() => {
+    setTokenModalVisible(i => !i);
+  }, [setTokenModalVisible]);
 
   const handleLogoutClick = useCallback(() => {
     logout();
@@ -67,6 +74,10 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
               </Link>
             </MenuItem>
             <Popover.Item line />
+            <MenuItem onClick={handleToggleModalVisiblity}>
+              Show Token
+            </MenuItem>
+            <Popover.Item line />
             <MenuItem onClick={handleLogoutClick}>
               <Text span type="error">Log Out</Text>
             </MenuItem>
@@ -94,6 +105,18 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
             )
         }
       </Menu>
+      <Modal {...bindings}>
+        <Modal.Title>Your Vercel API Token</Modal.Title>
+        <Modal.Content>
+          <Snippet text={token ?? ''} symbol="" w="100%" />
+          <Spacer />
+          <Note>
+            The token is stored in your browser locally and is not sent to any server. You can delete the the token from your browser by clicking the <Text b>Log Out</Text> button.
+          </Note>
+        </Modal.Content>
+        <Modal.Action passive onClick={handleToggleModalVisiblity}>Cancel</Modal.Action>
+        <Modal.Action onClick={logout}><Text span type="error">Log Out</Text></Modal.Action>
+      </Modal>
     </>
   );
 };
