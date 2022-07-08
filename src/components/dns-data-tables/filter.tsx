@@ -7,13 +7,15 @@ import Search from '@geist-ui/icons/search';
 import type { VercelDNSRecord } from '@/types/dns';
 import type { TableDataItemBase } from '../data-tables/types';
 import type { RecordItem } from '.';
+import type { Filters } from 'react-table';
+import { unstable_batchedUpdates } from 'react-dom';
 
 export interface DNSDataTableFilterProps<T extends TableDataItemBase> {
-  setFilter: (columnId: keyof T, updater: any) => void,
-  setGlobalFilter: (updater: string) => void,
+  filters: Filters<T>,
+  setFilter: (columnId: keyof T, updater: any) => void
 }
 
-const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataTableFilterProps<T>) => {
+const DNSDataTableFilter = <T extends RecordItem>({ filters, setFilter }: DNSDataTableFilterProps<T>) => {
   const theme = useTheme();
   const [input, setInput] = useState('');
   const [recordType, setRecordType] = useState<VercelDNSRecord['type'][]>([]);
@@ -22,16 +24,42 @@ const DNSDataTableFilter = <T extends RecordItem>({ setFilter }: DNSDataTableFil
   const [isSearchQueryPending, startSearchQueryTransition] = useTransition();
   const [, startRecordTypeTransition] = useTransition();
 
+  const [actualName, setActualName] = useState(input);
+  const [actualRecordType, setActualRecordType] = useState<VercelDNSRecord['type'][]>(recordType);
+
+  unstable_batchedUpdates(() => {
+    if (actualName) {
+      if (filters.find(({ id }) => id === 'name')?.value !== actualName) {
+        setFilter('name', actualName);
+      }
+    }
+    if (actualRecordType.length > 0) {
+      if (filters.find(({ id }) => id === 'type')?.value !== actualRecordType) {
+        setFilter('type', actualRecordType);
+      }
+    } else if (actualRecordType.length === 0) {
+      if (filters.find(({ id }) => id === 'type')?.value !== null) {
+        setFilter('type', null);
+      }
+    }
+  });
+
   const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInput(value);
-    startSearchQueryTransition(() => setFilter('name', value));
+    startSearchQueryTransition(() => {
+      setFilter('name', value);
+      setActualName(value);
+    });
   }, [setFilter]);
 
   const handleRecordTypeChange = useCallback((value: string | string[]) => {
     const arr = (typeof value === 'string' ? [value] : value) as Array<VercelDNSRecord['type']>;
     setRecordType(arr);
-    startRecordTypeTransition(() => setFilter('type', arr.length === 0 ? null : arr));
+    startRecordTypeTransition(() => {
+      setFilter('type', arr.length === 0 ? null : arr);
+      setActualRecordType(arr);
+    });
   }, [setFilter]);
 
   const seatchQueryInputElement = useMemo(() => (

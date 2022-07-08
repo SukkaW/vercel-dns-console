@@ -54,8 +54,8 @@ const filterTypes: FilterTypes<RecordItem> = {
   searchInRecordNameAndValue: searchInRecordNameAndValueFilterFn
 };
 
-const renderFilter: DataTableFilterRenderer<RecordItem> = (setFilter, setGlobalFilter) => (
-  <DNSDataTableFilter setFilter={setFilter} setGlobalFilter={setGlobalFilter} />
+const renderFilter: DataTableFilterRenderer<RecordItem> = (arg) => (
+  <DNSDataTableFilter {...arg} />
 );
 
 export const DNSDataTables = (props: {

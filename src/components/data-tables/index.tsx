@@ -6,7 +6,7 @@ import {
   usePagination,
   useFilters,
   useGlobalFilter,
-  type Column, type CellProps, type TableOptions, type IdType
+  type Column, type CellProps, type TableOptions, type IdType, type Filters
 } from 'react-table';
 import { TableHead } from './table-head';
 import { TableRow } from './table-row';
@@ -21,10 +21,13 @@ import { TablePlaceHolder } from './placeholder';
 
 export type DataTableColumns<T extends TableDataItemBase> = Column<T>;
 
-export type DataTableFilterRenderer<T extends TableDataItemBase> = (
+interface DataTableFilterRendererArgs<T extends TableDataItemBase> {
   setFilter: (columnId: IdType<T>, updater: any) => void,
   setGlobalFilter: (updater: string) => void,
-) => JSX.Element;
+  filters: Filters<T>
+}
+
+export type DataTableFilterRenderer<T extends TableDataItemBase> = (arg: DataTableFilterRendererArgs<T>) => JSX.Element;
 
 export interface DataTableProps<T extends TableDataItemBase> {
   data: T[]
@@ -67,7 +70,7 @@ const DataTable = <T extends TableDataItemBase>({
     pageCount,
     gotoPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, filters },
     // filter
     setFilter,
     setGlobalFilter
@@ -148,7 +151,9 @@ const DataTable = <T extends TableDataItemBase>({
     }
   }, [setPageSize]);
 
-  const filterUIElements = renderFilter?.(setFilter, setGlobalFilter);
+  const filterUIElements = renderFilter?.({
+    setFilter, setGlobalFilter, filters
+  });
 
   return (
     <>
