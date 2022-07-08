@@ -131,14 +131,14 @@ export const DNSDataTables = (props: {
             <Tooltip
               text={(
                 <>
-                  <Code style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{value}</Code>
+                  <Code>{value}</Code>
                   <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
                 </>
               )}
               // visible
               placement="bottomStart"
               className="dns-data-tables__tooltip table-cell-ellipsis"
-              portalClassName="table-cell-tooltip-portal record"
+              portalClassName="table-cell-tooltip-portal record-name"
               offset={5}
             >
               {value}
@@ -176,7 +176,7 @@ export const DNSDataTables = (props: {
           <Tooltip
             text={(
               <>
-                <Code style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>{value}</Code>
+                <Code>{value}</Code>
                 <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
               </>
             )}
@@ -348,7 +348,7 @@ export const DNSDataTables = (props: {
         }
 
         @media screen and (min-width: ${theme.breakpoints.sm.min}) {
-          :global(.table-cell-tooltip-portal.record) {
+          :global(.table-cell-tooltip-portal.record-name) {
             max-width: 400px;
           }
           :global(.table-cell-tooltip-portal.record-value) {
@@ -376,6 +376,13 @@ export const DNSDataTables = (props: {
 
         div :global(td .tooltip) {
           width: 100%;
+        }
+
+        :global(.table-cell-tooltip-portal.record-value code),
+        :global(.table-cell-tooltip-portal.record-name code),
+        :global(.table-cell-tooltip-portal.record-description code) {
+          white-space: pre-wrap;
+          word-break: break-all;
         }
 
         :global(.table-cell-tooltip-portal) :global(.inner.inner) {

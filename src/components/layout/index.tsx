@@ -150,7 +150,11 @@ export const Layout = (props: {
       <Container className="page">
         {props.children}
       </Container>
-      <AntiAdBlockModal />
+      {
+        useMemo(() => (
+          <AntiAdBlockModal />
+        ), [])
+      }
       <style jsx>{`
     :global(section.page.page) {
       margin-top: 64px;
