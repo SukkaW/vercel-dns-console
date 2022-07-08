@@ -111,7 +111,7 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
           <Snippet text={token ?? ''} symbol="" w="100%" />
           <Spacer />
           <Note>
-            The token is stored in your browser locally and is not sent to any server. You can delete the the token from your browser by clicking the <Text b>Log Out</Text> button.
+            The token is stored in your browser locally and will only be sent to Vercel&apos;s API server directly. You can delete the the token from your browser by clicking the <Text b>Log Out</Text> button.
           </Note>
         </Modal.Content>
         <Modal.Action passive onClick={handleToggleModalVisiblity}>Cancel</Modal.Action>
