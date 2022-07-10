@@ -33,12 +33,13 @@ const DNSDataTableFilter = <T extends RecordItem>({ filters, setFilter }: DNSDat
         setFilter('name', actualName);
       }
     }
+    const filterRecordTypeValue = filters.find(({ id }) => id === 'type')?.value;
     if (actualRecordType.length > 0) {
-      if (filters.find(({ id }) => id === 'type')?.value !== actualRecordType) {
+      if (filterRecordTypeValue !== actualRecordType) {
         setFilter('type', actualRecordType);
       }
     } else if (actualRecordType.length === 0) {
-      if (filters.find(({ id }) => id === 'type')?.value !== null) {
+      if (filterRecordTypeValue !== null && filterRecordTypeValue !== undefined) {
         setFilter('type', null);
       }
     }

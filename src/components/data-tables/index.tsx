@@ -293,7 +293,8 @@ const DataTable = <T extends TableDataItemBase>({
         }
 
         .select-wrapper :global(.select) {
-          min-width: ${SCALES.width(1, '50px')};
+          width: ${SCALES.width(1, '75px')};
+          min-width: ${SCALES.width(1, '75px')};
         }
      `}</style>
     </>
