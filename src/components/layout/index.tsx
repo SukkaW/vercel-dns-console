@@ -1,5 +1,5 @@
 import type React from 'react';
-import { startTransition, useCallback, useMemo } from 'react';
+import { startTransition, useCallback } from 'react';
 
 import { Link, Modal, Note, Popover, Snippet, Spacer, Text, useModal, useTheme } from '@geist-ui/core';
 import NextLink from 'next/link';
@@ -18,6 +18,7 @@ import { Menu, MenuItem } from '../menu';
 
 import GitHub from '@geist-ui/icons/github';
 import { AntiAdBlockModal } from '../anti-adblock';
+import { ThemeToggle } from './toggle-theme';
 
 const vercelAvatarLoader: ImageLoader = ({ src, width }) => {
   return `${src}?s=${width}`;
@@ -74,10 +75,11 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
               </Link>
             </MenuItem>
             <Popover.Item line />
+            <ThemeToggle />
+            <Popover.Item line />
             <MenuItem onClick={handleToggleModalVisiblity}>
               Show Token
             </MenuItem>
-            <Popover.Item line />
             <MenuItem onClick={handleLogoutClick}>
               <Text span type="error">Log Out</Text>
             </MenuItem>
@@ -129,32 +131,24 @@ export const Layout = (props: {
 
   return (
     <>
-      {
-        useMemo(() => (
-          <div className="navbar-wrapper">
-            <nav className="navbar">
-              <div className="content">
-                <div className="logo">
-                  <NextLink href="/">
-                    <a aria-label="Go Home">
-                      <VercelLogo />
-                    </a>
-                  </NextLink>
-                </div>
-                <AvatarMenu name={data?.name} avatar={data?.avatar} />
-              </div>
-            </nav>
+      <div className="navbar-wrapper">
+        <nav className="navbar">
+          <div className="content">
+            <div className="logo">
+              <NextLink href="/">
+                <a aria-label="Go Home">
+                  <VercelLogo color={theme.palette.foreground} />
+                </a>
+              </NextLink>
+            </div>
+            <AvatarMenu name={data?.name} avatar={data?.avatar} />
           </div>
-        ), [data?.avatar, data?.name])
-      }
+        </nav>
+      </div>
       <Container className="page">
         {props.children}
       </Container>
-      {
-        useMemo(() => (
-          <AntiAdBlockModal />
-        ), [])
-      }
+      <AntiAdBlockModal />
       <style jsx>{`
     :global(section.page.page) {
       margin-top: 64px;
