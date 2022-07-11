@@ -1,7 +1,7 @@
 import { Table, Text } from '@geist-ui/core';
-import { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 
-export const NameServerListTable = (props: {
+export const NameServerListTable = memo((props: {
   intended: string[] | undefined,
   actual: string[] | undefined
 }) => {
@@ -40,4 +40,8 @@ export const NameServerListTable = (props: {
       <Table.Column prop="actual" label="Actual Nameservers" />
     </Table>
   );
-};
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  NameServerListTable.displayName = 'NameServerListTable';
+}

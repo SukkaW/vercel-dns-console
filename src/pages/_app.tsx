@@ -50,6 +50,9 @@ const App = ({ pageProps, Component }: AppPropsWithLayout) => {
       } else {
         // null or invalid value
         setTheme('system');
+        if (storedTheme) {
+          Promise.resolve().then(() => localStorage.removeItem('theme'));
+        }
       }
     }
   }, [setTheme]);

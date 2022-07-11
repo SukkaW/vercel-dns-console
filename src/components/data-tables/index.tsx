@@ -151,9 +151,12 @@ const DataTable = <T extends TableDataItemBase>({
     }
   }, [setPageSize]);
 
-  const filterUIElements = renderFilter?.({
-    setFilter, setGlobalFilter, filters
-  });
+  const filterUIElements = useMemo(
+    () => renderFilter?.({
+      setFilter, setGlobalFilter, filters
+    }),
+    [filters, renderFilter, setFilter, setGlobalFilter]
+  );
 
   return (
     <>
@@ -215,21 +218,21 @@ const DataTable = <T extends TableDataItemBase>({
               : <div />
           ), [handlePaginationChange, pageCount, pageIndex])
         }
-        {
-          useMemo(() => (
-            <div className="select-wrapper">
-              Show
-              <Select value={String(pageSize)} mx={1 / 2} scale={2 / 3} w="55px" onChange={handleSelectPageSizeChange}>
+        <div className="select-wrapper">
+          Show
+          {
+            useMemo(() => (
+              <Select value={String(pageSize)} mx={1 / 2} scale={2 / 3} onChange={handleSelectPageSizeChange}>
                 <Select.Option value="10">10</Select.Option>
                 <Select.Option value="15">15</Select.Option>
                 <Select.Option value="20">20</Select.Option>
                 <Select.Option value="50">50</Select.Option>
                 <Select.Option value="100">100</Select.Option>
               </Select>
-              per page
-            </div>
-          ), [handleSelectPageSizeChange, pageSize])
-        }
+            ), [handleSelectPageSizeChange, pageSize])
+          }
+          per page
+        </div>
       </div>
 
       <style jsx>{`

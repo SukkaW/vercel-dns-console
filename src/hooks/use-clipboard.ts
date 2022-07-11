@@ -1,9 +1,12 @@
 import { useCallback, useRef, useState } from 'react';
+import { useToasts } from '@/hooks/use-toasts';
 
-export function useClipboard({ timeout = 1000 } = {}) {
+export function useClipboard({ timeout = 1000, showToastWhenError = false } = {}) {
   const [error, setError] = useState<Error | null>(null);
   const [copied, setCopied] = useState(false);
   const copyTimeoutRef = useRef<number | null>(null);
+
+  const { setToast } = useToasts();
 
   const handleCopyResult = useCallback((value: boolean) => {
     if (copyTimeoutRef.current) {
@@ -18,9 +21,25 @@ export function useClipboard({ timeout = 1000 } = {}) {
       navigator.clipboard
         .writeText(valueToCopy)
         .then(() => handleCopyResult(true))
-        .catch((err) => setError(err));
+        .catch((err) => {
+          setError(err);
+          if (showToastWhenError) {
+            setToast({
+              text: 'Fail to copy to clipboard!',
+              type: 'error',
+              delay: 3000
+            });
+          }
+        });
     } else {
       setError(new Error('useClipboard: navigator.clipboard is not supported'));
+      if (showToastWhenError) {
+        setToast({
+          text: 'Fail to copy to clipboard!',
+          type: 'error',
+          delay: 3000
+        });
+      }
     }
   }, [handleCopyResult]);
 

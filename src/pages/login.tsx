@@ -66,11 +66,17 @@ const LoginForm = () => {
     }
   });
 
-  const tokenRef = useRef(token);
+  // The token could exist even when at the login page, since the initial value of token
+  // comes from localStorage.
+  // Only try login with the "initial token" if it exists, and do not retry login until
+  // user clicks the button.
+  const initialTokenRef = useRef(token);
 
   useEffect(() => {
-    if (tokenRef.current) {
-      login(tokenRef.current);
+    if (initialTokenRef.current) {
+      login(initialTokenRef.current);
+      // We only try login once
+      initialTokenRef.current = null;
 
       return () => {
         clearToasts();

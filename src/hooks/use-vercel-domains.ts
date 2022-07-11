@@ -1,3 +1,4 @@
+import { useToasts } from '@geist-ui/core';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { fetcherWithAuthorization, HTTPError } from '../lib/fetcher';
@@ -6,12 +7,22 @@ import { useVercelApiToken } from './use-vercel-api-token';
 
 export const useVercelDomains = () => {
   const [token] = useVercelApiToken();
+  const { setToast } = useToasts();
 
   return useSWR<VercelDomainResponse, HTTPError>(
     token
       ? ['/v5/domains', token]
       : null,
-    fetcherWithAuthorization
+    fetcherWithAuthorization,
+    {
+      onError() {
+        setToast({
+          type: 'error',
+          text: 'Failed to load domains list',
+          delay: 3000
+        });
+      }
+    }
   );
 };
 

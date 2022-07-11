@@ -8,12 +8,23 @@ import type { VercelUserResponse } from '@/types/user';
 
 export const useVercelUser = () => {
   const [token] = useVercelApiToken();
+  const router = useRouter();
 
   const { data, error, isLoading, mutate } = useSWRImmutable<VercelUserResponse, HTTPError>(
     token ? ['/v2/user', token] : null,
     fetcherWithAuthorization,
     {
-      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+      onError(error) {
+        if (error instanceof HTTPError) {
+          if (error.status === 403) {
+            // invalid token
+            if (!router.pathname.startsWith('/login')) {
+              router.push('/login');
+            }
+          }
+        }
+      },
+      onErrorRetry(error, key, config, revalidate, { retryCount }) {
         // Never retry on 403
         if (error.status === 403) return;
         // retry up to 2 times
@@ -24,16 +35,13 @@ export const useVercelUser = () => {
     }
   );
 
-  const isNotLoggedIn = !token || (error && error.status === 403);
-  const router = useRouter();
-
   useEffect(() => {
-    if (isNotLoggedIn) {
+    if (!token) {
       if (!router.pathname.startsWith('/login')) {
         router.push('/login');
       }
     }
-  });
+  }, [token, router]);
 
   const newData = useMemo(() => {
     if (data) {
@@ -51,7 +59,6 @@ export const useVercelUser = () => {
     data: newData,
     error,
     mutate,
-    isNotLoggedIn,
     isLoading
   };
 };

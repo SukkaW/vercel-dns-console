@@ -1,4 +1,4 @@
-import React, { forwardRef, useCallback, useEffect, useMemo } from 'react';
+import React, { forwardRef, useCallback, useMemo } from 'react';
 
 import { Text, Link, useTheme, Spacer, Note } from '@geist-ui/core';
 import NextLink from 'next/link';
@@ -9,7 +9,6 @@ import { DataTable, type DataTableColumns } from '../components/data-tables';
 import { Notice } from '@/components/notice';
 
 import { useVercelDomains } from '@/hooks/use-vercel-domains';
-import { useToasts } from '@/hooks/use-toasts';
 import { formatDate } from '../lib/util';
 
 import MoreVertical from '@geist-ui/icons/moreVertical';
@@ -58,24 +57,8 @@ const domainDataTableColumns: DataTableColumns<DomainItem>[] = [
 ];
 
 const DomainsPage: NextPageWithLayout = () => {
-  const { setToast, clearToasts } = useToasts();
   const theme = useTheme();
   const { data, error } = useVercelDomains();
-  const hasError = useMemo(() => !!error, [error]);
-
-  useEffect(() => {
-    if (hasError) {
-      setToast({
-        type: 'error',
-        text: 'Failed to load domains list',
-        delay: 3000
-      });
-
-      return () => {
-        clearToasts();
-      };
-    }
-  }, [hasError, setToast, clearToasts]);
 
   const processedDomainLists: DomainItem[] = useMemo(() => {
     if (!data) return [];
@@ -109,29 +92,35 @@ const DomainsPage: NextPageWithLayout = () => {
 
   return (
     <div>
-      <NextHead>
-        <title>Domains</title>
-      </NextHead>
-      <Text h1>Domains</Text>
-      <Note type="warning">
-        You can only manage your DNS records here. Please go to
-        {' '}
-        <Link
-          href="https://vercel.com"
-          target="_blank"
-          rel="external nofollow noreferrer noopenner"
-          icon
-          color
-          underline
-        >
-          https://vercel.com
-        </Link>
-        {' '}
-        to buy / transfer / renew / add / remove your domains.
-      </Note>
-      <Spacer h={2} />
+      {
+        useMemo(() => (
+          <>
+            <NextHead>
+              <title>Domains</title>
+            </NextHead>
+            <Text h1>Domains</Text>
+            <Note type="warning">
+              You can only manage your DNS records here. Please go to
+              {' '}
+              <Link
+                href="https://vercel.com"
+                target="_blank"
+                rel="external nofollow noreferrer noopenner"
+                icon
+                color
+                underline
+              >
+                https://vercel.com
+              </Link>
+              {' '}
+              to buy / transfer / renew / add / remove your domains.
+            </Note>
+            <Spacer h={2} />
+          </>
+        ), [])
+      }
       <DataTable
-        placeHolder={!error && !data ? 4 : false}
+        placeHolder={!data && !error ? 4 : false}
         data={processedDomainLists}
         columns={domainDataTableColumns}
         renderRowAction={renderDataTableMenu}

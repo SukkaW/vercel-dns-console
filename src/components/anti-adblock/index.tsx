@@ -1,14 +1,15 @@
+import { memo, useState } from 'react';
+
 import { Modal, Text, Code, Link } from '@geist-ui/core';
 import { useDetectAdBlock } from '@/hooks/use-detect-adblock';
 import { useReadonlyMode } from '@/hooks/use-readonly-mode';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 
-export const AntiAdBlockModal = () => {
+export const AntiAdBlockModal = memo(() => {
   const router = useRouter();
   const isAdBlockEnabled = useDetectAdBlock();
-  const [showModal, setShowModal] = useState(isAdBlockEnabled);
   const [readOnlyMode, setReadonlyMode] = useReadonlyMode();
+  const [showModal, setShowModal] = useState(!readOnlyMode && isAdBlockEnabled);
 
   if (!readOnlyMode && !showModal && isAdBlockEnabled) {
     setShowModal(true);
@@ -84,4 +85,8 @@ export const AntiAdBlockModal = () => {
       </Modal.Action>
     </Modal>
   );
-};
+});
+
+if (process.env.NODE_ENV !== 'production') {
+  AntiAdBlockModal.displayName = 'AntiAdBlockModal';
+}
