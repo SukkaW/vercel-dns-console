@@ -1,9 +1,11 @@
 import useSWRInfinite from 'swr/infinite';
 import { fetcherWithAuthorization } from '../lib/fetcher';
-import type { VercelDNSResponse } from '../types/dns';
 import { useVercelApiToken } from './use-vercel-api-token';
 
-export const useVercelDNSRecords = (domain: string | undefined) => {
+import type { SWRInfiniteConfiguration } from 'swr/infinite';
+import type { VercelDNSResponse } from '../types/dns';
+
+export const useVercelDNSRecords = (domain: string | undefined, config?: SWRInfiniteConfiguration<VercelDNSResponse>) => {
   const [token] = useVercelApiToken();
   return useSWRInfinite<VercelDNSResponse>(
     (pageIndex, previousData) => {
@@ -19,6 +21,7 @@ export const useVercelDNSRecords = (domain: string | undefined) => {
     },
     fetcherWithAuthorization,
     {
+      ...config,
       // Make sure we will fetch all records at once
       // SWR hook will break early if getKey return null so there is no performance impact
       initialSize: 1919810114514

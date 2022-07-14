@@ -24,6 +24,4 @@ const tokenAtom = atom(
   }
 );
 
-export const useVercelApiToken = () => {
-  return useAtom(tokenAtom);
-};
+export const useVercelApiToken = () => useAtom(tokenAtom);

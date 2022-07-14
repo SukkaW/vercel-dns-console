@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Badge, Code, Text, Tooltip, useTheme } from '@geist-ui/core';
 
 import { DataTable, type DataTableFilterRenderer, type DataTableColumns } from '../data-tables';
@@ -21,6 +21,8 @@ import type { VercelDNSRecord } from '@/types/dns';
 import type { CellProps, FilterType, FilterTypes } from 'react-table';
 import { DNSDataTableFilter } from './filter';
 import { DeleteRecordModal } from './delete';
+import { HTTPError } from '@/lib/fetcher';
+import { isVercelError } from '@/types/error';
 
 export interface RecordItem {
   id: string,
@@ -62,11 +64,26 @@ export const DNSDataTables = (props: {
   domain: string | undefined
 }) => {
   const theme = useTheme();
-  const { setToast, clearToasts } = useToasts();
+  const { setToast } = useToasts();
   const [readOnlyMode] = useReadonlyMode();
 
-  const { data: rawData, error, isLoading } = useVercelDNSRecords(props.domain);
-  const hasError = !!error;
+  const { data: rawData, isLoading } = useVercelDNSRecords(props.domain, {
+    onError(error) {
+      let errorMessage = 'Failed to load DNS records';
+
+      if (error instanceof HTTPError) {
+        if (isVercelError(error.info)) {
+          errorMessage += `: ${error.info.error.message}`;
+        }
+      }
+
+      setToast({
+        type: 'error',
+        text: errorMessage,
+        delay: 3000
+      });
+    }
+  });
 
   const {
     visible: deleteRecordModalVisible,
@@ -74,18 +91,6 @@ export const DNSDataTables = (props: {
     close: closeDeleteRecordModal
   } = useModal();
   const [recordsToBeDeleted, setRecordsToBeDeleted] = useState<RecordItem[]>([]);
-
-  useEffect(() => {
-    if (hasError) {
-      setToast({
-        type: 'error',
-        text: 'Failed to load DNS records',
-        delay: 3000
-      });
-
-      return () => clearToasts();
-    }
-  }, [hasError, setToast, clearToasts]);
 
   const records: RecordItem[] = useMemo(() => {
     const result: RecordItem[] = [];

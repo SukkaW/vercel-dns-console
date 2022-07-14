@@ -1,13 +1,16 @@
+import { useEffect, useMemo, useRef } from 'react';
+
 import useSWRImmutable from 'swr/immutable';
 import { fetcherWithAuthorization, HTTPError } from '@/lib/fetcher';
 import { useVercelApiToken } from './use-vercel-api-token';
-import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
+import { useToasts } from './use-toasts';
 
 import type { VercelUserResponse } from '@/types/user';
 
 export const useVercelUser = () => {
-  const [token] = useVercelApiToken();
+  const [token, setToken] = useVercelApiToken();
+  const { setToast } = useToasts();
   const router = useRouter();
 
   const { data, error, isLoading, mutate } = useSWRImmutable<VercelUserResponse, HTTPError>(
@@ -18,6 +21,12 @@ export const useVercelUser = () => {
         if (error instanceof HTTPError) {
           if (error.status === 403) {
             // invalid token
+            setToken(null);
+            setToast({
+              type: 'error',
+              text: 'Invalid API token',
+              delay: 3000
+            });
             if (!router.pathname.startsWith('/login')) {
               router.push('/login');
             }
@@ -35,13 +44,16 @@ export const useVercelUser = () => {
     }
   );
 
+  // only check if token is exists for once
+  // the token will set to null if token becomes invalid (E.g. revoked)
+  const missingInitialToken = useRef(!token);
   useEffect(() => {
-    if (!token) {
+    if (missingInitialToken.current) {
       if (!router.pathname.startsWith('/login')) {
         router.push('/login');
       }
     }
-  }, [token, router]);
+  }, [router]);
 
   const newData = useMemo(() => {
     if (data) {

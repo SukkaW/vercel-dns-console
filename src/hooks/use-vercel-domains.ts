@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import useSWR from 'swr';
 import { fetcherWithAuthorization, HTTPError } from '../lib/fetcher';
 import { VercelDomainResponse } from '../types/domains';
+import { isVercelError } from '../types/error';
+
 import { useVercelApiToken } from './use-vercel-api-token';
 
 export const useVercelDomains = () => {
@@ -15,10 +17,18 @@ export const useVercelDomains = () => {
       : null,
     fetcherWithAuthorization,
     {
-      onError() {
+      onError(error) {
+        let errorMessage = 'Failed to load domains list';
+
+        if (error instanceof HTTPError) {
+          if (isVercelError(error.info)) {
+            errorMessage += `: ${error.info.error.message}`;
+          }
+        }
+
         setToast({
           type: 'error',
-          text: 'Failed to load domains list',
+          text: errorMessage,
           delay: 3000
         });
       }
