@@ -381,7 +381,7 @@ export const EditDNSRecord = ({
               clearable
               disabled={isInitialStateLoading}
               value={ttl?.toString() ?? ''}
-              placeholder="60"
+              placeholder="300"
               w="100%"
               onChange={setTtl}
             >
