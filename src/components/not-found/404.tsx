@@ -21,6 +21,7 @@ export const NotFoundError = ({
         <h1>
           404
         </h1>
+        <span className="dividing-line"></span>
         <div className="error-desc">
           <h2>
             {body ?? title}
@@ -45,10 +46,16 @@ export const NotFoundError = ({
           vertical-align: middle;
         }
 
+        .dividing-line {
+          margin-right: 20px;
+          border-right: 1px solid;
+          opacity: 0.3;
+          padding: 10px 0 15px 0;
+        }
+
         h1 {
-          border-right: 1px solid rgba(0, 0, 0, .3);
           display: inline-block;
-          margin: 0 20px 0 0;
+          margin-bottom: 0;
           font-size: 24px;
           font-weight: 500;
           vertical-align: top;
