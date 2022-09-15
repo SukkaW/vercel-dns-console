@@ -20,8 +20,7 @@ import { HTTPError } from '@/lib/fetcher';
 import { NotFoundError } from '@/components/not-found/404';
 
 const DNSPage: NextPageWithLayout = () => {
-  const router = useRouter();
-  const domain = router.query.domain as string | undefined;
+  const domain = useRouter().query.domain as string | undefined;
 
   const { error, mutate } = useVercelDNSRecords(domain);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -54,7 +53,7 @@ const DNSPage: NextPageWithLayout = () => {
         isNotFound
           ? (
             <NotFoundError
-              title={`The domain ${domain} can not be found`}
+              title={`The domain ${domain ?? ''} can not be found`}
             />
           )
           : (
@@ -78,6 +77,7 @@ const DNSPage: NextPageWithLayout = () => {
                 <Button auto onClick={handleRefreshButtonClick} loading={isRefreshing} icon={<Refresh />} />
                 <Spacer inline />
                 {
+                  // eslint-disable-next-line no-nested-ternary
                   readOnlyMode
                     ? (
                       <Button disabled>
@@ -85,11 +85,19 @@ const DNSPage: NextPageWithLayout = () => {
                       </Button>
                     )
                     : (
-                      <NextLink href={`/domain/${domain}/create`}>
-                        <Button type="success">
-                          Create record
-                        </Button>
-                      </NextLink>
+                      domain
+                        ? (
+                          <NextLink href={`/domain/${domain}/create`}>
+                            <Button type="success">
+                              Create record
+                            </Button>
+                          </NextLink>
+                        )
+                        : (
+                          <Button type="success" disabled>
+                              Create record
+                          </Button>
+                        )
                     )
                 }
               </div>

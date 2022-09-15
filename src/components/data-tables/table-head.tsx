@@ -1,17 +1,17 @@
 import { useTheme } from '@geist-ui/core';
 import { type HeaderGroup } from 'react-table';
-import { TableDataItemBase } from './types';
+import type { TableDataItemBase } from './types';
 
 import ArrowUp from '@geist-ui/icons/arrowUp';
 import ArrowDown from '@geist-ui/icons/arrowDown';
 import clsx from 'clsx';
 
-export type TableHeadProps<T extends TableDataItemBase> = {
+export interface TableHeadProps<T extends TableDataItemBase> {
   headerGroup: HeaderGroup<T>
   isSticky?: boolean
   theadRef?: React.RefObject<HTMLTableSectionElement>
   clonedTheadRef?: React.RefObject<HTMLTableSectionElement>
-};
+}
 
 export const TableHead = <T extends TableDataItemBase>(
   props: {

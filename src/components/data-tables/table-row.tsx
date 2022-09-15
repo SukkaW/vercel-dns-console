@@ -1,6 +1,6 @@
 import { useTheme } from '@geist-ui/core';
 import type { RowPropGetter } from 'react-table';
-import { TableDataItemBase } from './types';
+import type { TableDataItemBase } from './types';
 
 export interface TableRowProps<T extends TableDataItemBase> {
   rowProp?: RowPropGetter<T>,

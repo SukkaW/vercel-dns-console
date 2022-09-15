@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { Code, Text } from '@geist-ui/core';
-import type React from 'react';
+import React from 'react';
 
 export const generateDnsDescription = (
   domain: string,
@@ -120,7 +120,7 @@ export const generateDnsDescription = (
           </Text>
           : <Text type="secondary" span>
             {serviceNode}
-            {`.${srvProtocol}.${name === '@' || name === '' ? '' : `${name}.`}`}{domain}
+            {`.${srvProtocol ?? ''}.${name === '@' || name === '' ? '' : `${name ?? ''}.`}`}{domain}
           </Text>;
 
         const srvTargetNode = srvTarget

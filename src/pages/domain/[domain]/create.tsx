@@ -3,7 +3,8 @@ import { useCallback, useState } from 'react';
 import { Text, useToasts } from '@geist-ui/core';
 import { Layout } from '@/components/layout';
 import { BreadCrumb } from '@/components/bread-crumb';
-import { EditDNSRecord, OnSubmit } from '@/components/edit-dns-record';
+import type { OnSubmit } from '@/components/edit-dns-record';
+import { EditDNSRecord } from '@/components/edit-dns-record';
 
 import { useRouter } from 'next/router';
 
@@ -87,7 +88,7 @@ const CreateRecordPage: NextPageWithLayout = () => {
     <div>
       <BreadCrumb items={[
         { label: 'Domains', href: '/' },
-        { id: 'dnspage', href: `/domain/${domain}`, label: domain ?? '. . .' },
+        { id: 'dnspage', href: `/domain/${domain ?? ''}`, label: domain ?? '. . .' },
         { id: 'create', label: 'Create Record' }
       ]} />
       <Text h1>Create Record</Text>

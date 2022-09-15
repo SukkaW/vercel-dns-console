@@ -133,7 +133,7 @@ const EditRecordPage: NextPageWithLayout = () => {
           }
         );
         await mutate();
-        router.push(`/domain/${domain}`);
+        router.push(`/domain/${domain!}`);
         setIsSubmitting(false);
       } catch (e) {
         setIsSubmitting(false);
@@ -157,7 +157,7 @@ const EditRecordPage: NextPageWithLayout = () => {
     <div>
       <BreadCrumb items={[
         { label: 'Domains', href: '/' },
-        { id: 'dnspage', href: `/domain/${domain}`, label: domain ?? '. . .' },
+        { id: 'dnspage', href: `/domain/${domain ?? ''}`, label: domain ?? '. . .' },
         { id: 'edit', label: `Edit ${record?.type || ''} Record` }
       ]} />
       {

@@ -290,13 +290,15 @@ export const DNSDataTables = (props: {
             )
             : (
               <>
-                <NextLink href={`/domain/${props.domain}/edit/${record.id}`} passHref>
-                  <a>
-                    <MenuItem>
-                      Edit
-                    </MenuItem>
-                  </a>
-                </NextLink>
+                {
+                  props.domain && <NextLink href={`/domain/${props.domain}/edit/${record.id}`} passHref>
+                    <a>
+                      <MenuItem>
+                        Edit
+                      </MenuItem>
+                    </a>
+                  </NextLink>
+                }
                 <MenuItem onClick={() => {
                   setRecordsToBeDeleted([record]);
                   openDeleteRecordModal();

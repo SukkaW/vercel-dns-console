@@ -1,5 +1,5 @@
 import { useScale, withScale } from '@geist-ui/core';
-import type React from 'react';
+import React from 'react';
 
 const Label = (props: React.PropsWithChildren<{ label: React.ReactNode }>) => {
   const { SCALES } = useScale();

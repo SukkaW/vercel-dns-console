@@ -2,7 +2,7 @@ import { useToasts } from '@geist-ui/core';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { fetcherWithAuthorization, HTTPError } from '../lib/fetcher';
-import { VercelDomainResponse } from '../types/domains';
+import type { VercelDomainResponse } from '../types/domains';
 import { isVercelError } from '../types/error';
 
 import { useVercelApiToken } from './use-vercel-api-token';

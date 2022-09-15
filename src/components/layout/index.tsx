@@ -1,5 +1,4 @@
-import type React from 'react';
-import { startTransition, useCallback } from 'react';
+import React, { startTransition, useCallback } from 'react';
 
 import { Link, Modal, Note, Popover, Snippet, Spacer, Text, useModal, useTheme } from '@geist-ui/core';
 import NextLink from 'next/link';
@@ -90,7 +89,7 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
           props?.avatar
             ? (
               <Image
-                alt={`${props?.name}'s Avatar`}
+                alt={props.name ? `${props.name}'s Avatar` : 'Avatar'}
                 style={{
                   borderRadius: '50%',
                   userSelect: 'none',

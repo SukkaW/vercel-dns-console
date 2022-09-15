@@ -8,12 +8,12 @@ const withBundleAnalyzer = process.env.ANALYZE === 'true'
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    unoptimized: true,
+  },
   experimental: {
     browsersListForSwc: true,
-    legacyBrowsers: false,
-    images: {
-      unoptimized: true,
-    }
+    legacyBrowsers: false
   }
 };
 
