@@ -2,7 +2,7 @@ import React, { startTransition, useCallback } from 'react';
 
 import { Link, Modal, Note, Popover, Snippet, Spacer, Text, useModal, useTheme } from '@geist-ui/core';
 import NextLink from 'next/link';
-import Image, { type ImageLoader } from 'next/image';
+import Image, { type ImageLoader } from "next/legacy/image";
 
 import { Skeleton } from '../skeleton';
 import { VercelLogo } from '../vercel-brand/logo';
