@@ -23,13 +23,11 @@ interface DomainItem {
 }
 
 const DomainLink = forwardRef((props: { name: string }, ref: React.ForwardedRef<HTMLAnchorElement>) => {
-  return (
-    <>
-      <NextLink href={`/domain/${props.name}`} prefetch={false} passHref>
-        <Link ref={ref} className="domain">{props.name}</Link>
-      </NextLink>
-    </>
-  );
+  return <>
+    <NextLink href={`/domain/${props.name}`} prefetch={false} passHref legacyBehavior>
+      <Link ref={ref} className="domain">{props.name}</Link>
+    </NextLink>
+  </>;
 });
 
 if (process.env.NODE_ENV !== 'production') {
@@ -78,7 +76,7 @@ const DomainsPage: NextPageWithLayout = () => {
       style={{ justifyContent: 'flex-end' }}
       content={(
         <MenuItem>
-          <NextLink href={`/domain/${value.name}`} prefetch={false}>
+          <NextLink href={`/domain/${value.name}`} prefetch={false} legacyBehavior>
             <Link>
               Manage DNS Records
             </Link>

@@ -87,7 +87,7 @@ const DNSPage: NextPageWithLayout = () => {
                     : (
                       domain
                         ? (
-                          <NextLink href={`/domain/${domain}/create`}>
+                          <NextLink href={`/domain/${domain}/create`} legacyBehavior>
                             <Button type="success">
                               Create record
                             </Button>

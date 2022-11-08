@@ -14,7 +14,7 @@ export const BreadCrumb = (props: {
         props.items.map((item) => {
           if (item.href) {
             return (
-              <NextLink key={item.href} href={item.href} prefetch={false} passHref>
+              <NextLink key={item.href} href={item.href} prefetch={false} passHref legacyBehavior>
                 <Breadcrumbs.Item nextLink>{item.label}</Breadcrumbs.Item>
               </NextLink>
             );
