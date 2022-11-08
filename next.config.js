@@ -12,7 +12,6 @@ const nextConfig = {
     unoptimized: true,
   },
   experimental: {
-    browsersListForSwc: true,
     legacyBrowsers: false
   }
 };
