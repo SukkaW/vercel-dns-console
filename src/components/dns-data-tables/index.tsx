@@ -291,12 +291,10 @@ export const DNSDataTables = (props: {
             : (
               <>
                 {
-                  props.domain && <NextLink href={`/domain/${props.domain}/edit/${record.id}`} passHref>
-                    <a>
-                      <MenuItem>
-                        Edit
-                      </MenuItem>
-                    </a>
+                  props.domain && <NextLink href={`/domain/${props.domain}/edit/${record.id}`}>
+                    <MenuItem>
+                      Edit
+                    </MenuItem>
                   </NextLink>
                 }
                 <MenuItem onClick={() => {
