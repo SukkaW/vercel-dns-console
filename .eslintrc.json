@@ -8,7 +8,13 @@
         "**/*.ts",
         "**/*.tsx"
       ],
+      "rules": {
+        "@fluffyfox/jsx/no-template-literal": "off",
+        "no-nested-ternary": "off",
+        "prefer-object-has-own": "off"
+      },
       "extends": [
+        "sukka/react",
         "sukka/typescript"
       ],
       "parserOptions": {

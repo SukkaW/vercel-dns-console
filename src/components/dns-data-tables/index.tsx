@@ -51,6 +51,52 @@ const searchInRecordNameAndValueFilterFn: FilterType<RecordItem> = (rows, column
   return rows;
 };
 
+const NameCell = ({ value }: CellProps<RecordItem, string>) => {
+  if (value.length > 10) {
+    return (
+      <Tooltip
+        text={(
+          <>
+            <Code>{value}</Code>
+            <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
+          </>
+        )}
+        // visible
+        placement="bottomStart"
+        className="dns-data-tables__tooltip table-cell-ellipsis"
+        portalClassName="table-cell-tooltip-portal record-name"
+        offset={5}
+      >
+        {value}
+      </Tooltip>
+    );
+  }
+  return (
+    // eslint-disable-next-line @fluffyfox/jsx/no-unneeded-nested, react/jsx-no-useless-fragment -- fuck tsx type
+    <>{value}</>
+  );
+};
+
+const ValueCell = ({ value }: CellProps<RecordItem, string>) => {
+  return (
+    <Tooltip
+      text={(
+        <>
+          <Code>{value}</Code>
+          <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
+        </>
+      )}
+      placement="bottomStart"
+      className="dns-data-tables__tooltip table-cell-ellipsis"
+      portalClassName="table-cell-tooltip-portal record-value"
+      // visible
+      offset={5}
+    >
+      {value}
+    </Tooltip>
+  );
+};
+
 const filterTypes: FilterTypes<RecordItem> = {
   searchInRecordType: searchInRecordTypeFilterFn,
   searchInRecordNameAndValue: searchInRecordNameAndValueFilterFn
@@ -130,28 +176,7 @@ export const DNSDataTables = (props: {
       maxWidth: 300,
       ellipsis: true,
       filter: 'searchInRecordNameAndValue',
-      Cell({ value }) {
-        if (value.length > 10) {
-          return (
-            <Tooltip
-              text={(
-                <>
-                  <Code>{value}</Code>
-                  <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
-                </>
-              )}
-              // visible
-              placement="bottomStart"
-              className="dns-data-tables__tooltip table-cell-ellipsis"
-              portalClassName="table-cell-tooltip-portal record-name"
-              offset={5}
-            >
-              {value}
-            </Tooltip>
-          );
-        }
-        return <>{value}</>;
-      }
+      Cell: NameCell
     },
     {
       Header: 'Type',
@@ -176,25 +201,7 @@ export const DNSDataTables = (props: {
       maxWidth: 350,
       ellipsis: true,
       filter: 'searchInRecordNameAndValue',
-      Cell({ value }) {
-        return (
-          <Tooltip
-            text={(
-              <>
-                <Code>{value}</Code>
-                <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
-              </>
-            )}
-            placement="bottomStart"
-            className="dns-data-tables__tooltip table-cell-ellipsis"
-            portalClassName="table-cell-tooltip-portal record-value"
-            // visible
-            offset={5}
-          >
-            {value}
-          </Tooltip>
-        );
-      }
+      Cell: ValueCell
     },
     {
       Header: 'TTL',
@@ -209,6 +216,7 @@ export const DNSDataTables = (props: {
       width: 30,
       minWidth: 30,
       maxWidth: 30,
+      // eslint-disable-next-line react/no-unstable-nested-components -- react tables
       Cell({ row }: CellProps<RecordItem, any>) {
         const record = row.original;
         if (props.domain) {

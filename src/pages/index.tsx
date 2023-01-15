@@ -1,4 +1,5 @@
-import React, { forwardRef, useCallback, useMemo } from 'react';
+import type React from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 
 import { Text, Link, useTheme, Spacer, Note } from '@geist-ui/core';
 import NextLink from 'next/link';
@@ -23,11 +24,11 @@ interface DomainItem {
 }
 
 const DomainLink = forwardRef((props: { name: string }, ref: React.ForwardedRef<HTMLAnchorElement>) => {
-  return <>
+  return (
     <NextLink href={`/domain/${props.name}`} prefetch={false} passHref legacyBehavior>
       <Link ref={ref} className="domain">{props.name}</Link>
     </NextLink>
-  </>;
+  );
 });
 
 if (process.env.NODE_ENV !== 'production') {
@@ -142,7 +143,7 @@ const DomainsPage: NextPageWithLayout = () => {
   );
 };
 
-DomainsPage.getLayout = (children, prop) => {
+DomainsPage.getLayout = (children, _prop) => {
   return (
     <Layout>
       {children}

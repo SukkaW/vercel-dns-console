@@ -77,7 +77,6 @@ const DNSPage: NextPageWithLayout = () => {
                 <Button auto onClick={handleRefreshButtonClick} loading={isRefreshing} icon={<Refresh />} />
                 <Spacer inline />
                 {
-                  // eslint-disable-next-line no-nested-ternary
                   readOnlyMode
                     ? (
                       <Button disabled>
@@ -95,7 +94,7 @@ const DNSPage: NextPageWithLayout = () => {
                         )
                         : (
                           <Button type="success" disabled>
-                              Create record
+                            Create record
                           </Button>
                         )
                     )
@@ -121,11 +120,11 @@ const DNSPage: NextPageWithLayout = () => {
             </>
           )
       }
-    </div >
+    </div>
   );
 };
 
-DNSPage.getLayout = (children, prop) => {
+DNSPage.getLayout = (children, _prop) => {
   return (
     <Layout>
       {children}

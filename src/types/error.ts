@@ -1,18 +1,16 @@
-export interface VercelError<T extends BaseVercelErrorField> {
-  error: T
-}
-
 export interface BaseVercelErrorField {
   code: string
   message: string
+}
+
+export interface VercelError<T extends BaseVercelErrorField> {
+  error: T
 }
 
 const hasOwn = <T, K extends PropertyKey>(
   target: T,
   propertyKey: K
 ): target is T & Record<K, unknown> => {
-  // Next.js won't add polyfill for Object.hasOwn
-  // eslint-disable-next-line prefer-object-has-own
   return Object.prototype.hasOwnProperty.call(target, propertyKey);
 };
 

@@ -35,7 +35,7 @@
     "@typescript-eslint/parser": "^5.48.1",
     "eslint": "^8.32.0",
     "eslint-config-next": "^13.1.2",
-    "eslint-config-sukka": "1.6",
+    "eslint-config-sukka": "^1.7.2",
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.4",
     "patch-package": "^6.5.1",

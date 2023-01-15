@@ -11,7 +11,6 @@ const isInteger = (value: unknown): boolean => {
 };
 
 export const validateDnsRecord = ({
-  ttl,
   recordType,
   recordValue,
   caaTag,

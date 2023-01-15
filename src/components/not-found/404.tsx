@@ -21,7 +21,7 @@ export const NotFoundError = ({
         <h1>
           404
         </h1>
-        <span className="dividing-line"></span>
+        <span className="dividing-line" />
         <div className="error-desc">
           <h2>
             {body ?? title}

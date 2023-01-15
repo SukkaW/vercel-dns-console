@@ -40,7 +40,7 @@ export interface DataTableProps<T extends TableDataItemBase> {
 }
 
 declare module 'react-table' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars -- fuck ts
   export interface UseTableColumnOptions<D extends object> {
     headerClassName?: string;
     cellClassName?: string;
@@ -93,10 +93,12 @@ const DataTable = <T extends TableDataItemBase>({
       hooks.visibleColumns.push(columns => [
         {
           id: 'selection',
+          // eslint-disable-next-line react/no-unstable-nested-components -- react-tables
           Header({ toggleAllPageRowsSelected, getToggleAllRowsSelectedProps }) {
             const props = getToggleAllRowsSelectedProps();
             return <Checkbox checked={props.checked} onChange={(e) => toggleAllPageRowsSelected(e.target.checked)} />;
           },
+          // eslint-disable-next-line react/no-unstable-nested-components -- react-tables
           Cell({ row }: CellProps<T, any>) {
             if (row.original.disableSelection) {
               return <Lock size={12} className="icon" />;
@@ -172,7 +174,7 @@ const DataTable = <T extends TableDataItemBase>({
                 const rowProp = row.getRowProps();
                 return (
                   <TableRow key={rowProp.key} rowProp={rowProp}>
-                    {row.cells.map((cell, index) => {
+                    {row.cells.map((cell) => {
                       const { key, ...restCellProp } = cell.getCellProps();
                       return (
                         <td key={key} {...restCellProp}>

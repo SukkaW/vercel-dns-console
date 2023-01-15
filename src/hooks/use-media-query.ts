@@ -1,6 +1,6 @@
 import { useEffect, useState, type Dispatch } from 'react';
 
-const queriesMap = new Map<string, { mql: MediaQueryList; dispatchers: Set<Dispatch<boolean>>; listener: () => void }>();
+const queriesMap = new Map<string, { mql: MediaQueryList; dispatchers: Set<Dispatch<boolean>>; listener:() => void }>();
 
 type QueryStateSetter = (matches: boolean) => void;
 
@@ -64,7 +64,6 @@ export const useMediaQuery = (query: string): boolean | undefined => {
     querySubscribe(query, setState);
 
     return () => queryUnsubscribe(query, setState);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
   return state;

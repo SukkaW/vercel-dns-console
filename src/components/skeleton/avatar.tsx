@@ -5,7 +5,7 @@ export const Avatar = memo((props: JSX.IntrinsicElements['div']) => {
   const theme = useTheme();
 
   return (
-    <div className="skeleton skeleton.avatar" {...props} >
+    <div className="skeleton skeleton.avatar" {...props}>
       <style jsx>{`
       div {
         width: 36px;

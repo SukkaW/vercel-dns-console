@@ -10,14 +10,6 @@ import { noop } from '@/lib/util';
 import type { VercelSupportedDNSType } from '@/types/dns';
 import { Label } from '../create-record/label';
 
-export interface EditDNSRecordProps {
-  domain: string | undefined;
-  isSubmitting: boolean;
-  onSubmit: OnSubmit;
-  isEdit?: boolean;
-  initialState?: DNSFormState | null;
-}
-
 type CAATag = 'issue' | 'issuewild' | 'iodef';
 type SrvProtocol = '_tcp' | '_udp' | '_tls';
 
@@ -38,6 +30,14 @@ export interface DNSFormState {
 }
 
 export type OnSubmit = (arg: DNSFormState) => void | Promise<void>;
+
+export interface EditDNSRecordProps {
+  domain: string | undefined;
+  isSubmitting: boolean;
+  onSubmit: OnSubmit;
+  isEdit?: boolean;
+  initialState?: DNSFormState | null;
+}
 
 const getRecordValuePlaceHolder = (recordType: VercelSupportedDNSType) => {
   switch (recordType) {
@@ -315,7 +315,6 @@ export const EditDNSRecord = ({
           ? generateDnsDescription(
             domain,
             recordName,
-            // eslint-disable-next-line no-nested-ternary
             recordType === 'CAA'
               ? `0 ${caaTag} ${caaValue}`
               : recordType === 'SRV'
@@ -327,8 +326,7 @@ export const EditDNSRecord = ({
             isSrv && srvPort,
             isSrv && srvTarget
           )
-          : <Loading className="dns-descr-loading">Loading</Loading>
-        }
+          : <Loading className="dns-descr-loading">Loading</Loading>}
       </div>
       <Spacer />
       <Grid.Container gap={2} justify="flex-start">
@@ -416,7 +414,6 @@ export const EditDNSRecord = ({
           onClick={readOnlyMode ? noop : handleSubmit}
         >
           {
-            // eslint-disable-next-line no-nested-ternary
             readOnlyMode
               ? 'You can\'t create record in read-only mode'
               : isEdit

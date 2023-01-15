@@ -40,7 +40,6 @@ export const TableHead = <T extends TableDataItemBase>(
               {header.render('Header')}
               <span>
                 {/* Add a sort direction indicator */}
-                {/* eslint-disable-next-line no-nested-ternary */}
                 {header.isSorted
                   ? header.isSortedDesc
                     ? <ArrowDown size={12} />

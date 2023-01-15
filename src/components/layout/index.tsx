@@ -1,4 +1,5 @@
-import React, { startTransition, useCallback } from 'react';
+import type React from 'react';
+import { startTransition, useCallback } from 'react';
 
 import { Link, Modal, Note, Popover, Snippet, Spacer, Text, useModal, useTheme } from '@geist-ui/core';
 import NextLink from 'next/link';
@@ -49,75 +50,77 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
     logout();
   }, [logout]);
 
-  return <>
-    <Menu
-      itemMinWidth={150}
-      content={(
-        <>
-          <MenuItem>
-            <NextLink href="/" legacyBehavior>
-              <Link>
-                Dashboard
+  return (
+    <>
+      <Menu
+        itemMinWidth={150}
+        content={(
+          <>
+            <MenuItem>
+              <NextLink href="/" legacyBehavior>
+                <Link>
+                  Dashboard
+                </Link>
+              </NextLink>
+            </MenuItem>
+            <MenuItem>
+              <GitHub size={16} />
+              <Spacer inline w={1 / 3} />
+              <Link
+                href="https://github.com/sukkaw/vercel-dns-console"
+                target="_blank"
+                rel="noopener noreferrer nofollow external"
+              >
+                Source Code
               </Link>
-            </NextLink>
-          </MenuItem>
-          <MenuItem>
-            <GitHub size={16} />
-            <Spacer inline w={1 / 3} />
-            <Link
-              href="https://github.com/sukkaw/vercel-dns-console"
-              target="_blank"
-              rel="noopener noreferrer nofollow external"
-            >
-              Source Code
-            </Link>
-          </MenuItem>
-          <Popover.Item line />
-          <ThemeToggle />
-          <Popover.Item line />
-          <MenuItem onClick={handleToggleModalVisiblity}>
-            Show Token
-          </MenuItem>
-          <MenuItem onClick={handleLogoutClick}>
-            <Text span type="error">Log Out</Text>
-          </MenuItem>
-        </>
-      )}
-    >
-      {
-        props?.avatar
-          ? (
-            <Image
-              alt={props.name ? `${props.name}'s Avatar` : 'Avatar'}
-              style={{
-                borderRadius: '50%',
-                userSelect: 'none',
-                cursor: 'pointer'
-              }}
-              loader={vercelAvatarLoader}
-              src={`https://api.vercel.com/www/avatar/${props.avatar}`}
-              height={36}
-              width={36}
-            />
-          )
-          : (
-            <Skeleton.Avatar />
-          )
-      }
-    </Menu>
-    <Modal {...bindings}>
-      <Modal.Title>Your Vercel API Token</Modal.Title>
-      <Modal.Content>
-        <Snippet text={token ?? ''} symbol="" w="100%" />
-        <Spacer />
-        <Note>
-          The token is stored in your browser locally and will only be sent to Vercel&apos;s API server directly. You can delete the the token from your browser by clicking the <Text b>Log Out</Text> button.
-        </Note>
-      </Modal.Content>
-      <Modal.Action passive onClick={handleToggleModalVisiblity}>Cancel</Modal.Action>
-      <Modal.Action onClick={logout}><Text span type="error">Log Out</Text></Modal.Action>
-    </Modal>
-  </>;
+            </MenuItem>
+            <Popover.Item line />
+            <ThemeToggle />
+            <Popover.Item line />
+            <MenuItem onClick={handleToggleModalVisiblity}>
+              Show Token
+            </MenuItem>
+            <MenuItem onClick={handleLogoutClick}>
+              <Text span type="error">Log Out</Text>
+            </MenuItem>
+          </>
+        )}
+      >
+        {
+          props?.avatar
+            ? (
+              <Image
+                alt={props.name ? `${props.name}'s Avatar` : 'Avatar'}
+                style={{
+                  borderRadius: '50%',
+                  userSelect: 'none',
+                  cursor: 'pointer'
+                }}
+                loader={vercelAvatarLoader}
+                src={`https://api.vercel.com/www/avatar/${props.avatar}`}
+                height={36}
+                width={36}
+              />
+            )
+            : (
+              <Skeleton.Avatar />
+            )
+        }
+      </Menu>
+      <Modal {...bindings}>
+        <Modal.Title>Your Vercel API Token</Modal.Title>
+        <Modal.Content>
+          <Snippet text={token ?? ''} symbol="" w="100%" />
+          <Spacer />
+          <Note>
+            The token is stored in your browser locally and will only be sent to Vercel&apos;s API server directly. You can delete the the token from your browser by clicking the <Text b>Log Out</Text> button.
+          </Note>
+        </Modal.Content>
+        <Modal.Action passive onClick={handleToggleModalVisiblity}>Cancel</Modal.Action>
+        <Modal.Action onClick={logout}><Text span type="error">Log Out</Text></Modal.Action>
+      </Modal>
+    </>
+  );
 };
 
 export const Layout = (props: {
@@ -126,24 +129,25 @@ export const Layout = (props: {
   const { data } = useVercelUser();
   const theme = useTheme();
 
-  return <>
-    <div className="navbar-wrapper">
-      <nav className="navbar">
-        <div className="content">
-          <div className="logo">
-            <NextLink href="/" aria-label="Go Home">
-              <VercelLogo color={theme.palette.foreground} />
-            </NextLink>
+  return (
+    <>
+      <div className="navbar-wrapper">
+        <nav className="navbar">
+          <div className="content">
+            <div className="logo">
+              <NextLink href="/" aria-label="Go Home">
+                <VercelLogo color={theme.palette.foreground} />
+              </NextLink>
+            </div>
+            <AvatarMenu name={data?.name} avatar={data?.avatar} />
           </div>
-          <AvatarMenu name={data?.name} avatar={data?.avatar} />
-        </div>
-      </nav>
-    </div>
-    <Container className="page">
-      {props.children}
-    </Container>
-    <AntiAdBlockModal />
-    <style jsx>{`
+        </nav>
+      </div>
+      <Container className="page">
+        {props.children}
+      </Container>
+      <AntiAdBlockModal />
+      <style jsx>{`
   :global(section.page.page) {
     margin-top: 64px;
     min-height: calc(100vh - 64px);
@@ -206,5 +210,6 @@ export const Layout = (props: {
     align-items: center;
   }
 `}</style>
-  </>;
+    </>
+  );
 };

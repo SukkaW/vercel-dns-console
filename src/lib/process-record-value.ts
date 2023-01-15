@@ -8,20 +8,18 @@ const processRecordValue = (
     recordValue
   }: DNSFormState
 ): string => {
-  let processedRecordValue = recordValue;
   switch (recordType) {
     case 'CAA': {
       const quotedCaaValue = (!caaValue.startsWith('"') || !caaValue.endsWith('"'))
         ? `"${caaValue}"`
         : caaValue;
-      processedRecordValue = `0 ${caaTag} ${quotedCaaValue}`;
-      break;
+      return `0 ${caaTag} ${quotedCaaValue}`;
     }
     default:
       break;
   }
 
-  return processedRecordValue;
+  return recordValue;
 };
 
 type RecordData = {

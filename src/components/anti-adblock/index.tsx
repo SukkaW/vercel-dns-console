@@ -68,17 +68,21 @@ export const AntiAdBlockModal = memo(() => {
           </Text>
         </Text>
       </Modal.Content>
-      <Modal.Action passive onClick={() => {
-        router.reload();
-      }}>
+      <Modal.Action
+        passive
+        onClick={() => {
+          router.reload();
+        }}>
         <Text type="success" b>
           I have disabled my ADBlock, reload
         </Text>
       </Modal.Action>
-      <Modal.Action passive onClick={() => {
-        setShowModal(false);
-        setReadonlyMode(true);
-      }}>
+      <Modal.Action
+        passive
+        onClick={() => {
+          setShowModal(false);
+          setReadonlyMode(true);
+        }}>
         <Text type="error" b>
           Enter read-only mode
         </Text>

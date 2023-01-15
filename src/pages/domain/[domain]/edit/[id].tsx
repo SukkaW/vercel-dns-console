@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import { useMemo, useState, useCallback } from 'react';
 
 import { Text } from '@geist-ui/core';
@@ -74,7 +73,7 @@ const EditRecordPage: NextPageWithLayout = () => {
           ? '_tls'
           : '_tcp';
 
-      const state: DNSFormState = {
+      return {
         recordName: record.name,
         recordType: record.type,
         recordValue: record.value,
@@ -88,8 +87,7 @@ const EditRecordPage: NextPageWithLayout = () => {
         srvService: '',
         srvProtocol,
         mxPriority: record.mxPriority ?? null
-      };
-      return state;
+      } as DNSFormState;
     }
     return null;
   }, [record]);
@@ -174,7 +172,7 @@ const EditRecordPage: NextPageWithLayout = () => {
                 isSubmitting={isSubmitting}
                 initialState={initialState}
                 onSubmit={handleSubmit}
-                isEdit={true}
+                isEdit
               />
             </>
           )

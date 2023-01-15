@@ -121,7 +121,7 @@ const LoginForm = () => {
         Continue with Your API Token
       </Button>
       <Spacer />
-      <Note type="warning" w={'100%'}>
+      <Note type="warning" w="100%">
         <Text p>
           Your API token will only be stored in your browser locally.
         </Text>
@@ -170,7 +170,7 @@ const LoginPage: NextPageWithLayout = () => {
   );
 };
 
-LoginPage.getLayout = (children, props) => (
+LoginPage.getLayout = (children, _props) => (
   <Container>
     {children}
   </Container>

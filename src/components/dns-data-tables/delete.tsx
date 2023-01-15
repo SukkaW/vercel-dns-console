@@ -102,6 +102,7 @@ export const DeleteRecordModal = (props: {
           Delete
         </Text>
       </Modal.Action>
+      {/* eslint-disable-next-line react/no-unknown-property -- style jsx */}
       <style jsx global>{`
         .cell-text-overflow {
           overflow: hidden;
