@@ -1,12 +1,12 @@
 import { useState, useCallback, useMemo } from 'react';
 
 import { useInput, Grid, Input, Select, Text, Textarea, Spacer, Code, ButtonGroup, Button, Loading } from '@geist-ui/core';
-import { useReadonlyMode } from '@/hooks/use-readonly-mode';
+import { useIsReadonly } from '@/contexts/readonly-mode';
 import { useInputNumberState } from '@/hooks/use-input-number-state';
 
 import { VERCEL_SUPPORTED_DNS_RECORDS_TYPE } from '@/lib/constant';
 import { generateDnsDescription } from '@/lib/generate-dns-description';
-import { noop } from '@/lib/util';
+import { noop } from 'foxact/noop';
 import type { VercelSupportedDNSType } from '@/types/dns';
 import { Label } from '../create-record/label';
 
@@ -65,7 +65,7 @@ export const EditDNSRecord = ({
   initialState,
   isEdit = false
 }: EditDNSRecordProps) => {
-  const [readOnlyMode] = useReadonlyMode();
+  const readOnlyMode = useIsReadonly();
 
   const isInitialStateLoading = isEdit && !initialState;
 

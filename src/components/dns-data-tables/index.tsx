@@ -8,7 +8,7 @@ import { generateDnsDescription } from '@/lib/generate-dns-description';
 import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
 import { useToasts } from '@/hooks/use-toasts';
 import { useModal } from '@/hooks/use-modal';
-import { useReadonlyMode } from '@/hooks/use-readonly-mode';
+import { useIsReadonly } from '@/contexts/readonly-mode';
 
 import MoreVertical from '@geist-ui/icons/moreVertical';
 import InfoFill from '@geist-ui/icons/infoFill';
@@ -111,7 +111,7 @@ export const DNSDataTables = (props: {
 }) => {
   const theme = useTheme();
   const { setToast } = useToasts();
-  const [readOnlyMode] = useReadonlyMode();
+  const readOnlyMode = useIsReadonly();
 
   const { data: rawData, isLoading } = useVercelDNSRecords(props.domain, {
     onError(error) {

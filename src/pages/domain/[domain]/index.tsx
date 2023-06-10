@@ -11,7 +11,7 @@ import NextHead from 'next/head';
 import { useRouter } from 'next/router';
 import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
 import { useVercelDomainInfo } from '@/hooks/use-vercel-domains';
-import { useReadonlyMode } from '@/hooks/use-readonly-mode';
+import { useIsReadonly } from '@/contexts/readonly-mode';
 
 import Refresh from '@geist-ui/icons/refreshCcw';
 
@@ -24,7 +24,7 @@ const DNSPage: NextPageWithLayout = () => {
 
   const { error, mutate } = useVercelDNSRecords(domain);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [readOnlyMode] = useReadonlyMode();
+  const readOnlyMode = useIsReadonly();
 
   const domainInfo = useVercelDomainInfo(domain);
 

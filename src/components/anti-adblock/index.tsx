@@ -2,13 +2,16 @@ import { memo, useState } from 'react';
 
 import { Modal, Text, Code, Link } from '@geist-ui/core';
 import { useDetectAdBlock } from '@/hooks/use-detect-adblock';
-import { useReadonlyMode } from '@/hooks/use-readonly-mode';
 import { useRouter } from 'next/router';
+import { useIsReadonly, useSetIsReadOnly } from '@/contexts/readonly-mode';
 
 export const AntiAdBlockModal = memo(() => {
   const router = useRouter();
   const isAdBlockEnabled = useDetectAdBlock();
-  const [readOnlyMode, setReadonlyMode] = useReadonlyMode();
+
+  const readOnlyMode = useIsReadonly();
+  const setReadOnlyMode = useSetIsReadOnly();
+
   const [showModal, setShowModal] = useState(!readOnlyMode && isAdBlockEnabled);
 
   if (!readOnlyMode && !showModal && isAdBlockEnabled) {
@@ -16,7 +19,7 @@ export const AntiAdBlockModal = memo(() => {
   }
 
   return (
-    <Modal visible={showModal} w={2} onClose={() => setReadonlyMode(true)}>
+    <Modal visible={showModal} w={2} onClose={() => setReadOnlyMode(true)}>
       <Modal.Title>You appear to have ADBlock enabled</Modal.Title>
       <Modal.Content>
         <Text>
@@ -81,7 +84,7 @@ export const AntiAdBlockModal = memo(() => {
         passive
         onClick={() => {
           setShowModal(false);
-          setReadonlyMode(true);
+          setReadOnlyMode(true);
         }}>
         <Text type="error" b>
           Enter read-only mode

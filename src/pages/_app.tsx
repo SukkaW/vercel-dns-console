@@ -10,6 +10,7 @@ import type { NextPage } from 'next/types';
 import { useMediaQuery } from '../hooks/use-media-query';
 import { isBrowser } from '../lib/util';
 import { atom, useAtom } from 'jotai';
+import { ReadonlyModeProvider } from '../contexts/readonly-mode';
 
 export type NextPageWithLayout<P = Record<string, unknown>> = NextPage<P> & {
   getLayout?: (page: React.ReactElement, props: P) => React.ReactNode;
@@ -68,8 +69,10 @@ const App = ({ pageProps, Component }: AppPropsWithLayout) => {
 
   return (
     <GeistProvider themeType={geistThemeType}>
-      <CssBaseline />
-      {getLayout(<Component {...pageProps} />, pageProps)}
+      <ReadonlyModeProvider>
+        <CssBaseline />
+        {getLayout(<Component {...pageProps} />, pageProps)}
+      </ReadonlyModeProvider>
     </GeistProvider>
   );
 };

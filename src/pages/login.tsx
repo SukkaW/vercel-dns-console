@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useVercelApiToken } from '@/hooks/use-vercel-api-token';
-import { useConstHandler } from '@/hooks/use-const-handler';
 import { useVercelUser } from '@/hooks/use-vercel-user';
 import { useToasts } from '@/hooks/use-toasts';
 import { useRouter } from 'next/router';
@@ -32,7 +31,7 @@ const LoginForm = () => {
     setInputs(e.target.value);
   }, []);
 
-  const login = useConstHandler(async (token: string) => {
+  const login = useCallback(async (token: string) => {
     const handleLoginError = () => {
       setIsLoading(false);
       setToken(null);
@@ -64,7 +63,7 @@ const LoginForm = () => {
     } catch {
       handleLoginError();
     }
-  });
+  }, [mutate, router, setToast, setToken]);
 
   // The token could exist even when at the login page, since the initial value of token
   // comes from localStorage.

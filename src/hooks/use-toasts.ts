@@ -1,10 +1,10 @@
 import { useToasts as useGeistToasts } from '@geist-ui/core';
-import { useConstHandler } from './use-const-handler';
+import { useStableHandler } from 'foxact/use-stable-handler-only-when-you-know-what-you-are-doing-or-you-will-be-fired';
 
 export const useToasts = () => {
   const { setToast: origSetToast, removeAll: origClearToasts } = useGeistToasts();
   return {
-    setToast: useConstHandler(origSetToast),
-    clearToasts: useConstHandler(origClearToasts)
+    setToast: useStableHandler(origSetToast),
+    clearToasts: useStableHandler(origClearToasts)
   };
 };

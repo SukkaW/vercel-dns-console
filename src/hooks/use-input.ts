@@ -15,13 +15,13 @@ export const useInput = (
     reset: useCallback(() => setState(initialValue), [initialValue]),
     bindings: {
       value: state,
-      onChange: (event: BindingsChangeTarget) => {
+      onChange: useCallback((event: BindingsChangeTarget) => {
         if (typeof event === 'string') {
           setState(event);
         } else {
           setState(event.target.value);
         }
-      }
+      }, [])
     }
   };
 };

@@ -5,7 +5,7 @@ type UseNumberState = (initialValue: number | null) => Readonly<[
   (value: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | string | number) => void
 ]>;
 export const useInputNumberState: UseNumberState = (initialValue) => {
-  const [value, setValue] = useState<number | null>(Number.isNaN(initialValue) ? null : initialValue);
+  const [value, setValue] = useState<number | null>(() => (Number.isNaN(initialValue) ? null : initialValue));
 
   const setNumber = useCallback((input: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | string | number) => {
     let v;

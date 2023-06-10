@@ -15,6 +15,7 @@
     "@geist-ui/core": "^2.3.8",
     "@geist-ui/icons": "^1.0.2",
     "clsx": "^1.2.1",
+    "foxact": "^0.2.8-alpha.0",
     "is-ip": "^4.0.0",
     "jotai": "^1.13.0",
     "minireset.css": "^0.0.7",
