@@ -43,6 +43,20 @@
     "typescript": "^5.1.6"
   },
   "overrides": {
-    "next": "$next"
+    "next": "$next",
+    "array-includes": "npm:@nolyfill/array-includes@latest",
+    "array.prototype.flat": "npm:@nolyfill/array.prototype.flat@latest",
+    "array.prototype.flatmap": "npm:@nolyfill/array.prototype.flatmap@latest",
+    "array.prototype.tosorted": "npm:@nolyfill/array.prototype.tosorted@latest",
+    "has": "npm:@nolyfill/has@latest",
+    "object.assign": "npm:@nolyfill/object.assign@latest",
+    "object.entries": "npm:@nolyfill/object.entries@latest",
+    "object.fromentries": "npm:@nolyfill/object.fromentries@latest",
+    "object.hasown": "npm:@nolyfill/object.hasown@latest",
+    "object.values": "npm:@nolyfill/object.values@latest",
+    "string.prototype.matchall": "npm:@nolyfill/string.prototype.matchall@latest",
+    "array.prototype.findlastindex": "npm:@nolyfill/array.prototype.findlastindex@latest",
+    "es-iterator-helpers": "npm:@nolyfill/es-iterator-helpers@latest",
+    "object.groupby": "npm:@nolyfill/object.groupby@latest"
   }
 }
