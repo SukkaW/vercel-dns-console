@@ -42,4 +42,10 @@ npm run dev # npm run build / npm run start / npm run analyze
 **Vercel DNS Console (Unofficial)** © [Sukka](https://github.com/SukkaW), Released under the [MIT](./LICENSE) License.
 Authored and maintained by Sukka with help from contributors ([list](https://github.com/SukkaW/vercel-dns-console/graphs/contributors)).
 
-> [Personal Website](https://skk.moe) · [Blog](https://blog.skk.moe) · GitHub [@SukkaW](https://github.com/SukkaW) · Telegram Channel [@SukkaChannel](https://t.me/SukkaChannel) · Twitter [@isukkaw](https://twitter.com/isukkaw) · Keybase [@sukka](https://keybase.io/sukka)
+> [Personal Website](https://skk.moe) · [Blog](https://blog.skk.moe) · GitHub [@SukkaW](https://github.com/SukkaW) · Telegram Channel [@SukkaChannel](https://t.me/SukkaChannel) · Twitter [@isukkaw](https://twitter.com/isukkaw) · Keybase [@sukka](https://key
+
+<p align="center">
+  <a href="https://github.com/sponsors/SukkaW/">
+    <img src="https://sponsor.cdn.skk.moe/sponsors.svg"/>
+  </a>
+</p>
