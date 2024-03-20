@@ -1,28 +1,23 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import { useEffect } from 'foxact/use-abortable-effect';
 
 export const useDetectAdBlock = () => {
   const [isAdBlockEnabled, setIsAdBlockEnabled] = useState(false);
   const isCheckedRef = useRef(false);
 
-  useEffect(() => {
+  useEffect((signal) => {
     if (!isCheckedRef.current) {
-      let isCancelled = false;
-
       (async () => {
         const res = await fetch('/api/post', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
         const data = await res.text();
 
-        if (!isCancelled) {
+        if (!signal.aborted) {
           if (data.length === 0) {
             isCheckedRef.current = true;
             setIsAdBlockEnabled(true);
           }
         }
       })();
-
-      return () => {
-        isCancelled = true;
-      };
     }
   }, []);
 
