@@ -1,6 +1,6 @@
 import { useTheme } from '@geist-ui/core';
 
-export const Container = (props: { children: React.ReactNode } & JSX.IntrinsicElements['section']) => {
+export const Container = (props: { children: React.ReactNode } & React.JSX.IntrinsicElements['section']) => {
   const theme = useTheme();
   const { children, ...rest } = props;
 

@@ -35,13 +35,27 @@ export const validateDnsRecord = ({
   } else {
     if (!recordValue) throw 'Missing record value';
 
-    if (recordType === 'MX') {
-      if (!mxPriority) throw 'Missing MX priority';
-      if (!isInteger(mxPriority)) throw 'Invalid MX priority';
-    } else if (recordType === 'A') {
-      if (!isIPv4(recordValue)) throw `"${recordValue}" is not an valid IPv4 address`;
-    } else if (recordType === 'AAAA') {
-      if (!isIPv6(recordValue)) throw `"${recordValue}" is not an valid IPv6 address`;
+    switch (recordType) {
+      case 'MX': {
+        if (!mxPriority) throw 'Missing MX priority';
+        if (!isInteger(mxPriority)) throw 'Invalid MX priority';
+
+        break;
+      }
+      case 'A': {
+        if (!isIPv4(recordValue)) throw `"${recordValue}" is not an valid IPv4 address`;
+
+        break;
+      }
+      case 'AAAA': {
+        if (!isIPv6(recordValue)) throw `"${recordValue}" is not an valid IPv6 address`;
+
+        break;
+      }
+      default: {
+        break;
+      }
+    // No default
     }
   }
 

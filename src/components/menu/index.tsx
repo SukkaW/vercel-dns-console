@@ -1,10 +1,10 @@
 import { Popover, useTheme } from '@geist-ui/core';
 
 export const Menu = (props: {
-  children?: React.ReactNode;
-  content?: React.ReactNode;
-  itemMinWidth?: number;
-  style?: React.CSSProperties;
+  children?: React.ReactNode,
+  content?: React.ReactNode,
+  itemMinWidth?: number,
+  style?: React.CSSProperties
 }) => {
   const theme = useTheme();
 

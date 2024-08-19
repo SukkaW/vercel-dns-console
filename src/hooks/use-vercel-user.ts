@@ -58,13 +58,11 @@ export const useVercelUser = () => {
   const newData = useMemo(() => {
     if (data) {
       return {
-        username: data?.user.username,
-        name: data?.user.name,
-        avatar: data?.user.avatar
+        username: data.user.username,
+        name: data.user.name,
+        avatar: data.user.avatar
       };
     }
-
-    return undefined;
   }, [data]);
 
   return {

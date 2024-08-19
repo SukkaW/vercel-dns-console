@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-empty-interface */
-import {
+import type {
   //   UseColumnOrderInstanceProps,
   //   UseColumnOrderState,
   //   UseExpandedHooks,

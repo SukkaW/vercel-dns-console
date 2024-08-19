@@ -48,13 +48,13 @@ const EditRecordPage: NextPageWithLayout = () => {
     if (record) {
       const caaTag = record.value.includes('issuewild')
         ? 'issuewild'
-        : record.value.includes('iodef')
+        : (record.value.includes('iodef')
           ? 'iodef'
-          : 'issue';
+          : 'issue');
       // Next.js doesn't support Array.prototype.at
       const splittedValue = record.value.split(' ');
 
-      const [, , ...restCaaValue] = record.type === 'CAA' ? splittedValue : [];
+      const restCaaValue = (record.type === 'CAA' ? splittedValue : []).slice(2);
       let caaValue = restCaaValue.join(' ');
       if (caaValue.startsWith('"')) {
         caaValue = caaValue.slice(1);
@@ -69,9 +69,9 @@ const EditRecordPage: NextPageWithLayout = () => {
 
       const srvProtocol = record.name.includes('._udp.')
         ? '_udp'
-        : record.name.includes('._tls.')
+        : (record.name.includes('._tls.')
           ? '_tls'
-          : '_tcp';
+          : '_tcp');
 
       return {
         recordName: record.name,

@@ -1,7 +1,7 @@
 import { useTheme } from '@geist-ui/core';
 import { memo } from 'react';
 
-export const Avatar = memo((props: JSX.IntrinsicElements['div']) => {
+export const Avatar = memo((props: React.JSX.IntrinsicElements['div']) => {
   const theme = useTheme();
 
   return (

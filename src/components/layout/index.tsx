@@ -87,7 +87,7 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
         )}
       >
         {
-          props?.avatar
+          props.avatar
             ? (
               <Image
                 alt={props.name ? `${props.name}'s Avatar` : 'Avatar'}

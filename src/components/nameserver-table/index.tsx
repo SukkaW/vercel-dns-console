@@ -8,7 +8,7 @@ export const NameServerListTable = memo((props: {
   const { intended, actual } = props;
   const data = useMemo(() => {
     if (intended && actual) {
-      const result = Array(Math.max(intended.length, actual.length));
+      const result = new Array(Math.max(intended.length, actual.length));
 
       for (let i = 0; i < result.length; i++) {
         result[i] ??= {};

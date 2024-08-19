@@ -6,15 +6,15 @@ export const generateDnsDescription = (
   name: string | null | undefined,
   value: string | null | undefined,
   type:
-  | 'A'
-  | 'AAAA'
-  | 'ALIAS'
-  | 'CAA'
-  | 'CNAME'
-  | 'MX'
-  | 'SRV'
-  | 'TXT'
-  | 'NS',
+    | 'A'
+    | 'AAAA'
+    | 'ALIAS'
+    | 'CAA'
+    | 'CNAME'
+    | 'MX'
+    | 'SRV'
+    | 'TXT'
+    | 'NS',
   srvService?: string | null | undefined | false,
   srvProtocol?: '_tcp' | '_udp' | '_tls' | null | undefined | false,
   srvPort?: number | null | undefined | false,

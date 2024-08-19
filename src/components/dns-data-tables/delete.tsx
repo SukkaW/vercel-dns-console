@@ -45,15 +45,16 @@ const RecordsListTable = (props: { records: RecordItem[] }) => {
   );
 };
 
-export const DeleteRecordModal = (props: {
+export interface DeleteRecordModalProps {
   domain: string,
   records: RecordItem[],
   visible: boolean,
   close: () => void
-}) => {
-  const { domain, records, visible, close } = props;
+}
+
+export const DeleteRecordModal = ({ domain, records, visible, close }: DeleteRecordModalProps) => {
   const [token] = useVercelApiToken();
-  const { mutate } = useVercelDNSRecords(props.domain);
+  const { mutate } = useVercelDNSRecords(domain);
   const { setToast } = useToasts();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -88,11 +89,11 @@ export const DeleteRecordModal = (props: {
       <Modal.Title>Delete Record</Modal.Title>
       <Modal.Content>
         <Text p>
-          You are about to delete the following DNS record{props.records.length > 1 ? 's' : ''}:
+          You are about to delete the following DNS record{records.length > 1 ? 's' : ''}:
         </Text>
-        <RecordsListTable records={props.records} />
+        <RecordsListTable records={records} />
       </Modal.Content>
-      <Modal.Action passive onClick={props.close}>
+      <Modal.Action passive onClick={close}>
         <Text span>
           Cancel
         </Text>
@@ -102,7 +103,6 @@ export const DeleteRecordModal = (props: {
           Delete
         </Text>
       </Modal.Action>
-      {/* eslint-disable-next-line react/no-unknown-property -- style jsx */}
       <style jsx global>{`
         .cell-text-overflow {
           overflow: hidden;

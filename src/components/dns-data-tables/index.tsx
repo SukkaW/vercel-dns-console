@@ -35,7 +35,7 @@ export interface RecordItem {
   createdAt: number | null,
   updatedAt: number | null,
   isSystem: boolean,
-  disableSelection?: boolean;
+  disableSelection?: boolean
 }
 
 const searchInRecordTypeFilterFn: FilterType<RecordItem> = (rows, columnIds, filterValue) => {
@@ -71,10 +71,7 @@ const NameCell = ({ value }: CellProps<RecordItem, string>) => {
       </Tooltip>
     );
   }
-  return (
-    // eslint-disable-next-line @fluffyfox/jsx/no-unneeded-nested, react/jsx-no-useless-fragment -- fuck tsx type
-    <>{value}</>
-  );
+  return value;
 };
 
 const ValueCell = ({ value }: CellProps<RecordItem, string>) => {
@@ -167,7 +164,7 @@ export const DNSDataTables = (props: {
     return result.sort((a, b) => (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0));
   }, [rawData]);
 
-  const columns: DataTableColumns<RecordItem>[] = useMemo(() => [
+  const columns: Array<DataTableColumns<RecordItem>> = useMemo(() => [
     {
       Header: 'Name',
       accessor: 'name',
@@ -216,8 +213,8 @@ export const DNSDataTables = (props: {
       width: 30,
       minWidth: 30,
       maxWidth: 30,
-      // eslint-disable-next-line react/no-unstable-nested-components -- react tables
-      Cell({ row }: CellProps<RecordItem, any>) {
+      // eslint-disable-next-line @eslint-react/no-nested-components -- react tables
+      Cell({ row }: CellProps<RecordItem>) {
         const record = row.original;
         if (props.domain) {
           return (

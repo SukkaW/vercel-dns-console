@@ -27,15 +27,15 @@
     "swr": "^2.2.5"
   },
   "devDependencies": {
-    "@eslint-sukka/node": "^6.1.10",
-    "@eslint-sukka/react": "^6.1.10",
+    "@eslint-sukka/node": "^6.1.11-beta.1",
+    "@eslint-sukka/react": "^6.1.11-beta.1",
     "@next/bundle-analyzer": "^14.2.5",
     "@types/node": "^22.4.1",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-table": "^7.7.20",
     "eslint": "^9.9.0",
-    "eslint-config-sukka": "^6.1.10",
+    "eslint-config-sukka": "^6.1.11-beta.1",
     "eslint-formatter-sukka": "^6.1.10",
     "patch-package": "^8.0.0",
     "typescript": "^5.5.4"

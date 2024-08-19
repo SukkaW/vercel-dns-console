@@ -18,14 +18,14 @@ export interface DNSDataTableFilterProps<T extends TableDataItemBase> {
 const DNSDataTableFilter = <T extends RecordItem>({ filters, setFilter }: DNSDataTableFilterProps<T>) => {
   const theme = useTheme();
   const [input, setInput] = useState('');
-  const [recordType, setRecordType] = useState<VercelDNSRecord['type'][]>([]);
+  const [recordType, setRecordType] = useState<Array<VercelDNSRecord['type']>>([]);
   const { SCALES } = useScale();
 
   const [isSearchQueryPending, startSearchQueryTransition] = useTransition();
   const [, startRecordTypeTransition] = useTransition();
 
   const [actualName, setActualName] = useState(input);
-  const [actualRecordType, setActualRecordType] = useState<VercelDNSRecord['type'][]>(recordType);
+  const [actualRecordType, setActualRecordType] = useState<Array<VercelDNSRecord['type']>>(recordType);
 
   unstable_batchedUpdates(() => {
     if (actualName) {

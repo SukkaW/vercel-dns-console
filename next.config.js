@@ -1,6 +1,8 @@
+'use strict';
+
 const withBundleAnalyzer = process.env.ANALYZE === 'true'
   ? require('@next/bundle-analyzer')({
-    enabled: process.env.ANALYZE === 'true',
+    enabled: process.env.ANALYZE === 'true'
   })
   : (config) => config;
 
@@ -9,10 +11,10 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    unoptimized: true,
+    unoptimized: true
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true
   },
   experimental: {
     legacyBrowsers: false

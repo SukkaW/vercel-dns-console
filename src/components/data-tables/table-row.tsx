@@ -4,7 +4,7 @@ import type { TableDataItemBase } from './types';
 
 export interface TableRowProps<T extends TableDataItemBase> {
   rowProp?: RowPropGetter<T>,
-  children?: React.ReactNode,
+  children?: React.ReactNode
 }
 
 export const TableRow = <T extends TableDataItemBase>({

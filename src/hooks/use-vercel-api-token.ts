@@ -15,10 +15,11 @@ const tokenAtom = atom(
     if (isBrowser) {
       Promise.resolve().then(() => {
         if (token) {
-          localStorage.setItem(LOCALSTORAGE_VERCEL_API_TOKEN_KEY, token);
-        } else {
-          localStorage.removeItem(LOCALSTORAGE_VERCEL_API_TOKEN_KEY);
+          return localStorage.setItem(LOCALSTORAGE_VERCEL_API_TOKEN_KEY, token);
         }
+        return localStorage.removeItem(LOCALSTORAGE_VERCEL_API_TOKEN_KEY);
+      }).catch(() => {
+        // ignore
       });
     }
   }

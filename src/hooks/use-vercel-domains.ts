@@ -43,7 +43,5 @@ export const useVercelDomainInfo = (domain: string | undefined) => {
     if (data) {
       return data.domains.find((d) => d.name === domain);
     }
-
-    return undefined;
   }, [data, domain]);
 };

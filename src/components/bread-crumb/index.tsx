@@ -2,11 +2,11 @@ import { Breadcrumbs } from '@geist-ui/core';
 import NextLink from 'next/link';
 
 export const BreadCrumb = (props: {
-  items: {
-    label: React.ReactNode;
-    id?: string;
-    href?: string;
-  }[]
+  items: Array<{
+    label: React.ReactNode,
+    id?: string,
+    href?: string
+  }>
 }) => {
   return (
     <Breadcrumbs>

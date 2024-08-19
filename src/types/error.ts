@@ -1,5 +1,5 @@
 export interface BaseVercelErrorField {
-  code: string
+  code: string,
   message: string
 }
 
@@ -11,7 +11,7 @@ const hasOwn = <T, K extends PropertyKey>(
   target: T,
   propertyKey: K
 ): target is T & Record<K, unknown> => {
-  return Object.prototype.hasOwnProperty.call(target, propertyKey);
+  return Object.hasOwn(target, propertyKey);
 };
 
 export const isVercelError = <T extends BaseVercelErrorField = BaseVercelErrorField>(value: unknown): value is VercelError<T> => {

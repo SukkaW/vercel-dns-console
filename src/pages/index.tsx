@@ -18,9 +18,9 @@ import type { NextPageWithLayout } from '@/pages/_app';
 import { Menu, MenuItem } from '../components/menu';
 
 interface DomainItem {
-  name: string;
+  name: string,
   nameServer: string,
-  createdAt: string;
+  createdAt: string
 }
 
 const DomainLink = forwardRef((props: { name: string }, ref: React.ForwardedRef<HTMLAnchorElement>) => {
@@ -35,7 +35,7 @@ if (process.env.NODE_ENV !== 'production') {
   DomainLink.displayName = 'DomainLink';
 }
 
-const domainDataTableColumns: DataTableColumns<DomainItem>[] = [
+const domainDataTableColumns: Array<DataTableColumns<DomainItem>> = [
   {
     accessor: 'name',
     Header: 'Domain',

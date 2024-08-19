@@ -13,11 +13,11 @@ import { atom, useAtom } from 'jotai';
 import { ReadonlyModeProvider } from '../contexts/readonly-mode';
 
 export type NextPageWithLayout<P = Record<string, unknown>> = NextPage<P> & {
-  getLayout?: (page: React.ReactElement, props: P) => React.ReactNode;
+  getLayout?: (page: React.ReactNode, props: P) => React.ReactNode
 };
 
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
+  Component: NextPageWithLayout
 };
 
 export type Theme = 'light' | 'dark' | 'system';
@@ -30,10 +30,11 @@ export const themeAtom = atom(
     if (isBrowser) {
       Promise.resolve().then(() => {
         if (value === 'system') {
-          localStorage.removeItem('theme');
-        } else {
-          localStorage.setItem('theme', value);
+          return localStorage.removeItem('theme');
         }
+        return localStorage.setItem('theme', value);
+      }).finally(() => {
+        // ignore
       });
     }
   }
@@ -52,7 +53,7 @@ const App = ({ pageProps, Component }: AppPropsWithLayout) => {
         // null or invalid value
         setTheme('system');
         if (storedTheme) {
-          Promise.resolve().then(() => localStorage.removeItem('theme'));
+          Promise.resolve().then(() => localStorage.removeItem('theme')).catch(() => { /** ignore */ });
         }
       }
     }

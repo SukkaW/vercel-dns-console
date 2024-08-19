@@ -1,5 +1,5 @@
 import { useTheme } from '@geist-ui/core';
-import { type HeaderGroup } from 'react-table';
+import type { HeaderGroup } from 'react-table';
 import type { TableDataItemBase } from './types';
 
 import ArrowUp from '@geist-ui/icons/arrowUp';
@@ -7,16 +7,16 @@ import ArrowDown from '@geist-ui/icons/arrowDown';
 import clsx from 'clsx';
 
 export interface TableHeadProps<T extends TableDataItemBase> {
-  headerGroup: HeaderGroup<T>
-  isSticky?: boolean
-  theadRef?: React.RefObject<HTMLTableSectionElement>
+  headerGroup: HeaderGroup<T>,
+  isSticky?: boolean,
+  theadRef?: React.RefObject<HTMLTableSectionElement>,
   clonedTheadRef?: React.RefObject<HTMLTableSectionElement>
 }
 
 export const TableHead = <T extends TableDataItemBase>(
   props: {
-    headerGroup: HeaderGroup<T>,
-  } & JSX.IntrinsicElements['thead']
+    headerGroup: HeaderGroup<T>
+  } & React.JSX.IntrinsicElements['thead']
 ) => {
   const theme = useTheme();
   const { headerGroup, ...rest } = props;
@@ -41,9 +41,9 @@ export const TableHead = <T extends TableDataItemBase>(
               <span>
                 {/* Add a sort direction indicator */}
                 {header.isSorted
-                  ? header.isSortedDesc
+                  ? (header.isSortedDesc
                     ? <ArrowDown size={12} />
-                    : <ArrowUp size={12} />
+                    : <ArrowUp size={12} />)
                   : ''}
               </span>
             </div>

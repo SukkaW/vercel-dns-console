@@ -25,18 +25,18 @@ export interface DNSFormState {
   srvWeight: number | null,
   srvTarget: string,
   srvService: string,
-  srvProtocol: SrvProtocol
+  srvProtocol: SrvProtocol,
   mxPriority: number | null
 }
 
 export type OnSubmit = (arg: DNSFormState) => void | Promise<void>;
 
 export interface EditDNSRecordProps {
-  domain: string | undefined;
-  isSubmitting: boolean;
-  onSubmit: OnSubmit;
-  isEdit?: boolean;
-  initialState?: DNSFormState | null;
+  domain: string | undefined,
+  isSubmitting: boolean,
+  onSubmit: OnSubmit,
+  isEdit?: boolean,
+  initialState?: DNSFormState | null
 }
 
 const getRecordValuePlaceHolder = (recordType: VercelSupportedDNSType) => {
@@ -317,9 +317,9 @@ export const EditDNSRecord = ({
             recordName,
             recordType === 'CAA'
               ? `0 ${caaTag} ${caaValue}`
-              : recordType === 'SRV'
+              : (recordType === 'SRV'
                 ? srvTarget
-                : recordValue,
+                : recordValue),
             recordType,
             isSrv && srvService,
             isSrv && srvProtocol,
@@ -416,9 +416,9 @@ export const EditDNSRecord = ({
           {
             readOnlyMode
               ? 'You can\'t create record in read-only mode'
-              : isEdit
+              : (isEdit
                 ? 'Update Record'
-                : 'Create Record'
+                : 'Create Record')
           }
         </Button>
       </div>

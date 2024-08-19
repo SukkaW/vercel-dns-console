@@ -24,7 +24,7 @@ export const useVercelDNSRecords = (domain: string | undefined, config?: SWRInfi
       ...config,
       // Make sure we will fetch all records at once
       // SWR hook will break early if getKey return null so there is no performance impact
-      initialSize: 1919810114514
+      initialSize: 1_919_810_114_514
     }
   );
 };

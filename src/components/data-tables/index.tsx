@@ -27,24 +27,25 @@ interface DataTableFilterRendererArgs<T extends TableDataItemBase> {
   filters: Filters<T>
 }
 
-export type DataTableFilterRenderer<T extends TableDataItemBase> = (arg: DataTableFilterRendererArgs<T>) => JSX.Element;
+export type DataTableFilterRenderer<T extends TableDataItemBase> = (arg: DataTableFilterRendererArgs<T>) => React.JSX.Element;
 
 export interface DataTableProps<T extends TableDataItemBase> {
-  data: T[]
-  columns: DataTableColumns<T>[],
+  data: T[],
+  columns: Array<DataTableColumns<T>>,
   tableOptions?: Omit<TableOptions<T>, 'data' | 'columns'>,
-  renderRowAction?: (row: T) => JSX.Element,
-  renderHeaderAction?: (selected: T[]) => JSX.Element,
+  renderRowAction?: (row: T) => React.JSX.Element,
+  renderHeaderAction?: (selected: T[]) => React.JSX.Element,
   renderFilter?: DataTableFilterRenderer<T>,
-  placeHolder?: boolean | number,
+  placeHolder?: boolean | number
 }
 
 declare module 'react-table' {
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars -- fuck ts
+
+  // eslint-disable-next-line unused-imports/no-unused-vars -- fuck interface merging
   export interface UseTableColumnOptions<D extends object> {
-    headerClassName?: string;
-    cellClassName?: string;
-    ellipsis?: boolean;
+    headerClassName?: string,
+    cellClassName?: string,
+    ellipsis?: boolean
   }
 }
 
@@ -93,13 +94,13 @@ const DataTable = <T extends TableDataItemBase>({
       hooks.visibleColumns.push(columns => [
         {
           id: 'selection',
-          // eslint-disable-next-line react/no-unstable-nested-components -- react-tables
+          // eslint-disable-next-line @eslint-react/no-nested-components -- react-tables
           Header({ toggleAllPageRowsSelected, getToggleAllRowsSelectedProps }) {
             const props = getToggleAllRowsSelectedProps();
             return <Checkbox checked={props.checked} onChange={(e) => toggleAllPageRowsSelected(e.target.checked)} />;
           },
-          // eslint-disable-next-line react/no-unstable-nested-components -- react-tables
-          Cell({ row }: CellProps<T, any>) {
+          // eslint-disable-next-line @eslint-react/no-nested-components -- react-tables
+          Cell({ row }: CellProps<T>) {
             if (row.original.disableSelection) {
               return <Lock size={12} className="icon" />;
             }
@@ -124,7 +125,7 @@ const DataTable = <T extends TableDataItemBase>({
                 }
                 return null;
               },
-              Cell({ row }: CellProps<T, any>) {
+              Cell({ row }: CellProps<T>) {
                 return renderRowAction(row.original);
               },
               width: 40,

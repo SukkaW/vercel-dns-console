@@ -46,7 +46,8 @@ const LoginForm = () => {
     try {
       setIsLoading(true);
       const resp = await fetcherWithAuthorization<VercelUserResponse>(['/v2/user', token]);
-      if (resp && resp.user.id && resp.user.name && resp.user.username) {
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- any is nullable
+      if (resp?.user?.id && resp.user.name && resp.user.username) {
         mutate(resp);
         setToken(token);
 
