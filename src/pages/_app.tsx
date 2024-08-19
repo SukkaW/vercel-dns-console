@@ -7,7 +7,7 @@ import { GeistProvider, CssBaseline } from '@geist-ui/core';
 import type { AppProps } from 'next/app';
 import type { NextPage } from 'next/types';
 
-import { useMediaQuery } from '../hooks/use-media-query';
+import { useMediaQuery } from 'foxact/use-media-query';
 import { isBrowser } from '../lib/util';
 import { atom, useAtom } from 'jotai';
 import { ReadonlyModeProvider } from '../contexts/readonly-mode';
