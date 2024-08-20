@@ -9,8 +9,8 @@ import type { NextPage } from 'next/types';
 
 import { useMediaQuery } from 'foxact/use-media-query';
 import { isBrowser } from '../lib/util';
-import { atom, useAtom } from 'jotai';
 import { ReadonlyModeProvider } from '../contexts/readonly-mode';
+import { useTheme } from '../contexts/theme';
 
 export type NextPageWithLayout<P = Record<string, unknown>> = NextPage<P> & {
   getLayout?: (page: React.ReactNode, props: P) => React.ReactNode
@@ -20,29 +20,9 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 };
 
-export type Theme = 'light' | 'dark' | 'system';
-
-const baseThemeAtom = atom<Theme>('system');
-export const themeAtom = atom(
-  (get) => get(baseThemeAtom),
-  (_get, set, value: Theme) => {
-    set(baseThemeAtom, value);
-    if (isBrowser) {
-      Promise.resolve().then(() => {
-        if (value === 'system') {
-          return localStorage.removeItem('theme');
-        }
-        return localStorage.setItem('theme', value);
-      }).finally(() => {
-        // ignore
-      });
-    }
-  }
-);
-
 const App = ({ pageProps, Component }: AppPropsWithLayout) => {
   const isSystemThemeDark = useMediaQuery('(prefers-color-scheme: dark)');
-  const [theme, setTheme] = useAtom(themeAtom);
+  const [theme, setTheme] = useTheme();
 
   useEffect(() => {
     if (isBrowser) {

@@ -1,18 +1,16 @@
 import { useCallback } from 'react';
 
-import { Select, Spacer, Text, useScale, useTheme } from '@geist-ui/core';
+import { Select, Spacer, Text, useScale, useTheme as useGeistTheme } from '@geist-ui/core';
 
 import SunIcon from '@geist-ui/icons/sun';
 import MoonIcon from '@geist-ui/icons/moon';
 import DisplayIcon from '@geist-ui/icons/display';
-
-import { themeAtom } from '@/pages/_app';
-import { useAtom } from 'jotai';
+import { useTheme } from '../../contexts/theme';
 
 export const ThemeToggle = () => {
   const { SCALES } = useScale();
-  const theme = useTheme();
-  const [themeType, setTheme] = useAtom(themeAtom);
+  const geistTheme = useGeistTheme();
+  const [themeType, setTheme] = useTheme();
 
   const handleChange = useCallback((value: string | string[]) => {
     if (value === 'dark' || value === 'light' || value === 'system') {
@@ -56,7 +54,7 @@ export const ThemeToggle = () => {
             margin: ${SCALES.mt(0)} ${SCALES.mr(0)} ${SCALES.mb(0)} ${SCALES.ml(0)};
             align-items: center;
             justify-items: start;
-            color: ${theme.palette.accents_5};
+            color: ${geistTheme.palette.accents_5};
             font-size: ${SCALES.font(0.85)}
           }
 
