@@ -18,18 +18,16 @@ export const useVercelUser = () => {
     fetcherWithAuthorization,
     {
       onError(error) {
-        if (error instanceof HTTPError) {
-          if (error.status === 403) {
-            // invalid token
-            setToken(null);
-            setToast({
-              type: 'error',
-              text: 'Invalid API token',
-              delay: 3000
-            });
-            if (!router.pathname.startsWith('/login')) {
-              router.push('/login');
-            }
+        if (error instanceof HTTPError && error.status === 403) {
+          // invalid token
+          setToken(null);
+          setToast({
+            type: 'error',
+            text: 'Invalid API token',
+            delay: 3000
+          });
+          if (!router.pathname.startsWith('/login')) {
+            router.push('/login');
           }
         }
       },
@@ -48,10 +46,8 @@ export const useVercelUser = () => {
   // the token will set to null if token becomes invalid (E.g. revoked)
   const missingInitialToken = useRef(!token);
   useEffect(() => {
-    if (missingInitialToken.current) {
-      if (!router.pathname.startsWith('/login')) {
-        router.push('/login');
-      }
+    if (missingInitialToken.current && !router.pathname.startsWith('/login')) {
+      router.push('/login');
     }
   }, [router]);
 

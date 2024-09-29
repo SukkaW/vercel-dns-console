@@ -28,20 +28,16 @@ const DNSDataTableFilter = <T extends RecordItem>({ filters, setFilter }: DNSDat
   const [actualRecordType, setActualRecordType] = useState<Array<VercelDNSRecord['type']>>(recordType);
 
   unstable_batchedUpdates(() => {
-    if (actualName) {
-      if (filters.find(({ id }) => id === 'name')?.value !== actualName) {
-        setFilter('name', actualName);
-      }
+    if (actualName && filters.find(({ id }) => id === 'name')?.value !== actualName) {
+      setFilter('name', actualName);
     }
     const filterRecordTypeValue = filters.find(({ id }) => id === 'type')?.value;
     if (actualRecordType.length > 0) {
       if (filterRecordTypeValue !== actualRecordType) {
         setFilter('type', actualRecordType);
       }
-    } else if (actualRecordType.length === 0) {
-      if (filterRecordTypeValue !== null && filterRecordTypeValue !== undefined) {
-        setFilter('type', null);
-      }
+    } else if (actualRecordType.length === 0 && filterRecordTypeValue !== null && filterRecordTypeValue !== undefined) {
+      setFilter('type', null);
     }
   });
 

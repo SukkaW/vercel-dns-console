@@ -8,6 +8,7 @@ const processRecordValue = (
     recordValue
   }: DNSFormState
 ): string => {
+  // eslint-disable-next-line sukka/no-small-switch -- there will be more cases in the future
   switch (recordType) {
     case 'CAA': {
       const quotedCaaValue = (!caaValue.startsWith('"') || !caaValue.endsWith('"'))
@@ -52,15 +53,15 @@ export const getRecordData = (
     type: recordType
   };
 
-  if (recordType !== 'SRV') {
-    recordData.value = processedRecordValue;
-  } else {
+  if (recordType === 'SRV') {
     recordData.srv = {
       port: srvPort!,
       priority: srvPriority!,
       target: srvTarget,
       weight: srvWeight!
     };
+  } else {
+    recordData.value = processedRecordValue;
   }
 
   if (recordType === 'MX' && typeof mxPriority === 'number') {

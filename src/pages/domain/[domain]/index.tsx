@@ -36,9 +36,7 @@ const DNSPage: NextPageWithLayout = () => {
 
   const title = `DNS${domain ? `: ${domain}` : ''}`;
 
-  const isNotFound = useMemo(() => {
-    return error && error instanceof HTTPError && error.status === 404;
-  }, [error]);
+  const isNotFound = useMemo(() => error && error instanceof HTTPError && error.status === 404, [error]);
 
   return (
     <div className="dns-page">
@@ -124,12 +122,10 @@ const DNSPage: NextPageWithLayout = () => {
   );
 };
 
-DNSPage.getLayout = (children, _prop) => {
-  return (
-    <Layout>
-      {children}
-    </Layout>
-  );
-};
+DNSPage.getLayout = (children, _prop) => (
+  <Layout>
+    {children}
+  </Layout>
+);
 
 export default DNSPage;

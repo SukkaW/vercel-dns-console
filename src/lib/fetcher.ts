@@ -1,6 +1,7 @@
 export class HTTPError extends Error {
   info: unknown;
   status: number;
+  name = 'HTTPError';
   constructor(message: string, info: unknown, status: number) {
     super(message);
     this.info = info;

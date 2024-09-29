@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Badge, Code, Text, Tooltip, useTheme } from '@geist-ui/core';
 
-import { DataTable, type DataTableFilterRenderer, type DataTableColumns } from '../data-tables';
+import { DataTable } from '../data-tables';
+import type { DataTableFilterRenderer, DataTableColumns } from '../data-tables';
 
 import { generateDnsDescription } from '@/lib/generate-dns-description';
 
@@ -74,25 +75,23 @@ const NameCell = ({ value }: CellProps<RecordItem, string>) => {
   return value;
 };
 
-const ValueCell = ({ value }: CellProps<RecordItem, string>) => {
-  return (
-    <Tooltip
-      text={(
-        <>
-          <Code>{value}</Code>
-          <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
-        </>
-      )}
-      placement="bottomStart"
-      className="dns-data-tables__tooltip table-cell-ellipsis"
-      portalClassName="table-cell-tooltip-portal record-value"
-      // visible
-      offset={5}
-    >
-      {value}
-    </Tooltip>
-  );
-};
+const ValueCell = ({ value }: CellProps<RecordItem, string>) => (
+  <Tooltip
+    text={(
+      <>
+        <Code>{value}</Code>
+        <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
+      </>
+    )}
+    placement="bottomStart"
+    className="dns-data-tables__tooltip table-cell-ellipsis"
+    portalClassName="table-cell-tooltip-portal record-value"
+    // visible
+    offset={5}
+  >
+    {value}
+  </Tooltip>
+);
 
 const filterTypes: FilterTypes<RecordItem> = {
   searchInRecordType: searchInRecordTypeFilterFn,
@@ -114,10 +113,8 @@ export const DNSDataTables = (props: {
     onError(error) {
       let errorMessage = 'Failed to load DNS records';
 
-      if (error instanceof HTTPError) {
-        if (isVercelError(error.info)) {
-          errorMessage += `: ${error.info.error.message}`;
-        }
+      if (error instanceof HTTPError && isVercelError(error.info)) {
+        errorMessage += `: ${error.info.error.message}`;
       }
 
       setToast({
@@ -280,44 +277,42 @@ export const DNSDataTables = (props: {
     </Menu>
   ), [openDeleteRecordModal, readOnlyMode, theme.palette.accents_3]);
 
-  const renderRowAction = useCallback((record: RecordItem) => {
-    return (
-      <Menu
-        itemMinWidth={100}
-        content={(
-          readOnlyMode
-            ? (
-              <MenuItem disableAutoClose>
-                <Text span type="secondary" w={12}>
-                  Edit and Delete are disabled
+  const renderRowAction = useCallback((record: RecordItem) => (
+    <Menu
+      itemMinWidth={100}
+      content={(
+        readOnlyMode
+          ? (
+            <MenuItem disableAutoClose>
+              <Text span type="secondary" w={12}>
+                Edit and Delete are disabled
+              </Text>
+            </MenuItem>
+          )
+          : (
+            <>
+              {
+                props.domain && <NextLink href={`/domain/${props.domain}/edit/${record.id}`}>
+                  <MenuItem>
+                    Edit
+                  </MenuItem>
+                </NextLink>
+              }
+              <MenuItem onClick={() => {
+                setRecordsToBeDeleted([record]);
+                openDeleteRecordModal();
+              }}>
+                <Text span type="error">
+                  Delete
                 </Text>
               </MenuItem>
-            )
-            : (
-              <>
-                {
-                  props.domain && <NextLink href={`/domain/${props.domain}/edit/${record.id}`}>
-                    <MenuItem>
-                      Edit
-                    </MenuItem>
-                  </NextLink>
-                }
-                <MenuItem onClick={() => {
-                  setRecordsToBeDeleted([record]);
-                  openDeleteRecordModal();
-                }}>
-                  <Text span type="error">
-                    Delete
-                  </Text>
-                </MenuItem>
-              </>
-            )
-        )}
-      >
-        <MoreVertical color={theme.palette.accents_3} size={16} />
-      </Menu>
-    );
-  }, [openDeleteRecordModal, props.domain, readOnlyMode, theme.palette.accents_3]);
+            </>
+          )
+      )}
+    >
+      <MoreVertical color={theme.palette.accents_3} size={16} />
+    </Menu>
+  ), [openDeleteRecordModal, props.domain, readOnlyMode, theme.palette.accents_3]);
 
   const isDataTablePlaceHolder = (!props.domain) || isLoading;
 

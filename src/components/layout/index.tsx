@@ -3,7 +3,8 @@ import { startTransition, useCallback } from 'react';
 
 import { Link, Modal, Note, Popover, Snippet, Spacer, Text, useModal, useTheme } from '@geist-ui/core';
 import NextLink from 'next/link';
-import Image, { type ImageLoader } from 'next/legacy/image';
+import Image from 'next/legacy/image';
+import type { ImageLoader } from 'next/legacy/image';
 
 import { Skeleton } from '../skeleton';
 import { VercelLogo } from '../vercel-brand/logo';
@@ -20,9 +21,7 @@ import GitHub from '@geist-ui/icons/github';
 import { AntiAdBlockModal } from '../anti-adblock';
 import { ThemeToggle } from './toggle-theme';
 
-const vercelAvatarLoader: ImageLoader = ({ src, width }) => {
-  return `${src}?s=${width}`;
-};
+const vercelAvatarLoader: ImageLoader = ({ src, width }) => `${src}?s=${width}`;
 
 const AvatarMenu = (props: { avatar?: string, name?: string }) => {
   const [token, setToken] = useVercelApiToken();

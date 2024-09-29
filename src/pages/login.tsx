@@ -140,19 +140,18 @@ const LoginForm = () => {
   );
 };
 
-const LoginPage: NextPageWithLayout = () => {
-  return (
-    <div className="root">
-      <NextHead>
-        <title>Log In</title>
-      </NextHead>
-      <div className="login">
-        <Text h3>
-          Log in to Vercel DNS
-        </Text>
-        <LoginForm />
-      </div>
-      <style jsx>{`
+const LoginPage: NextPageWithLayout = () => (
+  <div className="root">
+    <NextHead>
+      <title>Log In</title>
+    </NextHead>
+    <div className="login">
+      <Text h3>
+        Log in to Vercel DNS
+      </Text>
+      <LoginForm />
+    </div>
+    <style jsx>{`
         .root {
           display: flex;
           justify-content: center;
@@ -166,9 +165,8 @@ const LoginPage: NextPageWithLayout = () => {
           justify-content: center;
         }
       `}</style>
-    </div>
-  );
-};
+  </div>
+);
 
 LoginPage.getLayout = (children, _props) => (
   <Container>

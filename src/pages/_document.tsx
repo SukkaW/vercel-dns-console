@@ -1,4 +1,5 @@
-import Document, { Head, Html, Main, NextScript, type DocumentContext, type DocumentInitialProps } from 'next/document';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
+import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import { CssBaseline } from '@geist-ui/core';
 
 const MyDocument = () => (

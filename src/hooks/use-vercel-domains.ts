@@ -20,10 +20,8 @@ export const useVercelDomains = () => {
       onError(error) {
         let errorMessage = 'Failed to load domains list';
 
-        if (error instanceof HTTPError) {
-          if (isVercelError(error.info)) {
-            errorMessage += `: ${error.info.error.message}`;
-          }
+        if (error instanceof HTTPError && isVercelError(error.info)) {
+          errorMessage += `: ${error.info.error.message}`;
         }
 
         setToast({

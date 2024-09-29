@@ -6,7 +6,8 @@ import NextLink from 'next/link';
 import NextHead from 'next/head';
 
 import { Layout } from '@/components/layout';
-import { DataTable, type DataTableColumns } from '../components/data-tables';
+import { DataTable } from '../components/data-tables';
+import type { DataTableColumns } from '../components/data-tables';
 import { Notice } from '@/components/notice';
 
 import { useVercelDomains } from '@/hooks/use-vercel-domains';
@@ -23,13 +24,11 @@ interface DomainItem {
   createdAt: string
 }
 
-const DomainLink = forwardRef((props: { name: string }, ref: React.ForwardedRef<HTMLAnchorElement>) => {
-  return (
-    <NextLink href={`/domain/${props.name}`} prefetch={false} passHref legacyBehavior>
-      <Link ref={ref} className="domain">{props.name}</Link>
-    </NextLink>
-  );
-});
+const DomainLink = forwardRef((props: { name: string }, ref: React.ForwardedRef<HTMLAnchorElement>) => (
+  <NextLink href={`/domain/${props.name}`} prefetch={false} passHref legacyBehavior>
+    <Link ref={ref} className="domain">{props.name}</Link>
+  </NextLink>
+));
 
 if (process.env.NODE_ENV !== 'production') {
   DomainLink.displayName = 'DomainLink';
@@ -62,13 +61,11 @@ const DomainsPage: NextPageWithLayout = () => {
   const processedDomainLists: DomainItem[] = useMemo(() => {
     if (!data) return [];
 
-    return data.domains.map(domain => {
-      return {
-        name: domain.name,
-        nameServer: domain.serviceType === 'zeit.world' ? 'Vercel' : 'Third Party',
-        createdAt: formatDate(domain.createdAt)
-      };
-    });
+    return data.domains.map(domain => ({
+      name: domain.name,
+      nameServer: domain.serviceType === 'zeit.world' ? 'Vercel' : 'Third Party',
+      createdAt: formatDate(domain.createdAt)
+    }));
   }, [data]);
 
   const renderDataTableMenu = useCallback((value: DomainItem) => (
@@ -143,12 +140,10 @@ const DomainsPage: NextPageWithLayout = () => {
   );
 };
 
-DomainsPage.getLayout = (children, _prop) => {
-  return (
-    <Layout>
-      {children}
-    </Layout>
-  );
-};
+DomainsPage.getLayout = (children, _prop) => (
+  <Layout>
+    {children}
+  </Layout>
+);
 
 export default DomainsPage;

@@ -15,10 +15,10 @@ export const generateDnsDescription = (
     | 'SRV'
     | 'TXT'
     | 'NS',
-  srvService?: string | null | undefined | false,
-  srvProtocol?: '_tcp' | '_udp' | '_tls' | null | undefined | false,
-  srvPort?: number | null | undefined | false,
-  srvTarget?: string | null | undefined | false
+  srvService?: string | null | false,
+  srvProtocol?: '_tcp' | '_udp' | '_tls' | null | false,
+  srvPort?: number | null | false,
+  srvTarget?: string | null | false
 ): React.ReactNode => {
   const nameNode = typeof name === 'string' ? <Text b>{name === '@' || name === '' ? '' : `${name}.`}{domain}</Text> : <Text type="secondary" span>[name]</Text>;
   const valueNode = value

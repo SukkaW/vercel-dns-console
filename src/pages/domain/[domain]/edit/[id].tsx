@@ -3,7 +3,8 @@ import { useMemo, useState, useCallback } from 'react';
 import { Text } from '@geist-ui/core';
 import { Layout } from '@/components/layout';
 import { BreadCrumb } from '@/components/bread-crumb';
-import { type DNSFormState, EditDNSRecord, type OnSubmit } from '@/components/edit-dns-record';
+import { EditDNSRecord } from '@/components/edit-dns-record';
+import type { DNSFormState, OnSubmit } from '@/components/edit-dns-record';
 
 import { useRouter } from 'next/router';
 

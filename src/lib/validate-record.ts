@@ -6,8 +6,7 @@ const validCaaTag = new Set(['issue', 'issuewild', 'iodef']);
 
 const isInteger = (value: unknown): boolean => {
   if (typeof value !== 'number') return false;
-  if (!Number.isInteger(value)) return false;
-  return true;
+  return Number.isInteger(value);
 };
 
 export const validateDnsRecord = ({

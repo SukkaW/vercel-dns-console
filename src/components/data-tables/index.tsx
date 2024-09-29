@@ -1,13 +1,15 @@
-import { Checkbox, Pagination, Select, Spacer, useScale, useTheme, withScale, type ScaleProps } from '@geist-ui/core';
+import { Checkbox, Pagination, Select, Spacer, useScale, useTheme, withScale } from '@geist-ui/core';
+import type { ScaleProps } from '@geist-ui/core';
 import type { TableDataItemBase } from './types';
 import {
   useTable,
   useSortBy,
   usePagination,
   useFilters,
-  useGlobalFilter,
-  type Column, type CellProps, type TableOptions, type IdType, type Filters
+  useGlobalFilter
+
 } from 'react-table';
+import type { Column, CellProps, TableOptions, IdType, Filters } from 'react-table';
 import { TableHead } from './table-head';
 import { TableRow } from './table-row';
 import { useCallback, useMemo } from 'react';
@@ -114,28 +116,26 @@ const DataTable = <T extends TableDataItemBase>({
       ]);
 
       if (renderRowAction) {
-        hooks.visibleColumns.push(columns => {
-          return [
-            ...columns,
-            {
-              id: 'action',
-              Header({ selectedFlatRows }) {
-                if (renderHeaderAction) {
-                  return renderHeaderAction(selectedFlatRows.map(row => row.original));
-                }
-                return null;
-              },
-              Cell({ row }: CellProps<T>) {
-                return renderRowAction(row.original);
-              },
-              width: 40,
-              maxWidth: 40,
-              minWidth: 40,
-              headerClassName: 'action-header',
-              cellClassName: 'action-cell'
-            }
-          ];
-        });
+        hooks.visibleColumns.push(columns => [
+          ...columns,
+          {
+            id: 'action',
+            Header({ selectedFlatRows }) {
+              if (renderHeaderAction) {
+                return renderHeaderAction(selectedFlatRows.map(row => row.original));
+              }
+              return null;
+            },
+            Cell({ row }: CellProps<T>) {
+              return renderRowAction(row.original);
+            },
+            width: 40,
+            maxWidth: 40,
+            minWidth: 40,
+            headerClassName: 'action-header',
+            cellClassName: 'action-cell'
+          }
+        ]);
       }
     }, [renderHeaderAction, renderRowAction])
   );
@@ -198,7 +198,7 @@ const DataTable = <T extends TableDataItemBase>({
           </tbody>
         </table>
         {
-          placeHolder && (
+          !!placeHolder && (
             <TablePlaceHolder rowCount={typeof placeHolder === 'number' ? placeHolder : 3} />
           )
         }

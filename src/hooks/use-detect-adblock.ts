@@ -11,11 +11,9 @@ export const useDetectAdBlock = () => {
         const res = await fetch('/api/post', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
         const data = await res.text();
 
-        if (!signal.aborted) {
-          if (data.length === 0) {
-            isCheckedRef.current = true;
-            setIsAdBlockEnabled(true);
-          }
+        if (!signal.aborted && data.length === 0) {
+          isCheckedRef.current = true;
+          setIsAdBlockEnabled(true);
         }
       })();
     }
