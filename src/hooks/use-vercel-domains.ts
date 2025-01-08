@@ -7,13 +7,13 @@ import { isVercelError } from '../types/error';
 
 import { useVercelApiToken } from './use-vercel-api-token';
 
-export const useVercelDomains = () => {
+export const useVercelDomains = (teamId: string | undefined) => {
   const [token] = useVercelApiToken();
   const { setToast } = useToasts();
 
   return useSWR<VercelDomainResponse, HTTPError>(
-    token
-      ? ['/v5/domains', token]
+    token && teamId
+      ? ['/v6/domains?teamId=' + teamId, token]
       : null,
     fetcherWithAuthorization,
     {
@@ -34,8 +34,8 @@ export const useVercelDomains = () => {
   );
 };
 
-export const useVercelDomainInfo = (domain: string | undefined) => {
-  const { data } = useVercelDomains();
+export const useVercelDomainInfo = (domain: string | undefined, teamId: string) => {
+  const { data } = useVercelDomains(teamId);
 
   return useMemo(() => {
     if (data) {

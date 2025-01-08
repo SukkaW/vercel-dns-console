@@ -5,7 +5,8 @@ export interface VercelUser {
   email: string,
   username: string,
   name?: string,
-  limited?: boolean
+  limited?: boolean,
+  defaultTeamId: string
 }
 
 export interface VercelUserResponse {

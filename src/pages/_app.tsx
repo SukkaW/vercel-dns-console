@@ -21,7 +21,7 @@ type AppPropsWithLayout = AppProps & {
 };
 
 const App = ({ pageProps, Component }: AppPropsWithLayout) => {
-  const isSystemThemeDark = useMediaQuery('(prefers-color-scheme: dark)');
+  const isSystemThemeDark = useMediaQuery('(prefers-color-scheme: dark)', false);
   const [theme, setTheme] = useTheme();
 
   useEffect(() => {

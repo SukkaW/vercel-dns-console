@@ -56,7 +56,8 @@ export const useVercelUser = () => {
       return {
         username: data.user.username,
         name: data.user.name,
-        avatar: data.user.avatar
+        avatar: data.user.avatar,
+        defaultTeamId: data.user.defaultTeamId
       };
     }
   }, [data]);

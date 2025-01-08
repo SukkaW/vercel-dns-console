@@ -17,6 +17,7 @@ import MoreVertical from '@geist-ui/icons/moreVertical';
 
 import type { NextPageWithLayout } from '@/pages/_app';
 import { Menu, MenuItem } from '../components/menu';
+import { useVercelUser } from '../hooks/use-vercel-user';
 
 interface DomainItem {
   name: string,
@@ -56,7 +57,10 @@ const domainDataTableColumns: Array<DataTableColumns<DomainItem>> = [
 
 const DomainsPage: NextPageWithLayout = () => {
   const theme = useTheme();
-  const { data, error } = useVercelDomains();
+
+  // TODO: filter multiple teams
+  const { data: user } = useVercelUser();
+  const { data, error } = useVercelDomains(user?.defaultTeamId);
 
   const processedDomainLists: DomainItem[] = useMemo(() => {
     if (!data) return [];
