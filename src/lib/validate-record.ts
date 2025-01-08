@@ -1,5 +1,6 @@
 import { VERCEL_SUPPORTED_DNS_RECORDS_TYPE } from './constant';
-import { isIPv4, isIPv6 } from 'is-ip';
+// TODO: strict check
+import { isProbablyIpv4, isProbablyIpv6 } from 'foxts/is-probably-ip';
 import type { DNSFormState } from '../components/edit-dns-record';
 
 const validCaaTag = new Set(['issue', 'issuewild', 'iodef']);
@@ -42,12 +43,12 @@ export const validateDnsRecord = ({
         break;
       }
       case 'A': {
-        if (!isIPv4(recordValue)) throw `"${recordValue}" is not an valid IPv4 address`;
+        if (!isProbablyIpv4(recordValue)) throw `"${recordValue}" is not an valid IPv4 address`;
 
         break;
       }
       case 'AAAA': {
-        if (!isIPv6(recordValue)) throw `"${recordValue}" is not an valid IPv6 address`;
+        if (!isProbablyIpv6(recordValue)) throw `"${recordValue}" is not an valid IPv6 address`;
 
         break;
       }
