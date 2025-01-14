@@ -5,8 +5,10 @@ import { useVercelDNSRecords } from '@/hooks/use-vercel-dns';
 import { useVercelApiToken } from '@/hooks/use-vercel-api-token';
 import { fetcherWithAuthorization } from '@/lib/fetcher';
 import { useToasts } from '@/hooks/use-toasts';
+import { useVercelUser } from '@/hooks/use-vercel-user';
+import { nullthrow } from 'foxts/guard';
 
-const RecordsListTable = (props: { records: RecordItem[] }) => {
+function RecordsListTable(props: { records: RecordItem[] }) {
   const data = props.records.map(record => ({
     name: record.name,
     type: record.type,
@@ -43,7 +45,7 @@ const RecordsListTable = (props: { records: RecordItem[] }) => {
       `}</style>
     </div>
   );
-};
+}
 
 export interface DeleteRecordModalProps {
   domain: string,
@@ -52,10 +54,11 @@ export interface DeleteRecordModalProps {
   close: () => void
 }
 
-export const DeleteRecordModal = ({ domain, records, visible, close }: DeleteRecordModalProps) => {
+export function DeleteRecordModal({ domain, records, visible, close }: DeleteRecordModalProps) {
   const [token] = useVercelApiToken();
   const { mutate } = useVercelDNSRecords(domain);
   const { setToast } = useToasts();
+  const { data: user, isLoading: userLoading } = useVercelUser();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,7 +68,7 @@ export const DeleteRecordModal = ({ domain, records, visible, close }: DeleteRec
     try {
       await Promise.all(
         records.map(record => fetcherWithAuthorization(
-          [`/v2/domains/${domain}/records/${record.id}`, token!],
+          [`/v2/domains/${domain}/records/${record.id}?teamId=${nullthrow(user).defaultTeamId}`, token!],
           {
             method: 'DELETE'
           }
@@ -82,7 +85,7 @@ export const DeleteRecordModal = ({ domain, records, visible, close }: DeleteRec
       });
       setIsLoading(false);
     }
-  }, [close, domain, mutate, records, setToast, token]);
+  }, [close, domain, mutate, records, setToast, token, user]);
 
   return (
     <Modal visible={visible} onClose={close}>
@@ -98,7 +101,7 @@ export const DeleteRecordModal = ({ domain, records, visible, close }: DeleteRec
           Cancel
         </Text>
       </Modal.Action>
-      <Modal.Action loading={isLoading} onClick={handleDelete}>
+      <Modal.Action loading={userLoading || isLoading} onClick={handleDelete}>
         <Text span type="error">
           Delete
         </Text>
@@ -114,4 +117,4 @@ export const DeleteRecordModal = ({ domain, records, visible, close }: DeleteRec
       `}</style>
     </Modal>
   );
-};
+}

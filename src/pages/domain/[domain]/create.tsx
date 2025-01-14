@@ -16,6 +16,8 @@ import { validateDnsRecord } from '@/lib/validate-record';
 
 import type { NextPageWithLayout } from '@/pages/_app';
 import { getRecordData } from '@/lib/process-record-value';
+import { useVercelUser } from '@/hooks/use-vercel-user';
+import { nullthrow } from 'foxts/guard';
 
 const CreateRecordPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -24,6 +26,8 @@ const CreateRecordPage: NextPageWithLayout = () => {
   const [token] = useVercelApiToken();
   const { mutate } = useVercelDNSRecords(domain);
   const { setToast } = useToasts();
+
+  const { data: user } = useVercelUser();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -53,7 +57,7 @@ const CreateRecordPage: NextPageWithLayout = () => {
 
       try {
         await fetcherWithAuthorization(
-          [`/v2/domains/${domain}/records`, token],
+          [`/v2/domains/${domain}/records?teamId=${nullthrow(user).defaultTeamId}`, token],
           {
             method: 'post',
             mode: 'cors',
@@ -82,7 +86,7 @@ const CreateRecordPage: NextPageWithLayout = () => {
         });
       }
     }
-  }, [domain, mutate, router, setToast, token]);
+  }, [domain, mutate, router, setToast, token, user]);
 
   return (
     <div>
@@ -90,7 +94,8 @@ const CreateRecordPage: NextPageWithLayout = () => {
         { label: 'Domains', href: '/' },
         { id: 'dnspage', href: `/domain/${domain ?? ''}`, label: domain ?? '. . .' },
         { id: 'create', label: 'Create Record' }
-      ]} />
+      ]}
+      />
       <Text h1>Create Record</Text>
       <EditDNSRecord domain={domain} isSubmitting={isSubmitting} onSubmit={handleSubmit} />
     </div>

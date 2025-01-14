@@ -16,7 +16,7 @@
     "@geist-ui/icons": "^1.0.2",
     "clsx": "^2.1.1",
     "foxact": "^0.2.43",
-    "foxts": "^1.1.4",
+    "foxts": "^1.1.5",
     "minireset.css": "^0.0.7",
     "nanoid": "^4.0.2",
     "next": "^14.2.13",

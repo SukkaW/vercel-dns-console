@@ -6,8 +6,9 @@ import type { VercelDomainResponse } from '../types/domains';
 import { isVercelError } from '../types/error';
 
 import { useVercelApiToken } from './use-vercel-api-token';
+import { useVercelUser } from './use-vercel-user';
 
-export const useVercelDomains = (teamId: string | undefined) => {
+export function useVercelDomains(teamId: string | undefined) {
   const [token] = useVercelApiToken();
   const { setToast } = useToasts();
 
@@ -32,14 +33,17 @@ export const useVercelDomains = (teamId: string | undefined) => {
       }
     }
   );
-};
+}
 
-export const useVercelDomainInfo = (domain: string | undefined, teamId: string) => {
-  const { data } = useVercelDomains(teamId);
+export function useVercelDomainInfo(domain: string | undefined) {
+  // TODO: filter multiple teams
+  const { data: user } = useVercelUser();
+
+  const { data } = useVercelDomains(user?.defaultTeamId);
 
   return useMemo(() => {
     if (data) {
       return data.domains.find((d) => d.name === domain);
     }
   }, [data, domain]);
-};
+}

@@ -52,7 +52,7 @@ const searchInRecordNameAndValueFilterFn: FilterType<RecordItem> = (rows, column
   return rows;
 };
 
-const NameCell = ({ value }: CellProps<RecordItem, string>) => {
+function NameCell({ value }: CellProps<RecordItem, string>) {
   if (value.length > 10) {
     return (
       <Tooltip
@@ -73,25 +73,27 @@ const NameCell = ({ value }: CellProps<RecordItem, string>) => {
     );
   }
   return value;
-};
+}
 
-const ValueCell = ({ value }: CellProps<RecordItem, string>) => (
-  <Tooltip
-    text={(
-      <>
-        <Code>{value}</Code>
-        <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
-      </>
-    )}
-    placement="bottomStart"
-    className="dns-data-tables__tooltip table-cell-ellipsis"
-    portalClassName="table-cell-tooltip-portal record-value"
-    // visible
-    offset={5}
-  >
-    {value}
-  </Tooltip>
-);
+function ValueCell({ value }: CellProps<RecordItem, string>) {
+  return (
+    <Tooltip
+      text={(
+        <>
+          <Code>{value}</Code>
+          <CopyButton auto scale={1 / 4} ml={1} copyValue={value} />
+        </>
+      )}
+      placement="bottomStart"
+      className="dns-data-tables__tooltip table-cell-ellipsis"
+      portalClassName="table-cell-tooltip-portal record-value"
+      // visible
+      offset={5}
+    >
+      {value}
+    </Tooltip>
+  );
+}
 
 const filterTypes: FilterTypes<RecordItem> = {
   searchInRecordType: searchInRecordTypeFilterFn,
@@ -102,9 +104,9 @@ const renderFilter: DataTableFilterRenderer<RecordItem> = (arg) => (
   <DNSDataTableFilter {...arg} />
 );
 
-export const DNSDataTables = (props: {
+export function DNSDataTables(props: {
   domain: string | undefined
-}) => {
+}) {
   const theme = useTheme();
   const { setToast } = useToasts();
   const readOnlyMode = useIsReadonly();
@@ -259,10 +261,12 @@ export const DNSDataTables = (props: {
             </MenuItem>
           )
           : (
-            <MenuItem onClick={() => {
-              setRecordsToBeDeleted(selected);
-              openDeleteRecordModal();
-            }}>
+            <MenuItem
+              onClick={() => {
+                setRecordsToBeDeleted(selected);
+                openDeleteRecordModal();
+              }}
+            >
               <Text span type={selected.length ? 'error' : 'secondary'}>
                 Delete ({selected.length})
               </Text>
@@ -301,7 +305,8 @@ export const DNSDataTables = (props: {
               <MenuItem onClick={() => {
                 setRecordsToBeDeleted([record]);
                 openDeleteRecordModal();
-              }}>
+              }}
+              >
                 <Text span type="error">
                   Delete
                 </Text>
@@ -404,4 +409,4 @@ export const DNSDataTables = (props: {
       `}</style>
     </div>
   );
-};
+}

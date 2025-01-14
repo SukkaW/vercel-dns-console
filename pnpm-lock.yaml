@@ -21,8 +21,8 @@ importers:
         specifier: ^0.2.43
         version: 0.2.43(react@18.3.1)
       foxts:
-        specifier: ^1.1.4
-        version: 1.1.4
+        specifier: ^1.1.5
+        version: 1.1.5
       minireset.css:
         specifier: ^0.0.7
         version: 0.0.7
@@ -1174,8 +1174,8 @@ packages:
       react:
         optional: true
 
-  foxts@1.1.4:
-    resolution: {integrity: sha512-T1fi7+xcdMW/DyvyhBEWGI5dIDstd0QgjxALuEtFl+RP/s66b9j79pKAK8Zt2F3L5OdMb+La3iz16yH+hNcQAg==}
+  foxts@1.1.5:
+    resolution: {integrity: sha512-s5SRvB7PTTOl5ZWYE4PrBhHXi6sw/0fLrYDDZThFHcHJCmEMaWmZwM0A5Op9APs6y0nQGrUgroV6WFKNdTbgSQ==}
 
   fs-extra@9.1.0:
     resolution: {integrity: sha512-hcg3ZmepS30/7BSFqRvoo3DOMQu7IjqxO5nCDt+zM9XWjb33Wg7ziNT+Qvqbuc3+gWpzO02JubVyk2G4Zvo1OQ==}
@@ -3259,7 +3259,7 @@ snapshots:
     optionalDependencies:
       react: 18.3.1
 
-  foxts@1.1.4: {}
+  foxts@1.1.5: {}
 
   fs-extra@9.1.0:
     dependencies:

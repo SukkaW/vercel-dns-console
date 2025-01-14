@@ -46,7 +46,8 @@ const DNSPage: NextPageWithLayout = () => {
       <BreadCrumb items={[
         { label: 'Domains', href: '/' },
         { id: 'dnspage', label: domain ?? '. . .' }
-      ]} />
+      ]}
+      />
       {
         isNotFound
           ? (

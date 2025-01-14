@@ -18,6 +18,9 @@ import { fetcherWithAuthorization, HTTPError } from '@/lib/fetcher';
 import { getRecordData } from '@/lib/process-record-value';
 import { NotFoundError } from '../../../../components/not-found/404';
 
+import { nullthrow } from 'foxts/guard';
+import { useVercelUser } from '../../../../hooks/use-vercel-user';
+
 const EditRecordPage: NextPageWithLayout = () => {
   const router = useRouter();
   const domain = router.query.domain as string | undefined;
@@ -25,6 +28,7 @@ const EditRecordPage: NextPageWithLayout = () => {
 
   const [token] = useVercelApiToken();
   const { data, mutate } = useVercelDNSRecords(domain);
+  const { data: user } = useVercelUser();
 
   const { setToast } = useToasts();
 
@@ -121,7 +125,7 @@ const EditRecordPage: NextPageWithLayout = () => {
 
       try {
         await fetcherWithAuthorization(
-          [`/v4/domains/records/${recordId}`, token],
+          [`/v4/domains/records/${recordId}?teamId=${nullthrow(user).defaultTeamId}`, token],
           {
             method: 'PATCH',
             mode: 'cors',
@@ -150,7 +154,7 @@ const EditRecordPage: NextPageWithLayout = () => {
         });
       }
     }
-  }, [domain, token, setToast, recordId, mutate, router]);
+  }, [recordId, token, setToast, user, mutate, router, domain]);
 
   return (
     <div>
@@ -158,7 +162,8 @@ const EditRecordPage: NextPageWithLayout = () => {
         { label: 'Domains', href: '/' },
         { id: 'dnspage', href: `/domain/${domain ?? ''}`, label: domain ?? '. . .' },
         { id: 'edit', label: `Edit ${record?.type || ''} Record` }
-      ]} />
+      ]}
+      />
       {
         isNotFound
           ? (
