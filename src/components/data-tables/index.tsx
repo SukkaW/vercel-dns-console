@@ -13,8 +13,8 @@ import type { Column, CellProps, TableOptions, IdType, Filters } from 'react-tab
 import { TableHead } from './table-head';
 import { TableRow } from './table-row';
 import { useCallback, useMemo } from 'react';
-import clsx from 'clsx';
-import { useRowSelect } from './react-table-use-partial-selection';
+import { clsx } from 'clsx';
+import { useRowSelect } from './react-table-use-partial-selection.js';
 
 import Lock from '@geist-ui/icons/lock';
 import ChevronRight from '@geist-ui/icons/chevronRight';
@@ -51,7 +51,7 @@ declare module 'react-table' {
   }
 }
 
-const DataTable = <T extends TableDataItemBase>({
+function DataTable<T extends TableDataItemBase>({
   data,
   columns,
   tableOptions,
@@ -59,7 +59,7 @@ const DataTable = <T extends TableDataItemBase>({
   renderHeaderAction,
   renderFilter,
   placeHolder
-}: DataTableProps<T>) => {
+}: DataTableProps<T>) {
   const theme = useTheme();
   const { SCALES } = useScale();
 
@@ -96,12 +96,12 @@ const DataTable = <T extends TableDataItemBase>({
       hooks.visibleColumns.push(columns => [
         {
           id: 'selection',
-          // eslint-disable-next-line @eslint-react/no-nested-components -- react-tables
+          // eslint-disable-next-line @eslint-react/no-nested-component-definitions -- react-tables
           Header({ toggleAllPageRowsSelected, getToggleAllRowsSelectedProps }) {
             const props = getToggleAllRowsSelectedProps();
             return <Checkbox checked={props.checked} onChange={(e) => toggleAllPageRowsSelected(e.target.checked)} />;
           },
-          // eslint-disable-next-line @eslint-react/no-nested-components -- react-tables
+          // eslint-disable-next-line @eslint-react/no-nested-component-definitions -- react-tables
           Cell({ row }: CellProps<T>) {
             if (row.original.disableSelection) {
               return <Lock size={12} className="icon" />;
@@ -305,7 +305,7 @@ const DataTable = <T extends TableDataItemBase>({
      `}</style>
     </>
   );
-};
+}
 
 const withScaledDataTable = withScale(DataTable) as typeof DataTable & ScaleProps;
 

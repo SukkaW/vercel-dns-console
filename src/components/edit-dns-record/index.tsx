@@ -39,7 +39,7 @@ export interface EditDNSRecordProps {
   initialState?: DNSFormState | null
 }
 
-const getRecordValuePlaceHolder = (recordType: VercelSupportedDNSType) => {
+function getRecordValuePlaceHolder(recordType: VercelSupportedDNSType) {
   switch (recordType) {
     case 'A':
       return '76.76.21.21';
@@ -56,15 +56,15 @@ const getRecordValuePlaceHolder = (recordType: VercelSupportedDNSType) => {
     default:
       return '';
   }
-};
+}
 
-export const EditDNSRecord = ({
+export function EditDNSRecord({
   domain,
   isSubmitting,
   onSubmit,
   initialState,
   isEdit = false
-}: EditDNSRecordProps) => {
+}: EditDNSRecordProps) {
   const readOnlyMode = useIsReadonly();
 
   const isInitialStateLoading = isEdit && !initialState;
@@ -448,7 +448,7 @@ export const EditDNSRecord = ({
       `}</style>
     </div>
   );
-};
+}
 
 function TtlButton(props: {
   onChange: (ttl: number) => void,

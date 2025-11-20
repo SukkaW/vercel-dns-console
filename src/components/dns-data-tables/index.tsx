@@ -212,7 +212,7 @@ export function DNSDataTables(props: {
       width: 30,
       minWidth: 30,
       maxWidth: 30,
-      // eslint-disable-next-line @eslint-react/no-nested-components -- react tables
+      // eslint-disable-next-line @eslint-react/no-nested-component-definitions -- react tables
       Cell({ row }: CellProps<RecordItem>) {
         const record = row.original;
         if (props.domain) {

@@ -5,10 +5,10 @@ interface NotFoundErrorProps {
   body?: React.ReactNode
 }
 
-export const NotFoundError = ({
+export function NotFoundError({
   title,
   body
-}: NotFoundErrorProps) => {
+}: NotFoundErrorProps) {
   const titleText = `404 | ${title}`;
   return (
     <div className="error-container">
@@ -71,4 +71,4 @@ export const NotFoundError = ({
       `}</style>
     </div>
   );
-};
+}

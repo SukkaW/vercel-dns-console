@@ -6,7 +6,7 @@ import { useCallback } from 'react';
 import Copy from '@geist-ui/icons/copy';
 import Check from '@geist-ui/icons/check';
 
-export const CopyButton = ({ copyValue, ...rest }: ButtonProps & ScaleProps & { copyValue?: string }) => {
+export function CopyButton({ copyValue, ...rest }: ButtonProps & ScaleProps & { copyValue?: string }) {
   const { setToast } = useToasts();
   const handleCopyError = useCallback(() => {
     setToast({
@@ -22,4 +22,4 @@ export const CopyButton = ({ copyValue, ...rest }: ButtonProps & ScaleProps & { 
   return (
     <Button {...rest} onClick={handleClick} icon={copied ? <Check /> : <Copy />} type={copied ? 'success' : 'default'} />
   );
-};
+}

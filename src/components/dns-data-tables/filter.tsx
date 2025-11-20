@@ -15,7 +15,7 @@ export interface DNSDataTableFilterProps<T extends TableDataItemBase> {
   setFilter: (columnId: keyof T, updater: any) => void
 }
 
-const DNSDataTableFilter = <T extends RecordItem>({ filters, setFilter }: DNSDataTableFilterProps<T>) => {
+function DNSDataTableFilter<T extends RecordItem>({ filters, setFilter }: DNSDataTableFilterProps<T>) {
   const theme = useTheme();
   const [input, setInput] = useState('');
   const [recordType, setRecordType] = useState<Array<VercelDNSRecord['type']>>([]);
@@ -147,7 +147,7 @@ const DNSDataTableFilter = <T extends RecordItem>({ filters, setFilter }: DNSDat
       `}</style>
     </div>
   );
-};
+}
 
 const ScaledDNSDataTableFilter = withScale(DNSDataTableFilter) as typeof DNSDataTableFilter;
 

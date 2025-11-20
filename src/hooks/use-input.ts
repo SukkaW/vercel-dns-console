@@ -4,9 +4,7 @@ export type BindingsChangeTarget =
   | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   | string;
 
-export const useInput = (
-  initialValue: string
-) => {
+export function useInput(initialValue: string) {
   const [state, setState] = useState(initialValue);
 
   return {
@@ -24,4 +22,4 @@ export const useInput = (
       }, [])
     }
   };
-};
+}

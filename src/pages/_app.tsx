@@ -20,7 +20,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 };
 
-const App = ({ pageProps, Component }: AppPropsWithLayout) => {
+function App({ pageProps, Component }: AppPropsWithLayout) {
   const isSystemThemeDark = useMediaQuery('(prefers-color-scheme: dark)', false);
   const [theme, setTheme] = useTheme();
 
@@ -56,6 +56,6 @@ const App = ({ pageProps, Component }: AppPropsWithLayout) => {
       </ReadonlyModeProvider>
     </GeistProvider>
   );
-};
+}
 
 export default App;

@@ -92,33 +92,28 @@ const DomainsPage: NextPageWithLayout = () => {
 
   return (
     <div>
-      {
-        useMemo(() => (
-          <>
-            <NextHead>
-              <title>Domains</title>
-            </NextHead>
-            <Text h1>Domains</Text>
-            <Note type="warning">
-              You can only manage your DNS records here. Please go to
-              {' '}
-              <Link
-                href="https://vercel.com"
-                target="_blank"
-                rel="external nofollow noreferrer noopenner"
-                icon
-                color
-                underline
-              >
-                https://vercel.com
-              </Link>
-              {' '}
-              to buy / transfer / renew / add / remove your domains.
-            </Note>
-            <Spacer h={2} />
-          </>
-        ), [])
-      }
+      <NextHead>
+        <title>Domains</title>
+      </NextHead>
+      <Text h1>Domains</Text>
+      <Note type="warning">
+        You can only manage your DNS records here. Please go to
+        {' '}
+        <Link
+          href="https://vercel.com"
+          target="_blank"
+          rel="external nofollow noreferrer noopenner"
+          icon
+          color
+          underline
+        >
+          https://vercel.com
+        </Link>
+        {' '}
+        to buy / transfer / renew / add / remove your domains.
+      </Note>
+      <Spacer h={2} />
+
       <DataTable
         placeHolder={!data && !error ? 4 : false}
         data={processedDomainLists}

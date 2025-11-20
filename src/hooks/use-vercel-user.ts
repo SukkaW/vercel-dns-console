@@ -8,7 +8,7 @@ import { useToasts } from './use-toasts';
 
 import type { VercelUserResponse } from '@/types/user';
 
-export const useVercelUser = () => {
+export function useVercelUser() {
   const [token, setToken] = useVercelApiToken();
   const { setToast } = useToasts();
   const router = useRouter();
@@ -68,4 +68,4 @@ export const useVercelUser = () => {
     mutate,
     isLoading
   };
-};
+}

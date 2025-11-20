@@ -23,7 +23,7 @@ import { ThemeToggle } from './toggle-theme';
 
 const vercelAvatarLoader: ImageLoader = ({ src, width }) => `${src}?s=${width}`;
 
-const AvatarMenu = (props: { avatar?: string, name?: string }) => {
+function AvatarMenu(props: { avatar?: string, name?: string }) {
   const [token, setToken] = useVercelApiToken();
   const { setToast } = useToasts();
   const router = useRouter();
@@ -120,11 +120,11 @@ const AvatarMenu = (props: { avatar?: string, name?: string }) => {
       </Modal>
     </>
   );
-};
+}
 
-export const Layout = (props: {
+export function Layout(props: {
   children: React.ReactNode
-}) => {
+}) {
   const { data } = useVercelUser();
   const theme = useTheme();
 
@@ -211,4 +211,4 @@ export const Layout = (props: {
 `}</style>
     </>
   );
-};
+}

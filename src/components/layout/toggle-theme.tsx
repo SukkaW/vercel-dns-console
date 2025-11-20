@@ -7,7 +7,7 @@ import MoonIcon from '@geist-ui/icons/moon';
 import DisplayIcon from '@geist-ui/icons/display';
 import { useTheme } from '../../contexts/theme';
 
-export const ThemeToggle = () => {
+export function ThemeToggle() {
   const { SCALES } = useScale();
   const geistTheme = useGeistTheme();
   const [themeType, setTheme] = useTheme();
@@ -77,4 +77,4 @@ export const ThemeToggle = () => {
         `}</style>
     </div>
   );
-};
+}

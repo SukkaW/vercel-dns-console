@@ -1,13 +1,11 @@
 import type { DNSFormState } from '../components/edit-dns-record';
 
-const processRecordValue = (
-  {
-    caaTag,
-    caaValue,
-    recordType,
-    recordValue
-  }: DNSFormState
-): string => {
+function processRecordValue({
+  caaTag,
+  caaValue,
+  recordType,
+  recordValue
+}: DNSFormState): string {
   // eslint-disable-next-line sukka/no-small-switch -- there will be more cases in the future
   switch (recordType) {
     case 'CAA': {
@@ -21,7 +19,7 @@ const processRecordValue = (
   }
 
   return recordValue;
-};
+}
 
 type RecordData = {
   srv?: RecordData
@@ -29,9 +27,7 @@ type RecordData = {
   [key: string]: string | number
 };
 
-export const getRecordData = (
-  recordInfo: DNSFormState
-): RecordData => {
+export function getRecordData(recordInfo: DNSFormState): RecordData {
   const {
     recordName,
     ttl,
@@ -69,4 +65,4 @@ export const getRecordData = (
   }
 
   return recordData;
-};
+}

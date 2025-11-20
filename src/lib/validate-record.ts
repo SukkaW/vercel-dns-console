@@ -5,12 +5,12 @@ import type { DNSFormState } from '../components/edit-dns-record';
 
 const validCaaTag = new Set(['issue', 'issuewild', 'iodef']);
 
-const isInteger = (value: unknown): boolean => {
+function isInteger(value: unknown): boolean {
   if (typeof value !== 'number') return false;
   return Number.isInteger(value);
-};
+}
 
-export const validateDnsRecord = ({
+export function validateDnsRecord({
   recordType,
   recordValue,
   caaTag,
@@ -19,7 +19,7 @@ export const validateDnsRecord = ({
   srvPort,
   srvWeight,
   srvPriority
-}: DNSFormState): boolean => {
+}: DNSFormState): boolean {
   if (!VERCEL_SUPPORTED_DNS_RECORDS_TYPE.includes(recordType)) throw `"${recordType}" is not a supported DNS type`;
 
   if (recordType === 'SRV') {
@@ -60,4 +60,4 @@ export const validateDnsRecord = ({
   }
 
   return true;
-};
+}

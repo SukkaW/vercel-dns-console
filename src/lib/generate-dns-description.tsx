@@ -1,8 +1,7 @@
 import { Code, Text } from '@geist-ui/core';
 import type React from 'react';
 
-export const generateDnsDescription = (
-  domain: string,
+export function generateDnsDescription(domain: string,
   name: string | null | undefined,
   value: string | null | undefined,
   type:
@@ -18,8 +17,7 @@ export const generateDnsDescription = (
   srvService?: string | null | false,
   srvProtocol?: '_tcp' | '_udp' | '_tls' | null | false,
   srvPort?: number | null | false,
-  srvTarget?: string | null | false
-): React.ReactNode => {
+  srvTarget?: string | null | false): React.ReactNode {
   const nameNode = typeof name === 'string' ? <Text b>{name === '@' || name === '' ? '' : `${name}.`}{domain}</Text> : <Text type="secondary" span>[name]</Text>;
   const valueNode = value
     ? <Text b>{value}</Text>
@@ -161,4 +159,4 @@ export const generateDnsDescription = (
         </>
       );
   }
-};
+}

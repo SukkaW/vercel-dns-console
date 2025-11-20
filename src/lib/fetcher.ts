@@ -9,7 +9,7 @@ export class HTTPError extends Error {
   }
 }
 
-export const fetcherWithAuthorization = async <T>([key, token]: [string, string], options?: RequestInit): Promise<T> => {
+export async function fetcherWithAuthorization<T>([key, token]: [string, string], options?: RequestInit): Promise<T> {
   const headers = new Headers({
     Authorization: `Bearer ${token}`
   });
@@ -33,4 +33,4 @@ export const fetcherWithAuthorization = async <T>([key, token]: [string, string]
     throw new HTTPError('An error occurred while fetching the data.', data, res.status);
   }
   return data;
-};
+}

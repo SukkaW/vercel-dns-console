@@ -15,7 +15,7 @@ import { Notice } from '@/components/notice';
 import type { VercelUserResponse } from '../types/user';
 import type { NextPageWithLayout } from './_app';
 
-const LoginForm = () => {
+function LoginForm() {
   const [token, setToken] = useVercelApiToken();
   const [inputs, setInputs] = useState(token ?? '');
 
@@ -138,7 +138,7 @@ const LoginForm = () => {
       `}</style>
     </div>
   );
-};
+}
 
 const LoginPage: NextPageWithLayout = () => (
   <div className="root">

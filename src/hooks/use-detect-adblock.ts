@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useEffect } from 'foxact/use-abortable-effect';
 
-export const useDetectAdBlock = () => {
+export function useDetectAdBlock() {
   const [isAdBlockEnabled, setIsAdBlockEnabled] = useState(false);
   const isCheckedRef = useRef(false);
 
@@ -20,4 +20,4 @@ export const useDetectAdBlock = () => {
   }, []);
 
   return isAdBlockEnabled;
-};
+}

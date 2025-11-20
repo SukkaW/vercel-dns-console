@@ -7,10 +7,10 @@ export interface TableRowProps<T extends TableDataItemBase> {
   children?: React.ReactNode
 }
 
-export const TableRow = <T extends TableDataItemBase>({
+export function TableRow<T extends TableDataItemBase>({
   rowProp,
   children
-}: TableRowProps<T>) => {
+}: TableRowProps<T>) {
   const theme = useTheme();
 
   return (
@@ -44,4 +44,4 @@ export const TableRow = <T extends TableDataItemBase>({
       `}</style>
     </>
   );
-};
+}

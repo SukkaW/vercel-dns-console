@@ -4,7 +4,7 @@ import type { TableDataItemBase } from './types';
 
 import ArrowUp from '@geist-ui/icons/arrowUp';
 import ArrowDown from '@geist-ui/icons/arrowDown';
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 
 export interface TableHeadProps<T extends TableDataItemBase> {
   headerGroup: HeaderGroup<T>,
@@ -13,11 +13,9 @@ export interface TableHeadProps<T extends TableDataItemBase> {
   clonedTheadRef?: React.RefObject<HTMLTableSectionElement>
 }
 
-export const TableHead = <T extends TableDataItemBase>(
-  props: {
-    headerGroup: HeaderGroup<T>
-  } & React.JSX.IntrinsicElements['thead']
-) => {
+export function TableHead<T extends TableDataItemBase>(props: {
+  headerGroup: HeaderGroup<T>
+} & React.JSX.IntrinsicElements['thead']) {
   const theme = useTheme();
   const { headerGroup, ...rest } = props;
   const { headers } = headerGroup;
@@ -130,4 +128,4 @@ export const TableHead = <T extends TableDataItemBase>(
         `}</style>
     </thead>
   );
-};
+}

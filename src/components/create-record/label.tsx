@@ -1,7 +1,7 @@
 import { useScale, withScale } from '@geist-ui/core';
 import type React from 'react';
 
-const Label = (props: React.PropsWithChildren<{ label: React.ReactNode }>) => {
+function Label(props: React.PropsWithChildren<{ label: React.ReactNode }>) {
   const { SCALES } = useScale();
 
   return (
@@ -39,7 +39,7 @@ const Label = (props: React.PropsWithChildren<{ label: React.ReactNode }>) => {
       `}</style>
     </div>
   );
-};
+}
 
 const withScaleLabel = withScale(Label);
 export { withScaleLabel as Label };

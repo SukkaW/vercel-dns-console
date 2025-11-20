@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 
-const handler = (req: NextRequest) => {
+function handler(req: NextRequest) {
   const method = req.method.toUpperCase();
 
   if (method === 'GET') {
@@ -35,7 +35,7 @@ const handler = (req: NextRequest) => {
   }
 
   return new Response(null, { status: 405 });
-};
+}
 
 export default handler;
 
