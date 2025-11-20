@@ -8,38 +8,36 @@
     "start": "next start",
     "export": "next export",
     "lint": "eslint --format=sukka .",
-    "analyze": "ANALYZE=true next build",
-    "postinstall": "patch-package"
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
     "@geist-ui/icons": "^1.0.2",
     "clsx": "^2.1.1",
-    "foxact": "^0.2.43",
-    "foxts": "^1.1.5",
+    "foxact": "^0.2.49",
+    "foxts": "^5.0.0",
     "minireset.css": "^0.0.7",
     "nanoid": "^4.0.2",
-    "next": "^14.2.13",
+    "next": "^14.2.33",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-table": "^7.8.0",
-    "swr": "^2.3.0"
+    "swr": "^2.3.6"
   },
   "devDependencies": {
-    "@eslint-sukka/node": "^6.13.0",
-    "@eslint-sukka/react": "^6.13.0",
-    "@next/bundle-analyzer": "^14.2.13",
-    "@types/node": "^22.10.5",
-    "@types/react": "^18.3.10",
-    "@types/react-dom": "^18.3.0",
+    "@eslint-sukka/node": "^8.0.5",
+    "@eslint-sukka/react": "^8.0.5",
+    "@next/bundle-analyzer": "^14.2.33",
+    "@types/node": "^22.19.1",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
     "@types/react-table": "^7.7.20",
-    "eslint": "^9.17.0",
-    "eslint-config-sukka": "^6.13.0",
-    "eslint-formatter-sukka": "^6.13.0",
-    "patch-package": "^8.0.0",
-    "typescript": "^5.7.2"
+    "eslint": "^9.39.1",
+    "eslint-config-sukka": "^8.0.5",
+    "eslint-formatter-sukka": "^8.0.5",
+    "typescript": "^5.9.3"
   },
-  "packageManager": "pnpm@9.7.1",
+  "packageManager": "pnpm@10.23.0",
   "overrides": {
     "array-includes": "npm:@nolyfill/array-includes@latest",
     "array.prototype.findlastindex": "npm:@nolyfill/array.prototype.findlastindex@latest",
@@ -48,13 +46,13 @@
     "array.prototype.tosorted": "npm:@nolyfill/array.prototype.tosorted@latest",
     "es-iterator-helpers": "npm:@nolyfill/es-iterator-helpers@latest",
     "has": "npm:@nolyfill/has@latest",
+    "next": "$next",
     "object.assign": "npm:@nolyfill/object.assign@latest",
     "object.entries": "npm:@nolyfill/object.entries@latest",
     "object.fromentries": "npm:@nolyfill/object.fromentries@latest",
     "object.groupby": "npm:@nolyfill/object.groupby@latest",
     "object.hasown": "npm:@nolyfill/object.hasown@latest",
     "object.values": "npm:@nolyfill/object.values@latest",
-    "string.prototype.matchall": "npm:@nolyfill/string.prototype.matchall@latest",
-    "next": "$next"
+    "string.prototype.matchall": "npm:@nolyfill/string.prototype.matchall@latest"
   }
 }

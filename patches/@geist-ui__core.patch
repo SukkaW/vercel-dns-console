@@ -1,7 +1,7 @@
-diff --git a/node_modules/@geist-ui/core/dist/table/index.js b/node_modules/@geist-ui/core/dist/table/index.js
-index 2330ed3..78f5abb 100644
---- a/node_modules/@geist-ui/core/dist/table/index.js
-+++ b/node_modules/@geist-ui/core/dist/table/index.js
+diff --git a/dist/table/index.js b/dist/table/index.js
+index 2330ed3861650e635049c8963ea57482d17d1971..78f5abb5813786b8f97752db89d96da8ac749a40 100644
+--- a/dist/table/index.js
++++ b/dist/table/index.js
 @@ -527,7 +527,9 @@ var makeColgroup = function makeColgroup(width, columns) {
    return /*#__PURE__*/React__default["default"].createElement("colgroup", null, columns.map(function (column, index) {
      return /*#__PURE__*/React__default["default"].createElement("col", {
@@ -13,10 +13,10 @@ index 2330ed3..78f5abb 100644
      });
    }));
  };
-diff --git a/node_modules/@geist-ui/core/esm/table/table-head.js b/node_modules/@geist-ui/core/esm/table/table-head.js
-index 268ff2b..6257d88 100644
---- a/node_modules/@geist-ui/core/esm/table/table-head.js
-+++ b/node_modules/@geist-ui/core/esm/table/table-head.js
+diff --git a/esm/table/table-head.js b/esm/table/table-head.js
+index 268ff2b8eca9ab6298be86b57e816e7d6cea4e92..5e11310dec85c231ce69d0c7db6955f0f5fa5e6e 100644
+--- a/esm/table/table-head.js
++++ b/esm/table/table-head.js
 @@ -17,7 +17,9 @@ var makeColgroup = function makeColgroup(width, columns) {
    return /*#__PURE__*/React.createElement("colgroup", null, columns.map(function (column, index) {
      return /*#__PURE__*/React.createElement("col", {

@@ -1,0 +1,2 @@
+patchedDependencies:
+  '@geist-ui/core': patches/@geist-ui__core.patch
