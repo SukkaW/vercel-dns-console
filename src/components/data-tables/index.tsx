@@ -241,7 +241,6 @@ function DataTable<T extends TableDataItemBase>({
       <style jsx>{`
         .table-wrapper {
            overflow-x: auto;
-           max-height: calc(100vh - 250px);
         }
         table {
           border-collapse: separate;
