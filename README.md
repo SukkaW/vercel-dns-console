@@ -1,3 +1,7 @@
+**The project is no longer maintained.** The author of the project ([@SukkaW](https://github.com/SukkaW)) has shifted focus to use "infrastructure as code" approach, and programmatically managing Vercel DNS via StackOverflow's [DNSControl](https://github.com/StackExchange/dnscontrol) instead. See also https://github.com/StackExchange/dnscontrol/pull/3542.
+
+----
+
 # Vercel DNS Console (Unofficial)
 
 This is an **unofficial** implementation of Vercel DNS Console.
